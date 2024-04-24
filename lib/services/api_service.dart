@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:online_store/models/cart_item_model.dart';
 import 'package:online_store/models/order_item_model.dart';
@@ -9,15 +8,19 @@ import 'package:online_store/models/user_model.dart';
 import 'package:online_store/services/user_data_storage_service.dart';
 import 'package:online_store/widgets/basic.dart';
 import 'package:dio/dio.dart';
-import 'package:http/http.dart' as http;
-import 'dart:developer' as developer;
 
 class ApiService {
   final Dio _dio = Dio();
-  final String baseUrl = "http://192.168.0.103:5000";
-  final String userBaseUrl = "http://192.168.0.103:5000/users";
-  final String productBaseUrl = "http://192.168.0.103:5000/products";
-  final String orderBaseUrl = "http://192.168.0.103:5000/orders";
+  // final String baseUrl = "http://192.168.0.103:5000";
+  // final String userBaseUrl = "http://192.168.0.103:5000/users";
+  // final String productBaseUrl = "http://192.168.0.103:5000/products";
+  // final String orderBaseUrl = "http://192.168.0.103:5000/orders";
+
+  final String baseUrl = "http://127.0.0.1:5000";
+  final String userBaseUrl = "http://127.0.0.1:5000/users";
+  final String productBaseUrl = "http://127.0.0.1:5000/products";
+  final String orderBaseUrl = "http://127.0.0.1:5000/orders";
+
 
   Future<bool?> checkUser(Map<String, String> data) async {
     try {
@@ -27,15 +30,10 @@ class ApiService {
         return response.data!['result'];
       }
     } on DioException catch (e) {
-      print("dio error occured: ${e.response!.statusCode}");
       if (e.error is SocketException) {
         internetToastMessage();
-      } else if (e.response!.statusCode == 500) {
-        print(e.response);
-        toastMessage("Something went wrong! Try again");
       }
     } catch (e) {
-      print("Exception Occured : $e");
       toastMessage("Something went wrong! Try again");
     }
     return null;
@@ -66,6 +64,25 @@ class ApiService {
   }
 
   Future<bool> login(Map<String, String> data) async {
+    // String? token = await UserDataStorageService().getToken();
+    // _dio.options.headers["Authorization"] = token!;
+    try {
+      Response<Map<String, dynamic>> response = await _dio.post(userBaseUrl + "/login", data: data);
+
+      if (response.statusCode == 200) {
+        await UserDataStorageService().setToken(response.data!["authToken"]);
+        return true;
+      }
+    } on DioException catch (e) {
+      if (e.error is SocketException) {
+        internetToastMessage();
+      } 
+    }
+    return false;
+  }
+
+
+  Future<bool> signup(Map<String, String> data) async {
     // String? token = await UserDataStorageService().getToken();
     // _dio.options.headers["Authorization"] = token!;
     try {

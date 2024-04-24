@@ -3,20 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 Widget nextButton(String text, Function() onPressed) {
-  return Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Color(0xffF67552),
-        fixedSize: Size(double.maxFinite, 56),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+  return Center(
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xffF67552),
+          fixedSize: Size(200, 56),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        ),
+        onPressed: onPressed,
+        child: Text(
+          text,
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,color: Colors.white),
+        ),
       ),
-      onPressed: onPressed,
-      child: Text(
-        text,
-        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,color: Colors.white),
-      ),
-    ),
+    )
   );
 }
 
@@ -28,10 +30,23 @@ Future<bool?> toastMessage(message) {
   return Fluttertoast.showToast(
     msg: message,
     toastLength: Toast.LENGTH_SHORT,
-    gravity: ToastGravity.BOTTOM,
+    gravity: ToastGravity.BOTTOM_RIGHT,
     fontSize: 16.0,
+    timeInSecForIosWeb: 2,
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 Future<bool?> internetToastMessage([message = "Couldn't reach the server! Check your network once."]) {
   return Fluttertoast.showToast(

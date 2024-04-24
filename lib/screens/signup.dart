@@ -1,20 +1,18 @@
 import 'package:online_store/constants/route_animation.dart';
-import 'package:online_store/screens/home.dart';
+import 'package:online_store/screens/login.dart';
 import 'package:online_store/services/api_service.dart';
 import 'package:online_store/widgets/basic.dart';
 import 'package:flutter/material.dart';
 import 'package:proste_bezier_curve/proste_bezier_curve.dart';
-import 'package:online_store/screens/signup.dart';
 
-class LoginScreen extends StatefulWidget {
-  final bool isEditing;
-  const LoginScreen({Key? key, required this.isEditing}) : super(key: key);
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   bool isLoading = false;
   final GlobalKey<FormState> userIdKey = GlobalKey<FormState>();
   final GlobalKey<FormState> passwordKey = GlobalKey<FormState>();
@@ -32,6 +30,14 @@ class _LoginScreenState extends State<LoginScreen> {
         r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?";
     RegExp reg = RegExp(regexp);
     return reg.hasMatch(email);
+  }
+
+   
+  bool passwordValidator(String password) {
+    // Require at least 8 characters, one uppercase, one lowercase, one number, and one special character
+    String regexp = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!#$%&'()*+,-./:;<=>?@[\]^_`{|}~]).{8,}$";
+    RegExp reg = RegExp(regexp);
+    return reg.hasMatch(password);
   }
 
   @override
@@ -91,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 50),
                   Text(
-                    "LOG IN",
+                    "SIGN UP",
                     style: Theme.of(context).textTheme.headline2,
                   ),
                   SizedBox(height: 20),
@@ -136,6 +142,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: password,
                       validator: (String? val) => val!.isEmpty
                           ? "Field can't be empty"
+                          : (!passwordValidator(val))
+                          ? "Require at least 8 characters, one uppercase, one lowercase, one number, and one special character"
                           : null,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -152,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -162,41 +170,41 @@ class _LoginScreenState extends State<LoginScreen> {
             left: 550,
             child: Row(
               children: [
-                nextButton("Log in", () async {
-                if (userIdKey.currentState!.validate() && passwordKey.currentState!.validate()) {
-                  bool isPhone = RegExp(r'^[0-9]+$').hasMatch(userId.text);
-                  setState(() {
-                    isLoading = true;
-                  });
-                  bool? isRegistered = await ApiService().checkUser({'userId': userId.text, 
-                                                                    'type': isPhone? 'phone' : 'email'});
-                  setState(() {
-                    isLoading = false;
-                  });
-                  if (isRegistered  != null) {
-                    if (isRegistered) {
-                        final bool success_login = await ApiService().login({
-                                                                      "type": isPhone ? "phone" : "email",
-                                                                      "userId": userId.text,
-                                                                      "password": password.text
-                                                                      });
-                        if (success_login) {
-                          toastMessage("Successful Login");
-                          Navigator.pushReplacement(context, SlideLeftRoute(widget: HomeScreen()));
-                        }
-                        else {
-                          toastMessage('Wrong email (phone) or password!');
-                        }
-                      } 
-                      else { 
-                        toastMessage("Email/Phone is not registered!");
-                      } 
-                    }
-                  }
-                }),
-                SizedBox(width: 10), // spacing between 2 botton
                 nextButton("Sign up", () async {
-                  Navigator.pushReplacement(context, SlideLeftRoute(widget: SignupScreen()));
+                  if (userIdKey.currentState!.validate() && passwordKey.currentState!.validate()) {
+                    bool isPhone = RegExp(r'^[0-9]+$').hasMatch(userId.text);
+                    setState(() {
+                      isLoading = true;
+                    });
+                    bool? isRegistered = await ApiService().checkUser({'userId': userId.text, 
+                                                                      'type': isPhone? 'phone' : 'email'});
+                    setState(() {
+                      isLoading = false;
+                    });
+                    if (isRegistered  != null) {
+                      if (!isRegistered) {
+                          final bool success_signup = await ApiService().signup({
+                                                                        "type": isPhone ? "phone" : "email",
+                                                                        "userId": userId.text,
+                                                                        "password": password.text
+                                                                        });
+                          if (success_signup) {
+                            toastMessage("Successful Sign up");
+                            Navigator.pushReplacement(context, SlideLeftRoute(widget: LoginScreen(isEditing: false,)));
+                          }
+                          else {
+                            toastMessage('Wrong email (phone) or password!');
+                          }
+                        } 
+                        else { 
+                          toastMessage("Email/Phone is already registered!");
+                        } 
+                      }
+                    }
+                  }),
+                SizedBox(width: 10), // spacing between 2 botton
+                nextButton("Log in", () async {
+                  Navigator.pushReplacement(context, SlideLeftRoute(widget: LoginScreen(isEditing: false)));
                 })
               ]
             )
