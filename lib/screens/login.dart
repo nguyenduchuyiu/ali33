@@ -16,6 +16,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
+  bool _showPassword = false;
   final GlobalKey<FormState> userIdKey = GlobalKey<FormState>();
   final GlobalKey<FormState> passwordKey = GlobalKey<FormState>();
   TextEditingController userId = TextEditingController();
@@ -150,7 +151,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(5),
                           borderSide: BorderSide(color: Colors.black),
                         ),
+                        suffixIcon: IconButton(
+                        icon: Icon(_showPassword ? Icons.visibility : Icons.visibility_off),
+                        onPressed: () {
+                          setState(() {
+                            _showPassword = !_showPassword;
+                          });
+                        },
+                        )
                       ),
+                      obscureText: !_showPassword
                     ),
                   ),
                 ],

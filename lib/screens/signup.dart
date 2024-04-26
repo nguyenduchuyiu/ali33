@@ -14,10 +14,17 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   bool isLoading = false;
+  bool _showPassword = false;
+
+  final GlobalKey<FormState> usernameKey = GlobalKey<FormState>();
   final GlobalKey<FormState> userIdKey = GlobalKey<FormState>();
   final GlobalKey<FormState> passwordKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> repassKey = GlobalKey<FormState>();
+
+  TextEditingController username = TextEditingController();
   TextEditingController userId = TextEditingController();
   TextEditingController password = TextEditingController();
+  TextEditingController repass = TextEditingController();
 
   bool _phoneNumberValidator(String value) {
     String pattern = r'^(0|\+84)(3[2-9]|5[689]|7[06-9]|8[1-689]|9[0-46-9])[0-9]{7}$';
@@ -102,6 +109,34 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                   SizedBox(height: 20),
                   Text(
+                    "Username",
+                    style: Theme.of(context).textTheme.headline3,
+                  ),
+                  Form(
+                    key: usernameKey,
+                    child: TextFormField(
+                      controller: username,
+                      validator: (String? val) => val!.isEmpty
+                          ? "Field can't be empty"
+                          : null,
+                      decoration: InputDecoration(
+                        hintText: "John Doe",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text(
                     "Email/Phone",
                     style: Theme.of(context).textTheme.headline3,
                   ),
@@ -158,7 +193,52 @@ class _SignupScreenState extends State<SignupScreen> {
                           borderRadius: BorderRadius.circular(5),
                           borderSide: BorderSide(color: Colors.black),
                         ),
+                        suffixIcon: IconButton(
+                        icon: Icon(_showPassword ? Icons.visibility : Icons.visibility_off),
+                        onPressed: () {
+                          setState(() {
+                            _showPassword = !_showPassword;
+                          });
+                        },
+                        ),
                       ),
+                      obscureText: !_showPassword
+                    ),
+                  ),
+                  Text(
+                    "Re-enter Password",
+                    style: Theme.of(context).textTheme.headline3,
+                  ),
+                  Form(
+                    key: repassKey,
+                    child: TextFormField(
+                      controller: repass,
+                      validator: (String? val) => val != password.text
+                          ? "Password is not matched!"
+                          : null,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                        suffixIcon: IconButton(
+                        icon: Icon(_showPassword ? Icons.visibility : Icons.visibility_off),
+                        onPressed: () {
+                          setState(() {
+                            _showPassword = !_showPassword;
+                          });
+                        },
+                        ),
+                      ),
+                      obscureText: !_showPassword
                     ),
                   )
                 ],
@@ -166,12 +246,15 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             if (isLoading) loadingAnimation(),
             Positioned(
-            bottom: 250,
+            bottom: 100,
             left: 550,
             child: Row(
               children: [
                 nextButton("Sign up", () async {
-                  if (userIdKey.currentState!.validate() && passwordKey.currentState!.validate()) {
+                  if (usernameKey.currentState!.validate()
+                  && userIdKey.currentState!.validate() 
+                  && passwordKey.currentState!.validate() 
+                  && repassKey.currentState!.validate()) {
                     bool isPhone = RegExp(r'^[0-9]+$').hasMatch(userId.text);
                     setState(() {
                       isLoading = true;
@@ -185,15 +268,15 @@ class _SignupScreenState extends State<SignupScreen> {
                       if (!isRegistered) {
                           final bool success_signup = await ApiService().signup({
                                                                         "type": isPhone ? "phone" : "email",
+                                                                        "username": username.text,
                                                                         "userId": userId.text,
                                                                         "password": password.text
                                                                         });
                           if (success_signup) {
-                            toastMessage("Successful Sign up");
-                            Navigator.pushReplacement(context, SlideLeftRoute(widget: LoginScreen(isEditing: false,)));
-                          }
-                          else {
-                            toastMessage('Wrong email (phone) or password!');
+                            Navigator.pushReplacement(context, SlideLeftRoute(widget: LoginScreen(isEditing: false)));
+                            toastMessage('Account created successfully!');
+                          } else {
+                            toastMessage('Signup failed. Please try again or contact support.');
                           }
                         } 
                         else { 

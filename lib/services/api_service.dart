@@ -11,6 +11,7 @@ import 'package:dio/dio.dart';
 
 class ApiService {
   final Dio _dio = Dio();
+  
   // final String baseUrl = "http://192.168.0.103:5000";
   // final String userBaseUrl = "http://192.168.0.103:5000/users";
   // final String productBaseUrl = "http://192.168.0.103:5000/products";
@@ -20,7 +21,7 @@ class ApiService {
   final String userBaseUrl = "http://127.0.0.1:5000/users";
   final String productBaseUrl = "http://127.0.0.1:5000/products";
   final String orderBaseUrl = "http://127.0.0.1:5000/orders";
-
+ 
 
   Future<bool?> checkUser(Map<String, String> data) async {
     try {
@@ -58,6 +59,7 @@ class ApiService {
       }
     } catch (e) {
       print("Exception Occured : $e");
+
       toastMessage("Something went wrong! Try again");
     }
     return false;
@@ -67,35 +69,37 @@ class ApiService {
     // String? token = await UserDataStorageService().getToken();
     // _dio.options.headers["Authorization"] = token!;
     try {
-      Response<Map<String, dynamic>> response = await _dio.post(userBaseUrl + "/login", data: data);
+      Response<Map<String, dynamic>> response = await _dio.post("$userBaseUrl/login", data: data);
 
       if (response.statusCode == 200) {
-        await UserDataStorageService().setToken(response.data!["authToken"]);
+        await UserDataStorageService().setToken(response.data!["token"]);
         return true;
       }
     } on DioException catch (e) {
       if (e.error is SocketException) {
         internetToastMessage();
-      } 
+      }else{
+        print('login response : ${e.response}');
+      }
     }
     return false;
   }
-
+ 
 
   Future<bool> signup(Map<String, String> data) async {
-    // String? token = await UserDataStorageService().getToken();
-    // _dio.options.headers["Authorization"] = token!;
     try {
-      Response<Map<String, dynamic>> response = await _dio.post(userBaseUrl + "/login", data: data);
+      Response<Map<String, dynamic>> response = await _dio.post("$userBaseUrl/signup", data: data);
+      print('response $response');
 
-      if (response.statusCode == 200) {
-        await UserDataStorageService().setToken(response.data!["authToken"]);
+      if (response.statusCode == 201) {
         return true;
       }
     } on DioException catch (e) {
       if (e.error is SocketException) {
         internetToastMessage();
-      } 
+      } else {
+        print('signup response : ${e.response}');
+      }
     }
     return false;
   }
