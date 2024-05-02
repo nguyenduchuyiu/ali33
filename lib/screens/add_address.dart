@@ -6,7 +6,7 @@ import 'package:online_store/widgets/basic.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class AddAddressScreen extends StatefulWidget {
   const AddAddressScreen({Key? key}) : super(key: key);
@@ -138,36 +138,36 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                               decoration: BoxDecoration(
                                   border: Border.all(color: Colors.grey)),
                               width: size.width,
-                              child: GoogleMap(
-                                  compassEnabled: true,
-                                  initialCameraPosition: CameraPosition(
-                                    zoom: 5,
-                                    target: LatLng(17.3850, 78.4867),
-                                    // target: LatLng(
-                                    //   _currentPosition!.latitude,
-                                    //   _currentPosition!.longitude,
-                                    // ),
-                                  )),
+                              // child: GoogleMap(
+                              //     compassEnabled: true,
+                              //     initialCameraPosition: CameraPosition(
+                              //       zoom: 5,
+                              //       target: LatLng(17.3850, 78.4867),
+                              //       // target: LatLng(
+                              //       //   _currentPosition!.latitude,
+                              //       //   _currentPosition!.longitude,
+                              //       // ),
+                              //     )),
                             ),
-                            Positioned(
-                              right: 20,
-                              top: 10,
-                              child: IconButton(
-                                  onPressed: () async {
-                                    String address = await Navigator.push(
-                                        context,
-                                        SlideLeftRoute(
-                                            widget: MapScreen(
-                                                currentPosition:
-                                                    _currentPosition!)));
-                                    if (address.isNotEmpty)
-                                      _addressController.text = address;
-                                  },
-                                  icon: Icon(
-                                    Icons.fullscreen,
-                                    size: 44,
-                                  )),
-                            )
+                            // Positioned(
+                            //   right: 20,
+                            //   top: 10,
+                            //   child: IconButton(
+                            //       onPressed: () async {
+                            //         String address = await Navigator.push(
+                            //             context,
+                            //             SlideLeftRoute(
+                            //                 widget: MapScreen(
+                            //                     currentPosition:
+                            //                         _currentPosition!)));
+                            //         if (address.isNotEmpty)
+                            //           _addressController.text = address;
+                            //       },
+                            //       icon: Icon(
+                            //         Icons.fullscreen,
+                            //         size: 44,
+                            //       )),
+                            // )
                           ],
                         ),
                         SizedBox(height: 20),

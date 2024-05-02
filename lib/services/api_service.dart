@@ -21,7 +21,11 @@ class ApiService {
   final String userBaseUrl = "http://127.0.0.1:5000/users";
   final String productBaseUrl = "http://127.0.0.1:5000/products";
   final String orderBaseUrl = "http://127.0.0.1:5000/orders";
- 
+
+  // final String baseUrl = "http://192.168.1.76:5000";
+  // final String userBaseUrl = "http://192.168.1.76:5000/users";
+  // final String productBaseUrl = "http://192.168.1.76:5000/products";
+  // final String orderBaseUrl = "http://192.168.1.76:5000/orders";
 
   Future<bool?> checkUser(Map<String, String> data) async {
     try {
@@ -160,17 +164,15 @@ class ApiService {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
-      Response<Map<String, dynamic>> response =
-          await _dio.get(userBaseUrl + "/user");
-      print(response);
+      Response<Map<String, dynamic>> response = await _dio.get("$userBaseUrl/user");
       UserModel user = UserModel.fromJson(response.data!["result"]);
       return user;
     } on DioException catch (e) {
-      print("dio error occured: ${e.response}");
+      print("dio error occured: ${e}");
       if (e.error is SocketException) {
-        // internetToastMessage();
+        internetToastMessage();
       } else {
-        // toastMessage("Something went wrong! Try again");
+        toastMessage("Something went wrong! Try again");
       }
     } catch (e) {
       print("Exception Occured : $e");
@@ -178,13 +180,13 @@ class ApiService {
     }
     return null;
   }
-
+ 
   Future<bool> addAddress(DeliveryAddress address) async {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response =
-          await _dio.post(userBaseUrl + "/address", data: address.toJson());
+          await _dio.post("$userBaseUrl/address", data: address.toJson());
       print(response);
       return true;
     } on DioException catch (e) {
@@ -362,15 +364,17 @@ class ApiService {
     return null;
   }
 
-  Future<List<ProductModel>> getAllProducts(
-      String lastDocKey, int limit, String? category) async {
+  Future<List<ProductModel>> getAllProducts(String lastDocKey, 
+                                            int limit, 
+                                            String? category)
+                                            async {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response = await _dio.get(
-          productBaseUrl + "/get-all-products",
-          queryParameters: {"category": category});
-      print(response);
+                        "$productBaseUrl/get-all-products",
+                        queryParameters: {"category": category}
+                                                             );
       List<ProductModel> products = productsFromJson(response.data!["result"]);
       return products;
     } on DioException catch (e) {
@@ -392,10 +396,11 @@ class ApiService {
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response = await _dio.get(
-          productBaseUrl + "/search-product",
+          "$productBaseUrl/search-product",
           queryParameters: {"searchTerm": searchTerm});
       print(response);
       List<ProductModel> products = productsFromJson(response.data!["result"]);
+      print('product: $products');
       return products;
     } on DioException catch (e) {
       print("dio error occured: ${e.response}");

@@ -61,7 +61,7 @@ Widget buildPlaceholderPhoto(isDark,
       // Image.asset("assets/images/profile_icon.png",height: height,width: width);
       Container(
     alignment: Alignment.topCenter,
-    padding: EdgeInsets.all(8),
+    padding: const EdgeInsets.all(8),
     decoration: BoxDecoration(
       color: Colors.transparent,
       shape: BoxShape.circle,
@@ -79,11 +79,11 @@ Widget buildPhoto(String url,
     [double height = 200, double width = 200, BoxFit fit = BoxFit.cover]) {
   return Center(
     child: CachedNetworkImage(
-      placeholder: (context, url) => Container(
+      placeholder: (context, url) => SizedBox(
         height: height,
         width: width,
       ),
-      errorWidget: (BuildContext context, String url, error) => Container(
+      errorWidget: (BuildContext context, String url, error) => SizedBox(
         height: height,
         width: width,
       ),
@@ -107,12 +107,12 @@ Widget buildCircularPhoto(String url,
       placeholder: (context, url) => Container(
         height: height,
         width: width,
-        decoration: BoxDecoration(shape: BoxShape.circle),
+        decoration: const BoxDecoration(shape: BoxShape.circle),
       ),
       errorWidget: (BuildContext context, String url, error) => Container(
         height: height,
         width: width,
-        decoration: BoxDecoration(shape: BoxShape.circle),
+        decoration: const BoxDecoration(shape: BoxShape.circle),
       ),
       imageUrl: url,
       imageBuilder: (context, imageProvider) => Container(

@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/error_builder.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -35,9 +35,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<String> bannerImages = [
-    "assets/images/temp/banner2.jpg",
-    "assets/images/temp/banner3.jpg",
-    "assets/images/temp/banner4.jpg",
+    "images/temp/banner2.jpg",
+    "images/temp/banner3.jpg",
+    "images/temp/banner4.jpg",
   ];
 
   bool isExpanded = true;
@@ -55,6 +55,7 @@ class _HomePageState extends State<HomePage> {
             return buildErrorWidget(context, () => getUser());
           }
           if (snapshots.data == null) {
+            print('snapshot null');
             return buildErrorWidget(
                 context, () => getUser(), "Items not Found! Try again");
           }
@@ -62,39 +63,29 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             shrinkWrap: true,
             children: [
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     Image.asset(
-              //       'assets/images/logo.png',
-              //       height: 46,
-              //     ),
-              //     Text("Home", style: Theme.of(context).textTheme.headline3),
-              //     IconButton(onPressed: () {}, icon: Icon(Icons.menu_sharp)),
-              //   ],
-              // ),
               SizedBox(height: size.height * 0.01),
               Row(
                 children: [
                   Image.asset("assets/images/logo.png", height: 46),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Hi "+snapshots.data!.proprietorName,
+                      Text("Hi ${snapshots.data!.proprietorName}",
                           style: Theme.of(context)
                               .textTheme
-                              .headline2!
+                              .displayMedium!
                               .copyWith(fontWeight: FontWeight.w700)),
                       Text("Welcome to Redsoft",
                           style: Theme.of(context)
                               .textTheme
-                              .headline4!
+                              .headlineMedium!
                               .copyWith(fontWeight: FontWeight.w500)),
                     ],
                   )
                 ],
               ),
+              // This is the Search Box 88-110
               // SizedBox(height: size.height * 0.02),
               // Container(
               //   height: 46,
@@ -102,18 +93,18 @@ class _HomePageState extends State<HomePage> {
               //     borderRadius: BorderRadius.circular(10),
               //     border: Border.all(color: Colors.grey),
               //   ),
-              //   padding: EdgeInsets.symmetric(horizontal: 16),
+              //   padding: const EdgeInsets.symmetric(horizontal: 16),
               //   child: Row(
               //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
               //     children: [
               //       Row(
               //         children: [
-              //           Icon(Icons.search_rounded),
-              //           SizedBox(width: 10),
-              //           Text("Search",style: Theme.of(context).textTheme.headline3,),
+              //           const Icon(Icons.search_rounded),
+              //           const SizedBox(width: 10),
+              //           Text("Search",style: Theme.of(context).textTheme.displaySmall,),
               //         ],
               //       ),
-              //       Icon(Icons.menu),
+              //       const Icon(Icons.menu),
               //     ],
               //   ),
               // ),
@@ -127,11 +118,11 @@ class _HomePageState extends State<HomePage> {
                     return Card(
                       elevation: 5,
                       color: Colors.red,
-                      margin: EdgeInsets.symmetric(horizontal: 8),
+                      margin: const EdgeInsets.symmetric(horizontal: 8),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20)),
                       child: Container(
-                        width: size.width * 0.7,
+                        width: size.width * 0.31,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           image: DecorationImage(
@@ -144,7 +135,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               // SizedBox(height: size.height * 0.02),
-              Container(
+              SizedBox(
                 // color: Colors.blue,
                 height: size.height * 0.3,
                 width: size.width,
@@ -162,13 +153,13 @@ class _HomePageState extends State<HomePage> {
                               onTap: () {
                                 switch (index) {
                                   case 0:
-                                    category = "";
+                                    category = "best_seller";
                                     break;
                                   case 1:
-                                    category = "2273691";
+                                    category = "popular_brand";
                                     break;
                                   case 2:
-                                    category = "2273645";
+                                    category = "cant_see";
                                     break;
                                 }
                                 setState(() {
@@ -181,21 +172,21 @@ class _HomePageState extends State<HomePage> {
                                 });
                               },
                               child: AnimatedSize(
-                                duration: Duration(milliseconds: 500),
+                                duration: const Duration(milliseconds: 100),
                                 child: Card(
                                   color: Color(data[index]["color"])
                                       .withOpacity(0.5),
                                   elevation: 3,
                                   shadowColor: Colors.black,
                                   child: Container(
-                                    padding: EdgeInsets.all(4),
+                                    padding: const EdgeInsets.all(4),
                                     height: isExpanded && currentIndex == index
-                                        ? size.height * 0.25
-                                        : size.height * 0.2,
+                                        ? size.height * 0.3
+                                        : size.height * 0.25,
                                     alignment: Alignment.center,
                                     width: isExpanded && currentIndex == index
-                                        ? size.width * 0.5
-                                        : size.width * 0.4,
+                                        ? size.width * 0.32
+                                        : size.width * 0.31,
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
@@ -213,10 +204,10 @@ class _HomePageState extends State<HomePage> {
                                                   currentIndex == index
                                               ? Theme.of(context)
                                                   .textTheme
-                                                  .headline2
+                                                  .displayMedium
                                               : Theme.of(context)
                                                   .textTheme
-                                                  .headline3,
+                                                  .displaySmall,
                                         ),
                                       ],
                                     ),
@@ -237,18 +228,18 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<Map<String, dynamic>> data = [
-    {
-      "img": "assets/images/temp/best_seller.png",
+    { 
+      "img": "/images/temp/best_seller.png",
       "title": "Best Seller",
       "color": 0xffFFA500,
     },
     {
-      "img": "assets/images/temp/popular_brands.png",
+      "img": "/images/temp/popular_brands.png",
       "title": "Popular Brands",
       "color": 0xffFFC001,
     },
     {
-      "img": "assets/images/temp/free_delivery.png",
+      "img": "/images/temp/free_delivery.png",
       "title": "Free Delivery",
       "color": 0xff00FFEF
     }
@@ -258,12 +249,10 @@ class _HomePageState extends State<HomePage> {
 class Products extends StatelessWidget {
   final Size size;
   final String category;
-  const Products({required this.size, required this.category, Key? key})
-      : super(key: key);
+  const Products({required this.size, required this.category, super.key});
 
   @override
   Widget build(BuildContext context) {
-    print("prod $category");
     return FutureBuilder<List<ProductModel>>(
         future: ApiService().getAllProducts("0", 20, category),
         builder: (context, snapshots) {
@@ -281,7 +270,7 @@ class Products extends StatelessWidget {
             primary: false,
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 5,
@@ -302,7 +291,7 @@ class Products extends StatelessWidget {
                   tag: index,
                   child: Card(
                       elevation: 5,
-                      shadowColor: Color(0xffFFA500).withOpacity(0.3),
+                      shadowColor: Color.fromARGB(255, 211, 9, 211).withOpacity(0.3),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                       child: Padding(
@@ -316,7 +305,7 @@ class Products extends StatelessWidget {
                               child: buildPhoto(
                                   snapshots.data![index].productDetails
                                       .productPicture,
-                                  size.height * 0.15,
+                                  size.height ,
                                   200,
                                   BoxFit.contain),
                               // Image.asset(
@@ -325,21 +314,19 @@ class Products extends StatelessWidget {
                             ),
                             Text(
                               snapshots.data![index].productDetails.productName,
-                              style: Theme.of(context).textTheme.headline1,
+                              style: Theme.of(context).textTheme.displayLarge,
                             ),
                             Text(
-                              snapshots.data![index].productDetails
-                                      .variations[0].quantity
-                                      .toString() +
-                                  " Kg",
-                              style: Theme.of(context).textTheme.bodyText1,
+                              "${snapshots.data![index].productDetails
+                                      .variations[0].quantity} Kg",
+                              style: Theme.of(context).textTheme.bodyLarge,
                             ),
                             Text(
                               rupeeSymbol +
                                   snapshots.data![index].productDetails
                                       .variations[0].offerPrice
                                       .toString(),
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             )
                           ],
                         ),

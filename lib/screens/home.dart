@@ -1,19 +1,11 @@
-import 'package:online_store/constants/route_animation.dart';
-import 'package:online_store/models/user_model.dart';
-import 'package:online_store/screens/no_internet_screen.dart';
-import 'package:online_store/screens/onboard.dart';
-import 'package:online_store/screens/otp.dart';
 import 'package:online_store/screens/pages/home_page.dart';
 import 'package:online_store/screens/pages/more_products_page.dart';
 import 'package:online_store/screens/pages/profile_page.dart';
 import 'package:online_store/screens/pages/search_page.dart';
-import 'package:online_store/screens/profile.dart';
-import 'package:online_store/services/api_service.dart';
-import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -22,16 +14,16 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedPage = 0;
   final List<Widget> _pages = [
-    HomePage(),
-    ProductsPage(),
-    SearchPage(),
-    ProfilePage(),
+    const HomePage(),
+    const ProductsPage(),
+    const SearchPage(),
+    const ProfilePage(),
   ];
   final List<Widget> dummyPages = [
-    HomePage(),
-    SizedBox(),
-    SizedBox(),
-    SizedBox(),
+    const HomePage(),
+    const SizedBox(),
+    const SizedBox(),
+    const SizedBox(),
   ];
   @override
   void initState() {
@@ -111,8 +103,8 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedIconTheme:
             IconThemeData(color: Theme.of(context).primaryColor, size: 30),
         unselectedIconTheme: IconThemeData(
-            color: Theme.of(context).textTheme.bodyText1!.color, size: 22),
-        items: [
+            color: Theme.of(context).textTheme.bodyLarge!.color, size: 22),
+        items: const [
           BottomNavigationBarItem(
             label: "",
             icon: ImageIcon(AssetImage("assets/images/home_icon.png")),
