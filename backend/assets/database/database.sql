@@ -8,3 +8,4 @@ CREATE TABLE users (
     info_type TEXT NOT NULL, 
     password_hash TEXT NOT NULL
 );
+

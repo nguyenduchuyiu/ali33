@@ -1,6 +1,6 @@
-// import 'package:online_store/models/place_model.dart';
-// import 'package:online_store/services/api_service.dart';
-// import 'package:online_store/widgets/basic.dart';
+// import 'package:ali33/models/place_model.dart';
+// import 'package:ali33/services/api_service.dart';
+// import 'package:ali33/widgets/basic.dart';
 // import 'package:flutter/material.dart';
 // import 'package:geocoding/geocoding.dart';
 // import 'package:geolocator/geolocator.dart';

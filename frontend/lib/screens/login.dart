@@ -1,10 +1,10 @@
-import 'package:online_store/constants/route_animation.dart';
-import 'package:online_store/screens/home.dart';
-import 'package:online_store/services/api_service.dart';
-import 'package:online_store/widgets/basic.dart';
+import 'package:ali33/constants/route_animation.dart';
+import 'package:ali33/screens/home.dart';
+import 'package:ali33/services/api_service.dart';
+import 'package:ali33/widgets/basic.dart';
 import 'package:flutter/material.dart';
 import 'package:proste_bezier_curve/proste_bezier_curve.dart';
-import 'package:online_store/screens/signup.dart';
+import 'package:ali33/screens/signup.dart';
 
 class LoginScreen extends StatefulWidget {
   final bool isEditing;
@@ -78,13 +78,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Spacer(),
                       Image.asset(
-                        "assets/images/logo.png",
+                        "images/logo.png",
                         height: 100,
                         alignment: Alignment.topCenter,
                       ),
                       SizedBox(width: 10),
                       Text(
-                        "EEPOHS",
+                        "ALI33",
                         style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.black),
                       ),
                       Spacer()

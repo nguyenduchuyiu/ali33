@@ -3,7 +3,7 @@
 //     final orderModel = orderModelFromJson(jsonString);
 
 import 'dart:convert';
-import 'package:online_store/models/user_model.dart';
+import 'package:ali33/models/user_model.dart';
 
 List<OrderModel> orderModelFromJson(List<dynamic> list) =>
     List<OrderModel>.from(list.map((x) => OrderModel.fromJson(x)));

@@ -1,6 +1,6 @@
-// import 'package:online_store/constants/route_animation.dart';
-// import 'package:online_store/screens/login.dart';
-// import 'package:online_store/widgets/basic.dart';
+// import 'package:ali33/constants/route_animation.dart';
+// import 'package:ali33/screens/login.dart';
+// import 'package:ali33/widgets/basic.dart';
 // import 'package:flutter/material.dart';
 // import 'package:proste_bezier_curve/proste_bezier_curve.dart';
 // import 'package:shared_preferences/shared_preferences.dart';

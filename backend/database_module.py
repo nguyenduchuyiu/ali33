@@ -8,7 +8,7 @@ from security import generate_password_hash
 # Thread-local storage for database connections
 thread_local = threading.local()
 
-def get_db_connection(path='backend/database.db'):
+def get_db_connection(path='backend/assets/database/database.db'):
     if not hasattr(thread_local, 'db_conn'):
         thread_local.db_conn = sqlite3.connect(path)
     return thread_local.db_conn
@@ -82,14 +82,14 @@ def get_product_data(category):
             "categoryDetails": {
                 "_key": "cat_123",
                 "categoryName": "Electronics",
-                "categoryPicture": "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg"
+                "categoryPicture": "http://127.0.0.1:5000/static/images/20"
             },
             "productDetails": {
                 "_key": "prod_456",
                 "productCategoryId": "cat_123",
                 "productDescription": "A high-quality smartphone with advanced features.",
                 "productName": "Smartphone X",
-                "productPicture": "https://cdn1.viettelstore.vn/Images/Product/ProductImage/2056439452.jpeg",
+                "productPicture": "http://127.0.0.1:5000/static/images/iphone11promax.png",
                 "reviews": [
                 {
                     "comment": "Great phone!",
@@ -118,18 +118,18 @@ def get_product_data(category):
                 ]
             }
         },
-                        {
+                {
                 "categoryDetails": {
                     "_key": "cat_456",
                     "categoryName": "Home Appliances",
-                    "categoryPicture": "https://mobileimages.lowes.com/productimages/d559af09-9108-4336-ba7d-682a6ada2b78/15368493.jpg"
+                    "categoryPicture": "http://127.0.0.1:5000/static/images/20"
                 },
                 "productDetails": {
                     "_key": "prod_789",
                     "productCategoryId": "cat_456",
                     "productDescription": "A modern refrigerator with ample storage space and energy-efficient features.",
                     "productName": "Refrigerator Z",
-                    "productPicture": "https://mobileimages.lowes.com/productimages/d559af09-9108-4336-ba7d-682a6ada2b78/15368493.jpg",
+                    "productPicture": "http://127.0.0.1:5000/static/images/refrigerator.png",
                     "reviews": [
                     {
                         "comment": "Keeps food fresh for a long time!",
@@ -158,44 +158,44 @@ def get_product_data(category):
                     ]
                 }
                 },
-                        {
-  "categoryDetails": {
-    "_key": "cat_456",
-    "categoryName": "Home Appliances",
-    "categoryPicture": "https://mobileimages.lowes.com/productimages/d559af09-9108-4336-ba7d-682a6ada2b78/15368493.jpg"
-  },
-  "productDetails": {
-    "_key": "prod_789",
-    "productCategoryId": "cat_456",
-    "productDescription": "A modern refrigerator with ample storage space and energy-efficient features.",
-    "productName": "Refrigerator Z",
-    "productPicture": "https://mobileimages.lowes.com/productimages/d559af09-9108-4336-ba7d-682a6ada2b78/15368493.jpg",
-    "reviews": [
-      {
-        "comment": "Keeps food fresh for a long time!",
-        "userId": "user_321"
-      },
-      {
-        "comment": "Spacious and well-designed.",
-        "userId": "user_654"
-      }
-    ],
-    "variations": [
-      {
-        "availabilityQuantity": 8,
-        "discountPrice": 100,
-        "offerPrice": 1999,
-        "quantity": 1,
-        "sellingPrice": 2099
-      },
-      {
-        "availabilityQuantity": 3,
-        "discountPrice": 250,
-        "offerPrice": 3749,
-        "quantity": 2,
-        "sellingPrice": 3999
-      }
-    ]
-  }
-}]
+                {
+                "categoryDetails": {
+                    "_key": "cat_456",
+                    "categoryName": "Home Appliances",
+                    "categoryPicture": "http://127.0.0.1:5000/static/images/"
+                },
+                "productDetails": {
+                    "_key": "prod_789",
+                    "productCategoryId": "cat_456",
+                    "productDescription": "A modern refrigerator with ample storage space and energy-efficient features.",
+                    "productName": "Hieu's Crush",
+                    "productPicture": "http://127.0.0.1:5000/static/images/lover.png",
+                    "reviews": [
+                    {
+                        "comment": "Keeps food fresh for a long time!",
+                        "userId": "user_321"
+                    },
+                    {
+                        "comment": "Spacious and well-designed.",
+                        "userId": "user_654"
+                    }
+                    ],
+                    "variations": [
+                    {
+                        "availabilityQuantity": 8,
+                        "discountPrice": 100,
+                        "offerPrice": 9999999999999999999,
+                        "quantity": 52,
+                        "sellingPrice": 2099
+                    },
+                    {
+                        "availabilityQuantity": 3,
+                        "discountPrice": 250,
+                        "offerPrice": 3749,
+                        "quantity": 2,
+                        "sellingPrice": 3999
+                    }
+                    ]
+                }
+                }]
     }

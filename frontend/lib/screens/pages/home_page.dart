@@ -1,10 +1,10 @@
-import 'package:online_store/constants/constant_values.dart';
-import 'package:online_store/models/product_model.dart';
-import 'package:online_store/models/user_model.dart';
-import 'package:online_store/screens/product_details.dart';
-import 'package:online_store/services/api_service.dart';
-import 'package:online_store/widgets/basic.dart';
-import 'package:online_store/widgets/build_photo.dart';
+import 'package:ali33/constants/constant_values.dart';
+import 'package:ali33/models/product_model.dart';
+import 'package:ali33/models/user_model.dart';
+import 'package:ali33/screens/product_details.dart';
+import 'package:ali33/services/api_service.dart';
+import 'package:ali33/widgets/basic.dart';
+import 'package:ali33/widgets/build_photo.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/error_builder.dart';
@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
               SizedBox(height: size.height * 0.01),
               Row(
                 children: [
-                  Image.asset("assets/images/logo.png", height: 46),
+                  Image.asset("images/logo.png", height: 46),
                   const SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                               .textTheme
                               .displayMedium!
                               .copyWith(fontWeight: FontWeight.w700)),
-                      Text("Welcome to Redsoft",
+                      Text("Welcome to ALI33",
                           style: Theme.of(context)
                               .textTheme
                               .headlineMedium!
@@ -272,10 +272,10 @@ class Products extends StatelessWidget {
             scrollDirection: Axis.vertical,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+              crossAxisCount: 4,
               crossAxisSpacing: 5,
               mainAxisSpacing: 5,
-              childAspectRatio: 0.9,
+              childAspectRatio: 1, // the greater the shorter
             ),
             itemBuilder: (context, index) {
               return GestureDetector(
@@ -290,8 +290,8 @@ class Products extends StatelessWidget {
                 child: Hero(
                   tag: index,
                   child: Card(
-                      elevation: 5,
-                      shadowColor: Color.fromARGB(255, 211, 9, 211).withOpacity(0.3),
+                      elevation: 10,
+                      shadowColor: Color.fromARGB(255, 7, 1, 7).withOpacity(0.3),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                       child: Padding(
@@ -301,17 +301,15 @@ class Products extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Center(
-                              child: buildPhoto(
-                                  snapshots.data![index].productDetails
-                                      .productPicture,
-                                  size.height ,
-                                  200,
-                                  BoxFit.contain),
-                              // Image.asset(
-                              //     "assets/images/temp/vege.png",
-                              //     height: size.height * 0.15),
-                            ),
+                            Expanded(
+                              child:Center(
+                                child: buildPhoto(
+                                    snapshots.data![index].productDetails.productPicture,
+                                    size.height,
+                                    300,
+                                    BoxFit.contain),
+                                )
+                              ),
                             Text(
                               snapshots.data![index].productDetails.productName,
                               style: Theme.of(context).textTheme.displayLarge,
@@ -322,7 +320,7 @@ class Products extends StatelessWidget {
                               style: Theme.of(context).textTheme.bodyLarge,
                             ),
                             Text(
-                              rupeeSymbol +
+                              dollarSymbol +
                                   snapshots.data![index].productDetails
                                       .variations[0].offerPrice
                                       .toString(),

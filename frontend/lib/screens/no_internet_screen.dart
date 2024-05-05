@@ -17,11 +17,11 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
         height: size.height,
         width: size.width,
         // decoration: BoxDecoration(
-        //   image: DecorationImage(image: AssetImage("assets/images/no_internet.png"),fit: BoxFit.cover)
+        //   image: DecorationImage(image: AssetImage("images/no_internet.png"),fit: BoxFit.cover)
         // ),
         child: Column(
           children: [
-            Image.asset("assets/images/no_internet.png",
+            Image.asset("images/no_internet.png",
                 height: size.height * 0.6,
                 width: size.width,
                 fit: BoxFit.cover),

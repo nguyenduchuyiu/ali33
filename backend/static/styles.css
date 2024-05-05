@@ -1,0 +1,5 @@
+.resized-image {
+    width: 2000px;
+    height: 1500px;
+    object-fit: cover; /* Ảnh sẽ được cắt để vừa với khung hình */
+}

@@ -1,12 +1,12 @@
 import 'dart:io';
-import 'package:online_store/models/cart_item_model.dart';
-import 'package:online_store/models/order_item_model.dart';
-import 'package:online_store/models/order_model.dart';
-import 'package:online_store/models/place_model.dart';
-import 'package:online_store/models/product_model.dart';
-import 'package:online_store/models/user_model.dart';
-import 'package:online_store/services/user_data_storage_service.dart';
-import 'package:online_store/widgets/basic.dart';
+import 'package:ali33/models/cart_item_model.dart';
+import 'package:ali33/models/order_item_model.dart';
+import 'package:ali33/models/order_model.dart';
+import 'package:ali33/models/place_model.dart';
+import 'package:ali33/models/product_model.dart';
+import 'package:ali33/models/user_model.dart';
+import 'package:ali33/services/user_data_storage_service.dart';
+import 'package:ali33/widgets/basic.dart';
 import 'package:dio/dio.dart';
 
 class ApiService {

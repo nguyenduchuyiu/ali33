@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:online_store/constants/route_animation.dart';
-import 'package:online_store/models/user_model.dart';
-import 'package:online_store/screens/login.dart';
-import 'package:online_store/services/api_service.dart';
-import 'package:online_store/services/theme_provider_service.dart';
-import 'package:online_store/widgets/basic.dart';
-import 'package:online_store/widgets/build_photo.dart';
+import 'package:ali33/constants/route_animation.dart';
+import 'package:ali33/models/user_model.dart';
+import 'package:ali33/screens/login.dart';
+import 'package:ali33/services/api_service.dart';
+import 'package:ali33/services/theme_provider_service.dart';
+import 'package:ali33/widgets/basic.dart';
+import 'package:ali33/widgets/build_photo.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';

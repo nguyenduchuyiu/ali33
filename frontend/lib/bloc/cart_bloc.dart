@@ -1,8 +1,8 @@
 import 'dart:io';
-import 'package:online_store/models/cart_item_model.dart';
-import 'package:online_store/models/product_model.dart';
-import 'package:online_store/screens/product_details.dart';
-import 'package:online_store/services/api_service.dart';
+import 'package:ali33/models/cart_item_model.dart';
+import 'package:ali33/models/product_model.dart';
+import 'package:ali33/screens/product_details.dart';
+import 'package:ali33/services/api_service.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';

@@ -1,5 +1,5 @@
-import 'package:online_store/models/product_model.dart';
-import 'package:online_store/models/user_model.dart';
+import 'package:ali33/models/product_model.dart';
+import 'package:ali33/models/user_model.dart';
 
 class CartCombinedModel {
   CartCombinedModel({

@@ -1,6 +1,6 @@
-import 'package:online_store/models/product_model.dart';
-import 'package:online_store/services/api_service.dart';
-import 'package:online_store/widgets/basic.dart';
+import 'package:ali33/models/product_model.dart';
+import 'package:ali33/services/api_service.dart';
+import 'package:ali33/widgets/basic.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -128,7 +128,7 @@ class _SearchPageState extends State<SearchPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.asset("assets/images/temp/vege.png",
+                        Image.asset("images/temp/vege.png",
                             height: MediaQuery.of(context).size.height * 0.1),
                         SizedBox(height: 5),
                         Text(

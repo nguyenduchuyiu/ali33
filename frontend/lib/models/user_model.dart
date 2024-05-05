@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:online_store/models/cart_item_model.dart';
+import 'package:ali33/models/cart_item_model.dart';
 
 UserModel usersFromJson(String str) => UserModel.fromJson(json.decode(str));
 

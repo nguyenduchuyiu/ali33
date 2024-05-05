@@ -1,13 +1,13 @@
-import 'package:online_store/constants/constant_values.dart';
-import 'package:online_store/constants/route_animation.dart';
-import 'package:online_store/models/order_item_model.dart';
-import 'package:online_store/models/order_model.dart';
-import 'package:online_store/screens/order_track.dart';
-import 'package:online_store/screens/product_details.dart';
-import 'package:online_store/services/api_service.dart';
-import 'package:online_store/widgets/basic.dart';
-import 'package:online_store/widgets/build_photo.dart';
-import 'package:online_store/widgets/error_builder.dart';
+import 'package:ali33/constants/constant_values.dart';
+import 'package:ali33/constants/route_animation.dart';
+import 'package:ali33/models/order_item_model.dart';
+import 'package:ali33/models/order_model.dart';
+import 'package:ali33/screens/order_track.dart';
+import 'package:ali33/screens/product_details.dart';
+import 'package:ali33/services/api_service.dart';
+import 'package:ali33/widgets/basic.dart';
+import 'package:ali33/widgets/build_photo.dart';
+import 'package:ali33/widgets/error_builder.dart';
 import 'package:flutter/material.dart';
 
 class OrdersScreen extends StatefulWidget {
@@ -109,7 +109,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                   style: Theme.of(context).textTheme.headline4),
                               SizedBox(height: 5),
                               Text(
-                                  rupeeSymbol +
+                                  dollarSymbol +
                                       order.orderDetails.paidPrice.toString(),
                                   style: Theme.of(context).textTheme.headline1),
                               SizedBox(height: 5),

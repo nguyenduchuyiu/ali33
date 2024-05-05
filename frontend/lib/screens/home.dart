@@ -1,7 +1,7 @@
-import 'package:online_store/screens/pages/home_page.dart';
-import 'package:online_store/screens/pages/more_products_page.dart';
-import 'package:online_store/screens/pages/profile_page.dart';
-import 'package:online_store/screens/pages/search_page.dart';
+import 'package:ali33/screens/pages/home_page.dart';
+import 'package:ali33/screens/pages/more_products_page.dart';
+import 'package:ali33/screens/pages/profile_page.dart';
+import 'package:ali33/screens/pages/search_page.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -107,19 +107,19 @@ class _HomeScreenState extends State<HomeScreen> {
         items: const [
           BottomNavigationBarItem(
             label: "",
-            icon: ImageIcon(AssetImage("assets/images/home_icon.png")),
+            icon: ImageIcon(AssetImage("images/home_icon.png")),
           ),
           BottomNavigationBarItem(
             label: "",
-            icon: ImageIcon(AssetImage("assets/images/products_icon.png")),
+            icon: ImageIcon(AssetImage("images/products_icon.png")),
           ),
           BottomNavigationBarItem(
             label: "",
-            icon: ImageIcon(AssetImage("assets/images/search_icon.png")),
+            icon: ImageIcon(AssetImage("images/search_icon.png")),
           ),
           BottomNavigationBarItem(
             label: "",
-            icon: ImageIcon(AssetImage("assets/images/profile_icon.png")),
+            icon: ImageIcon(AssetImage("images/profile_icon.png")),
           ),
         ],
       ),

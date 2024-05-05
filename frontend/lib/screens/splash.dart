@@ -1,7 +1,7 @@
-// import 'package:online_store/screens/home.dart';
-// import 'package:online_store/screens/login.dart';
-// import 'package:online_store/screens/no_internet_screen.dart';
-// import 'package:online_store/screens/onboard.dart';
+// import 'package:ali33/screens/home.dart';
+// import 'package:ali33/screens/login.dart';
+// import 'package:ali33/screens/no_internet_screen.dart';
+// import 'package:ali33/screens/onboard.dart';
 // import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 // import 'package:flutter/material.dart';
 

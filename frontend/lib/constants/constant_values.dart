@@ -1,5 +1,5 @@
 const int defaultLimit = 20;
-const String rupeeSymbol = "\u{20B9}";
+const String dollarSymbol = "\$";
 
 int calculateSavedAmount(int sPrice, int offPrice) {
   return (sPrice - offPrice).toInt();

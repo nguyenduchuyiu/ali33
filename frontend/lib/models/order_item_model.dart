@@ -1,5 +1,5 @@
-import 'package:online_store/models/order_model.dart';
-import 'package:online_store/models/product_model.dart';
+import 'package:ali33/models/order_model.dart';
+import 'package:ali33/models/product_model.dart';
 
 List<OrderCombinedModel> orderItemsFromJson(List<dynamic> json) =>
     List<OrderCombinedModel>.from(

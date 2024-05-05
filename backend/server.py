@@ -1,5 +1,5 @@
 import logging
-from flask import Flask, request, jsonify
+from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
 from security import check_password, create_jwt_token
 from database_module import get_product_data, get_user, is_registered, create_user
@@ -92,14 +92,14 @@ def get_user_info():
                     ],
                     "deviceToken": "ex_deviceToken",
                     "dob": 1678886400000,
-                    "emailId": "ex@example.com",
-                    "shopName": "ex_shopname",
+                    "emailId": "huy@gmail.com",
+                    "shopName": "nguyenduchuyiu",
                     "orders": ["ex_order1", "ex_order2"],
-                    "phoneNo": "ex_phoneNo",
+                    "phoneNo": "0337 118 147",
                     "profilePic": "ex_profilePic",
                     "userType": "customer",
-                    "proprietorName": "ex_proprietorName",
-                    "gst": "ex_gst" 
+                    "proprietorName": "Nguyen Duc Huy",
+                    "gst": "2354123412" 
                     }
     })
 # @jwt_required()
@@ -139,5 +139,27 @@ def get_products_by_category():
         return jsonify({"error": "Products not found for the given category"}), 404
 
     
+UPLOAD_FOLDER = 'backend/assets/images'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+import os
+@app.route('/', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        if 'image' not in request.files:
+            return 'Không có file được chọn'
+        file = request.files['image']
+        if file.filename == '':
+            return 'Không có file được chọn'
+        filename = file.filename
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        return 'File đã được upload!'
+    return render_template('upload.html')
+
+@app.route('/images/<string:product_name>')
+def get_image(product_name):
+    image_path = f'/static/images/{product_name}.png'
+    return render_template('template.html', image_path=image_path)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

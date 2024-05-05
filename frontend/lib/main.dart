@@ -1,13 +1,13 @@
-import 'package:online_store/constants/app_them_data.dart';
-import 'package:online_store/services/theme_provider_service.dart';
+import 'package:ali33/constants/app_them_data.dart';
+import 'package:ali33/services/theme_provider_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart'; // Use connectivity_plus
-import 'package:online_store/screens/home.dart';
-import 'package:online_store/screens/login.dart';
+import 'package:ali33/screens/home.dart';
+import 'package:ali33/screens/login.dart';
 
 bool? isViewd;
 String? token;
@@ -78,7 +78,7 @@ class MyApp extends StatelessWidget {
       child: Consumer<AppThemeNotifier>(
         builder: (context, AppThemeNotifier appThemeNotifier, child) {
           return MaterialApp( // Move MaterialApp to the outer level
-            title: 'online_store',
+            title: 'ali33',
             debugShowCheckedModeBanner: false,
             theme: appThemeNotifier.darkTheme
                 ? AppThemeData.darkTheme
@@ -94,8 +94,8 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-// import 'package:online_store/constants/app_them_data.dart';
-// import 'package:online_store/services/theme_provider_service.dart';
+// import 'package:ali33/constants/app_them_data.dart';
+// import 'package:ali33/services/theme_provider_service.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 // import 'package:flutter_web_plugins/url_strategy.dart';
@@ -103,8 +103,8 @@ class MyApp extends StatelessWidget {
 // import 'package:shared_preferences/shared_preferences.dart';
 // // import 'package:connectivity_wrapper/connectivity_wrapper.dart';
 // import 'package:connectivity_plus/connectivity_plus.dart';
-// import 'package:online_store/screens/home.dart';
-// import 'package:online_store/screens/login.dart';
+// import 'package:ali33/screens/home.dart';
+// import 'package:ali33/screens/login.dart';
 
 // bool? isViewd;
 // String? token;
@@ -135,7 +135,7 @@ class MyApp extends StatelessWidget {
 //         builder: (context, AppThemeNotifier appThemeNotifier, child) {
 //           return ConnectivityAppWrapper(
 //             app: MaterialApp(
-//               title: 'online_store',
+//               title: 'ali33',
 //               debugShowCheckedModeBanner: false,
 //               theme: appThemeNotifier.darkTheme
 //                   ? AppThemeData.darkTheme

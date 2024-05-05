@@ -1,10 +1,10 @@
-import 'package:online_store/bloc/products_bloc.dart';
-import 'package:online_store/constants/constant_values.dart';
-import 'package:online_store/models/product_model.dart';
-import 'package:online_store/screens/product_details.dart';
-import 'package:online_store/widgets/basic.dart';
-import 'package:online_store/widgets/build_photo.dart';
-import 'package:online_store/widgets/error_builder.dart';
+import 'package:ali33/bloc/products_bloc.dart';
+import 'package:ali33/constants/constant_values.dart';
+import 'package:ali33/models/product_model.dart';
+import 'package:ali33/screens/product_details.dart';
+import 'package:ali33/widgets/basic.dart';
+import 'package:ali33/widgets/build_photo.dart';
+import 'package:ali33/widgets/error_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

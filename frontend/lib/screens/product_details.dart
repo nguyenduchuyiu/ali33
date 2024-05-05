@@ -1,13 +1,13 @@
-import 'package:online_store/bloc/cart_bloc.dart';
-import 'package:online_store/constants/constant_values.dart';
-import 'package:online_store/constants/route_animation.dart';
-import 'package:online_store/models/cart_item_model.dart';
-import 'package:online_store/models/product_model.dart';
-import 'package:online_store/models/user_model.dart';
-import 'package:online_store/screens/cart.dart';
-import 'package:online_store/services/api_service.dart';
-import 'package:online_store/widgets/basic.dart';
-import 'package:online_store/widgets/build_photo.dart';
+import 'package:ali33/bloc/cart_bloc.dart';
+import 'package:ali33/constants/constant_values.dart';
+import 'package:ali33/constants/route_animation.dart';
+import 'package:ali33/models/cart_item_model.dart';
+import 'package:ali33/models/product_model.dart';
+import 'package:ali33/models/user_model.dart';
+import 'package:ali33/screens/cart.dart';
+import 'package:ali33/services/api_service.dart';
+import 'package:ali33/widgets/basic.dart';
+import 'package:ali33/widgets/build_photo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -76,7 +76,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   //                           radius: 30,
   //                           backgroundColor: const Color(0xffD5F8F4).withOpacity(0.5),
   //                           backgroundImage: const AssetImage(
-  //                             "assets/images/temp/vege.png",
+  //                             "images/temp/vege.png",
   //                           ),
   //                         )
   //                       ],
@@ -227,7 +227,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 Row(
                   children: [
                     Text(
-                        rupeeSymbol +
+                        dollarSymbol +
                             widget.productModel.productDetails
                                 .variations[selectedIndex].offerPrice
                                 .toString(),
@@ -237,7 +237,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             .copyWith(color: Colors.red)),
                     const SizedBox(width: 10),
                     Text(
-                        rupeeSymbol +
+                        dollarSymbol +
                             widget.productModel.productDetails
                                 .variations[selectedIndex].sellingPrice
                                 .toString(),
@@ -337,13 +337,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              const CircleAvatar(backgroundImage: AssetImage("assets/images/profile_icon.png"),radius: 15),
+                              const CircleAvatar(backgroundImage: AssetImage("images/profile_icon.png"),radius: 15),
                               const SizedBox(width: 5),
                               Text("Sai Teja",style: Theme.of(context).textTheme.displaySmall!.copyWith(fontWeight: FontWeight.bold)),
                             ],
                           ),
                           const SizedBox(height: 5),
-                          Text("Worth buying this at this low price and thanks to online_store for this fabulous products.",style: Theme.of(context).textTheme.headline4,)
+                          Text("Worth buying this at this low price and thanks to ali33 for this fabulous products.",style: Theme.of(context).textTheme.headline4,)
                         ],
                       ),
                     );
@@ -503,7 +503,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       //         title: Text("Carrots"),
       //         // titlePadding: EdgeInsets.all(10),
       //         background: Image.asset(
-      //           "assets/images/temp/banner1.png",
+      //           "images/temp/banner1.png",
       //           fit: BoxFit.cover,
       //         ),
       //       ),
@@ -598,9 +598,9 @@ class _AddtoCartWidgetState extends State<AddtoCartWidget> {
                               style: Theme.of(context).textTheme.displaySmall,
                             ),
                             const SizedBox(width: 10),
-                            Text(rupeeSymbol+widget.productModel.productDetails.variations[widget.selectedIndex].offerPrice.toString(),style: Theme.of(context).textTheme.headline3,),
+                            Text(dollarSymbol+widget.productModel.productDetails.variations[widget.selectedIndex].offerPrice.toString(),style: Theme.of(context).textTheme.headline3,),
                             const SizedBox(width: 5),
-                            Text( "saved $rupeeSymbol${calculateSavedAmount(widget.productModel.productDetails.variations[widget.selectedIndex].sellingPrice , widget.productModel.productDetails.variations[widget.selectedIndex].offerPrice)}",style: Theme.of(context).textTheme.headlineMedium,),
+                            Text( "saved $dollarSymbol${calculateSavedAmount(widget.productModel.productDetails.variations[widget.selectedIndex].sellingPrice , widget.productModel.productDetails.variations[widget.selectedIndex].offerPrice)}",style: Theme.of(context).textTheme.headlineMedium,),
                             const Spacer(),
                             Hero(
                               tag: widget.tag,
@@ -622,7 +622,7 @@ class _AddtoCartWidgetState extends State<AddtoCartWidget> {
                               //   backgroundColor:
                               //       Color(0xffD5F8F4).withOpacity(0.5),
                               //   backgroundImage: AssetImage(
-                              //     "assets/images/temp/vege.png",
+                              //     "images/temp/vege.png",
                               //   ),
                               // ),
                             )

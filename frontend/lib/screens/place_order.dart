@@ -1,8 +1,8 @@
-import 'package:online_store/constants/constant_values.dart';
-import 'package:online_store/models/cart_item_model.dart';
-import 'package:online_store/models/order_model.dart';
-import 'package:online_store/services/api_service.dart';
-import 'package:online_store/widgets/basic.dart';
+import 'package:ali33/constants/constant_values.dart';
+import 'package:ali33/models/cart_item_model.dart';
+import 'package:ali33/models/order_model.dart';
+import 'package:ali33/services/api_service.dart';
+import 'package:ali33/widgets/basic.dart';
 import 'package:flutter/material.dart';
 
 class PlaceOrderScreen extends StatefulWidget {
@@ -45,7 +45,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
               SizedBox(height: 10),
               Row(
                 children: [
-                  Image.asset("assets/images/map.png",
+                  Image.asset("images/map.png",
                       width: size.width * 0.4, fit: BoxFit.contain),
                   SizedBox(width: 20),
                   SizedBox(
@@ -117,7 +117,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                             style: Theme.of(context).textTheme.headline3,
                           ),
                           Text(
-                            "$rupeeSymbol 40",
+                            "$dollarSymbol 40",
                             style: Theme.of(context)
                                 .textTheme
                                 .headline3!
@@ -134,7 +134,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                             style: Theme.of(context).textTheme.headline3,
                           ),
                           Text(
-                            rupeeSymbol + widget.subTotal.toString(),
+                            dollarSymbol + widget.subTotal.toString(),
                             style: Theme.of(context)
                                 .textTheme
                                 .headline3!
@@ -153,7 +153,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                             style: Theme.of(context).textTheme.headline1,
                           ),
                           Text(
-                            rupeeSymbol + (widget.subTotal + 40).toString(),
+                            dollarSymbol + (widget.subTotal + 40).toString(),
                             style: Theme.of(context)
                                 .textTheme
                                 .headline1!

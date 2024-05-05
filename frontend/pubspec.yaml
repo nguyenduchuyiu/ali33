@@ -1,4 +1,4 @@
-name: online_store
+name: ali33
 description: "A new Flutter project."
 publish_to: 'none' 
 
@@ -58,7 +58,7 @@ flutter:
         - asset: assets/fonts/Inter/Inter-Regular.ttf
         - asset: assets/fonts/Inter/Inter-SemiBold.ttf
         - asset: assets/fonts/Inter/Inter-Thin.ttf
-# name: online_store
+# name: ali33
 # description: "A new Flutter project."
 # publish_to: 'none' 
 
@@ -119,7 +119,7 @@ flutter:
 #         - asset: assets/fonts/Inter/Inter-Regular.ttf
 #         - asset: assets/fonts/Inter/Inter-SemiBold.ttf
 #         - asset: assets/fonts/Inter/Inter-Thin.ttf
-# # name: online_store
+# # name: ali33
 # # description: "A new Flutter project."
 # # publish_to: 'none' 
 

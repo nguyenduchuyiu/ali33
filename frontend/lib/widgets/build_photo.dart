@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -5,12 +7,12 @@ import 'package:flutter/scheduler.dart';
 Widget buildCircularProfilePhoto(String url, bool isDark,
     [double height = 200, double width = 200]) {
   print(
-      SchedulerBinding.instance!.window.platformBrightness == Brightness.dark);
+      SchedulerBinding.instance.window.platformBrightness == Brightness.dark);
   return Center(
     child: CachedNetworkImage(
       placeholder: (context, url) => Container(
         alignment: Alignment.topCenter,
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: Colors.transparent,
           shape: BoxShape.circle,
@@ -26,7 +28,7 @@ Widget buildCircularProfilePhoto(String url, bool isDark,
         children: [
           Container(
             alignment: Alignment.topCenter,
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: Colors.transparent,
               shape: BoxShape.circle,
@@ -77,6 +79,7 @@ Widget buildPlaceholderPhoto(isDark,
 
 Widget buildPhoto(String url,
     [double height = 200, double width = 200, BoxFit fit = BoxFit.cover]) {
+      print('get image from $url');
   return Center(
     child: CachedNetworkImage(
       placeholder: (context, url) => SizedBox(

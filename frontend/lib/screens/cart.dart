@@ -1,16 +1,16 @@
-import 'package:online_store/bloc/cart_bloc.dart';
-import 'package:online_store/constants/constant_values.dart';
-import 'package:online_store/constants/route_animation.dart';
-import 'package:online_store/models/cart_item_model.dart';
-import 'package:online_store/models/order_model.dart';
-import 'package:online_store/models/product_model.dart';
-import 'package:online_store/models/user_model.dart';
-import 'package:online_store/screens/delivery_address.dart';
-import 'package:online_store/screens/place_order.dart';
-import 'package:online_store/services/api_service.dart';
-import 'package:online_store/widgets/basic.dart';
-import 'package:online_store/widgets/build_photo.dart';
-import 'package:online_store/widgets/error_builder.dart';
+import 'package:ali33/bloc/cart_bloc.dart';
+import 'package:ali33/constants/constant_values.dart';
+import 'package:ali33/constants/route_animation.dart';
+import 'package:ali33/models/cart_item_model.dart';
+import 'package:ali33/models/order_model.dart';
+import 'package:ali33/models/product_model.dart';
+import 'package:ali33/models/user_model.dart';
+import 'package:ali33/screens/delivery_address.dart';
+import 'package:ali33/screens/place_order.dart';
+import 'package:ali33/services/api_service.dart';
+import 'package:ali33/widgets/basic.dart';
+import 'package:ali33/widgets/build_photo.dart';
+import 'package:ali33/widgets/error_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -180,7 +180,7 @@ class _CartScreenState extends State<CartScreen> {
                                   Row(
                                     children: [
                                       Text(
-                                          rupeeSymbol +
+                                          dollarSymbol +
                                               item
                                                   .productDetails
                                                   .variations[variationIndex]
@@ -191,7 +191,7 @@ class _CartScreenState extends State<CartScreen> {
                                               .headline1),
                                       SizedBox(width: 5),
                                       Text(
-                                          rupeeSymbol +
+                                          dollarSymbol +
                                               item
                                                   .productDetails
                                                   .variations[variationIndex]
@@ -373,7 +373,7 @@ class _CartScreenState extends State<CartScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                            "$rupeeSymbol${calculatedValues[1]} saved on this order",
+                            "$dollarSymbol${calculatedValues[1]} saved on this order",
                             style: Theme.of(context)
                                 .textTheme
                                 .headline3!
@@ -437,7 +437,7 @@ class _CartScreenState extends State<CartScreen> {
                       ],
                     ),
                   ),
-                  nextButton("Pay  $rupeeSymbol${calculatedValues[0]}",
+                  nextButton("Pay  $dollarSymbol${calculatedValues[0]}",
                       () async {
                     List<OrderModel> orders = generateOrderList(
                         state.products.cartModel, state.products.userDetails);
@@ -543,9 +543,9 @@ class _CartScreenState extends State<CartScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset("assets/images/temp/vege.png",
+                    Image.asset("images/temp/vege.png",
                         height: MediaQuery.of(context).size.height * 0.1),
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Text(
                       "Carrot",
                       style: Theme.of(context)
