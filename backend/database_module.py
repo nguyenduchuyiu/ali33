@@ -94,10 +94,10 @@ def get_all_category():
             "categoryPicture": category_detail[2]
         }
         results.append(category_data)
-    return jsonify({'result': results})
+    return results
 
 
-def get_category_from_product(product_key):
+def get_category_key_from_product(product_key):
     # Connect to DB
     connection = get_db_connection()
     cursor = connection.cursor()
@@ -113,24 +113,72 @@ def get_category_from_product(product_key):
     category_keys = [row[0] for row in cursor.fetchall()]  # Extract category keys
 
     return category_keys  # Return a list of category keys
+
+
+def search_products_by_name(search_term):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    # 1. Basic Keyword Matching (Case-Insensitive)
+    query = """
+        SELECT * FROM products
+        WHERE productName LIKE ?
+    """
+    cursor.execute(query, ('%' + search_term + '%',))
+    basic_results = cursor.fetchall()
+
+    # 2. Full-Text Search (FTS) - If available
+    fts_results = []
+    try:
+        query = """
+            SELECT * FROM products
+            WHERE products MATCH ?
+        """
+        cursor.execute(query, (search_term,))
+        fts_results = cursor.fetchall()
+    except sqlite3.OperationalError:
+        # FTS might not be enabled; handle gracefully
+        pass 
+
+    # 3. Combine and Rank Results (Simple Example)
+    keys = []
+    seen = set()  # To avoid duplicates
+    for key in fts_results + basic_results:
+        if key[0] not in seen:  # Assuming product ID is the first column
+            keys.append(key[0])
+            seen.add(key[0])
+    
+    matched_product_list = []
+    for key in keys:
+        matched_product = get_product_from_key({'type': 'product',
+                                                'key': key}) 
+        matched_product_list += matched_product
+    return matched_product_list
     
 
-
-def get_product_from_category(category_key):  # Use category_key for consistency
+def get_product_from_key(key):  
+    '''
+    Function to get all information of products by arbitrary key.
+    '''
     # Connect to DB
     connection = get_db_connection()
     cursor = connection.cursor()
 
+    # Set key to search
+    key_name = 'p' # Default querying by product key
+    if key['type'] == 'category':
+        key_name = 'c'
+        
     # Query to get category details (use JOIN for efficiency)
-    cursor.execute("""
+    query = """
         SELECT c._key, c.categoryName, c.categoryPicture, 
-               p._key, p.productName, p.productDescription, p.productPicture
+            p._key, p.productName, p.productDescription, p.productPicture
         FROM categories c
         INNER JOIN product_categories pc ON c._key = pc.category_key
         INNER JOIN products p ON pc.product_key = p._key
-        WHERE c._key = ?
-    """, (category_key,))
-
+        WHERE {key_name}._key = ? """.format(key_name=key_name)
+    
+    cursor.execute(query, (key['key'],))
     results = []
     for row in cursor.fetchall():
         category_data = {
@@ -141,7 +189,7 @@ def get_product_from_category(category_key):  # Use category_key for consistency
 
         product_data = {
             "_key": row[3],
-            "productCategoryId": get_category_from_product(row[3]),
+            "productCategoryId": get_category_key_from_product(row[3]),
             "productName": row[4],
             "productDescription": row[5],
             "productPicture": row[6],
@@ -176,4 +224,6 @@ def get_product_from_category(category_key):  # Use category_key for consistency
     # Close connection
     connection.close()
 
-    return jsonify({'result': results})
+    return results
+
+    

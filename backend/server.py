@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from security import check_password, create_jwt_token
-from database_module import get_all_category, get_product_from_category, get_user, is_registered, create_user
+from database_module import get_all_category, get_product_from_key, get_user, is_registered, create_user, search_products_by_name
 from dotenv import load_dotenv
 from flask_jwt_extended import jwt_required, get_jwt_identity
 load_dotenv('backend\key.env')
@@ -130,22 +130,38 @@ def get_products_by_category():
     if not category:
         return jsonify({"error": "Category parameter is required"}), 400
     
-    product_data_list = get_product_from_category(category)  # Adapt to fetch by category
+    product_data_list = get_product_from_key({'type':'category',
+                                              'key':category})  # Adapt to fetch by category
     
     if product_data_list:
-        return product_data_list, 200
+        return jsonify({'result':product_data_list}), 200
     else:
         return jsonify({"error": "Products not found for the given category"}), 404
     
     
 @app.route('/products/get-all-categories')
-def get_categories_by_category(): 
+def get_all_categories(): 
     category_data_list = get_all_category()
     
     if category_data_list:
-        return category_data_list, 200
+        return jsonify({'result': category_data_list}), 200
     else:
         return jsonify({"error": "Categories not found"}), 404
+
+
+@app.route('/products/search-product')
+def search_product():
+    search_term = request.args.get('searchTerm')
+    if not search_term:
+        return jsonify({"error": "Search term parameter is required"}), 400
+    
+    product_data_list = search_products_by_name(search_term)  # Adapt to fetch by category
+    
+    if product_data_list:
+        return jsonify({'result':product_data_list}), 200
+    else:
+        return jsonify({"error": "Product not found"}), 404
+
 
 # @app.route('/images/<string:product_name>')
 # def get_image(product_name):
