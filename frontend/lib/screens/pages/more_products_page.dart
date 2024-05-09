@@ -22,7 +22,7 @@ class ProductsPage extends StatefulWidget {
 }
 
 class _ProductsPageState extends State<ProductsPage> {
-  late Future<List<CategoryDetails>> categories;
+  late Future<List<CategoryDetail>> categories;
 
   Future<void> getCategories() async {
     categories = ApiService().getAllCategories();
@@ -40,7 +40,7 @@ class _ProductsPageState extends State<ProductsPage> {
   Widget build(BuildContext context) {
     print("prducts");
     Size size = MediaQuery.of(context).size;
-    return FutureBuilder<List<CategoryDetails>>(
+    return FutureBuilder<List<CategoryDetail>>(
       future: categories,
       builder: (context, snapshots) {
         if (snapshots.connectionState == ConnectionState.waiting) {
@@ -69,7 +69,7 @@ class _ProductsPageState extends State<ProductsPage> {
               childAspectRatio: 1,
             ),
             itemBuilder: (context, index) {
-              CategoryDetails category = snapshots.data![index];
+              CategoryDetail category = snapshots.data![index];
               return GestureDetector(
                 onTap: () {
                   Navigator.push(

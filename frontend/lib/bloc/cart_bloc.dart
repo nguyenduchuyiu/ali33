@@ -21,7 +21,6 @@ class RemoveItemFromCart extends CartEvent {
   RemoveItemFromCart({required this.item});
   @override
   String toString() {
-    print("Fetch Cart items");
     return super.toString();
   }
 }

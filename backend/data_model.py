@@ -95,7 +95,7 @@ class ProductModel:
 
     @classmethod
     def from_json(cls, json_data):
-        category_details = CategoryDetails.from_json(json_data['categoryDetails'])
+        category_details = [CategoryDetails.from_json(category_detail) for category_detail in json_data['CategoryDetails']]
         product_details = ProductDetails.from_json(json_data['productDetails'])
         return cls(category_details, product_details)
 
@@ -127,9 +127,8 @@ class CategoryDetails:
         }
 
 class ProductDetails:
-    def __init__(self, key, product_category_id, product_description, product_name, product_picture, reviews, variations):
+    def __init__(self, key, product_description, product_name, product_picture, reviews, variations):
         self.key = key
-        self.product_category_id = product_category_id
         self.product_description = product_description
         self.product_name = product_name
         self.product_picture = product_picture
@@ -142,7 +141,6 @@ class ProductDetails:
         variations = [Variation.from_json(variation_data) for variation_data in json_data['variations']]
         return cls(
             json_data['_key'],
-            json_data['productCategoryId'],
             json_data['productDescription'],
             json_data['productName'],
             json_data['productPicture'],

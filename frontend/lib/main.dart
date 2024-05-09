@@ -22,8 +22,6 @@ void main() async {
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   isViewd = prefs.getBool('onBoard');
   token = prefs.getString("token");
-  print("isviewd $isViewd");
-  print("token $token");
   ModeDataStorageService().setTheme(false);
 
   usePathUrlStrategy();

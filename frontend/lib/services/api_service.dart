@@ -295,14 +295,14 @@ class ApiService {
 
   /// products related api calls
 
-  Future<List<CategoryDetails>> getAllCategories() async {
+  Future<List<CategoryDetail>> getAllCategories() async {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response =
           await _dio.get(productBaseUrl + "/get-all-categories");
       print(response);
-      List<CategoryDetails> categories =
+      List<CategoryDetail> categories =
           categoriesFromJson(response.data!["result"]);
       return categories;
     } on DioException catch (e) {
@@ -319,15 +319,15 @@ class ApiService {
     return [];
   }
 
-  Future<CategoryDetails?> getCategory() async {
+  Future<CategoryDetail?> getCategory() async {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response =
           await _dio.get(productBaseUrl + "/category");
       print(response);
-      CategoryDetails category =
-          CategoryDetails.fromJson(response.data!["result"]);
+      CategoryDetail category =
+          CategoryDetail.fromJson(response.data!["result"]);
       return category;
     } on DioException catch (e) {
       print("dio error occured: ${e.response}");
@@ -400,9 +400,7 @@ class ApiService {
       Response<Map<String, dynamic>> response = await _dio.get(
           "$productBaseUrl/search-product",
           queryParameters: {"searchTerm": searchTerm});
-      print(response);
       List<ProductModel> products = productsFromJson(response.data!["result"]);
-      print('product: $products');
       return products;
     } on DioException catch (e) {
       print("dio error occured: ${e.response}");

@@ -79,7 +79,6 @@ Widget buildPlaceholderPhoto(isDark,
 
 Widget buildPhoto(String url,
     [double height = 200, double width = 200, BoxFit fit = BoxFit.cover]) {
-      print('get image from $url');
   return Center(
     child: CachedNetworkImage(
       placeholder: (context, url) => SizedBox(

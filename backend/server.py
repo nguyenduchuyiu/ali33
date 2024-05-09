@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from security import check_password, create_jwt_token
-from database_module import get_all_category, get_product_from_key, get_user, is_registered, create_user, search_products_by_name
+import database_module as dm 
 from dotenv import load_dotenv
 from flask_jwt_extended import jwt_required, get_jwt_identity
 load_dotenv('backend\key.env')
@@ -20,7 +20,7 @@ def check_register():
     if not contact_info:
         return jsonify({'error': 'Missing email or phone'}), 400
     
-    user_exists = is_registered(contact_info)
+    user_exists = dm.is_registered(contact_info)
     
     return jsonify({'result': user_exists}), 200
     
@@ -36,7 +36,7 @@ def authenticate_user():
     if not contact_info or not password:
         return jsonify({'error': 'Missing email or password'}), 400
 
-    user = get_user(contact_info) 
+    user = dm.get_user(contact_info) 
 
     if not check_password(user, password):
         return jsonify({'error': 'Invalid credentials'}), 401
@@ -59,7 +59,7 @@ def sign_up():
     if not username or not contact_info or not type or not password:
         return jsonify({'error': 'Missing required fields'}), 400
 
-    success = create_user(username, contact_info, info_type, password)
+    success = dm.create_user(username, contact_info, info_type, password)
     
     if success:
         return jsonify({'message': 'User created successfully'}), 201
@@ -130,8 +130,7 @@ def get_products_by_category():
     if not category:
         return jsonify({"error": "Category parameter is required"}), 400
     
-    product_data_list = get_product_from_key({'type':'category',
-                                              'key':category})  # Adapt to fetch by category
+    product_data_list = dm.get_product_from_category(category)  # Adapt to fetch by category
     
     if product_data_list:
         return jsonify({'result':product_data_list}), 200
@@ -141,7 +140,7 @@ def get_products_by_category():
     
 @app.route('/products/get-all-categories')
 def get_all_categories(): 
-    category_data_list = get_all_category()
+    category_data_list = dm.get_categories()
     
     if category_data_list:
         return jsonify({'result': category_data_list}), 200
@@ -155,7 +154,7 @@ def search_product():
     if not search_term:
         return jsonify({"error": "Search term parameter is required"}), 400
     
-    product_data_list = search_products_by_name(search_term)  # Adapt to fetch by category
+    product_data_list = dm.search_products_by_name(search_term)  # Adapt to fetch by category
     
     if product_data_list:
         return jsonify({'result':product_data_list}), 200

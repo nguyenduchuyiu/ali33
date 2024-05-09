@@ -10,8 +10,8 @@ List<ProductModel> productsFromJson(List<dynamic> json) =>
 String productsToJson(List<ProductModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-List<CategoryDetails> categoriesFromJson(List<dynamic> json) =>
-    List<CategoryDetails>.from(json.map((x) => CategoryDetails.fromJson(x)));
+List<CategoryDetail> categoriesFromJson(List<dynamic> json) =>
+    List<CategoryDetail>.from(json.map((x) => CategoryDetail.fromJson(x)));
 
 class ProductModel {
   ProductModel({
@@ -19,22 +19,22 @@ class ProductModel {
     required this.productDetails,
   });
 
-  CategoryDetails categoryDetails;
+  List<CategoryDetail> categoryDetails;
   ProductDetails productDetails;
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
-        categoryDetails: CategoryDetails.fromJson(json["categoryDetails"]),
+        categoryDetails: categoriesFromJson(json['categoryDetails']),
         productDetails: ProductDetails.fromJson(json["productDetails"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "categoryDetails": categoryDetails.toJson(),
+        "categoryDetails": List<CategoryDetail>.from(categoryDetails.map((x) => x.toJson())),
         "productDetails": productDetails.toJson(),
       };
 }
 
-class CategoryDetails {
-  CategoryDetails({
+class CategoryDetail {
+  CategoryDetail({
     required this.key,
     required this.categoryName,
     required this.categoryPicture,
@@ -44,8 +44,8 @@ class CategoryDetails {
   String categoryName;
   String categoryPicture;
 
-  factory CategoryDetails.fromJson(Map<String, dynamic> json) =>
-      CategoryDetails(
+  factory CategoryDetail.fromJson(Map<String, dynamic> json) =>
+      CategoryDetail(
         key: json["_key"],
         categoryName: json["categoryName"],
         categoryPicture: json["categoryPicture"],
@@ -61,7 +61,6 @@ class CategoryDetails {
 class ProductDetails {
   ProductDetails({
     required this.key,
-    required this.productCategoryId,
     required this.productDescription,
     required this.productName,
     required this.productPicture,
@@ -70,7 +69,6 @@ class ProductDetails {
   });
 
   String key;
-  List<String> productCategoryId;
   String productDescription;
   String productName;
   String productPicture;
@@ -79,7 +77,6 @@ class ProductDetails {
 
   factory ProductDetails.fromJson(Map<String, dynamic> json) => ProductDetails(
         key: json["_key"],
-        productCategoryId: json['productCategoryId'].cast<String>(),
         productDescription: json["productDescription"],
         productName: json["productName"],
         productPicture: json["productPicture"],
@@ -91,7 +88,6 @@ class ProductDetails {
 
   Map<String, dynamic> toJson() => {
         "_key": key,
-        "productCategoryId": productCategoryId,
         "productDescription": productDescription,
         "productName": productName,
         "productPicture": productPicture,

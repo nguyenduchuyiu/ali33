@@ -32,12 +32,12 @@ class CartModel {
 
   CartItem cartItem;
   ProductDetails productDetails;
-  CategoryDetails categoryDetails;
+  CategoryDetail categoryDetails;
 
   factory CartModel.fromJson(Map<String, dynamic> json) => CartModel(
         cartItem: CartItem.fromJson(json["cartItemDetails"]),
         productDetails: ProductDetails.fromJson(json["productDetails"]),
-        categoryDetails: CategoryDetails.fromJson(json["categoryDetails"]),
+        categoryDetails: CategoryDetail.fromJson(json["categoryDetails"]),
       );
 }
 

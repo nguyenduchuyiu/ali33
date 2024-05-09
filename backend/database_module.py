@@ -26,6 +26,7 @@ def is_registered(contact_info):
 
     user_exists = cur.fetchone() is not None  # Check if a row was returned
 
+    cur.close()
     conn.close() 
 
     return user_exists
@@ -40,6 +41,7 @@ def get_user(contact_info):
     query = "SELECT * FROM users WHERE contact_info = ?"
     cur.execute(query, (contact_info,)) 
     user_data = cur.fetchone()
+    cur.close()
     conn.close()
     if user_data:
         return {
@@ -73,9 +75,10 @@ def create_user(username, contact_info, info_type, password):
         return False
     finally:
         cursor.close()
+        conn.close()
 
 
-def get_all_category():
+def get_categories():
     # Connect to DB
     connection = get_db_connection()
     cursor = connection.cursor()
@@ -94,31 +97,18 @@ def get_all_category():
             "categoryPicture": category_detail[2]
         }
         results.append(category_data)
+    
+    cursor.close()
+    connection.close()
+
     return results
-
-
-def get_category_key_from_product(product_key):
-    # Connect to DB
-    connection = get_db_connection()
-    cursor = connection.cursor()
-
-    # Query to get category keys for the given product
-    cursor.execute("""
-        SELECT c._key
-        FROM Categories c
-        INNER JOIN product_categories pc ON c._key = pc.category_key
-        WHERE pc.product_key = ?
-    """, (product_key,))
-
-    category_keys = [row[0] for row in cursor.fetchall()]  # Extract category keys
-
-    return category_keys  # Return a list of category keys
 
 
 def search_products_by_name(search_term):
     connection = get_db_connection()
     cursor = connection.cursor()
 
+    search_term = search_term.replace(" ", "").lower()
     # 1. Basic Keyword Matching (Case-Insensitive)
     query = """
         SELECT * FROM products
@@ -147,14 +137,26 @@ def search_products_by_name(search_term):
         if key[0] not in seen:  # Assuming product ID is the first column
             keys.append(key[0])
             seen.add(key[0])
-    
+            
     matched_product_list = []
     for key in keys:
         matched_product = get_product_from_key({'type': 'product',
                                                 'key': key}) 
         matched_product_list += matched_product
+    cursor.close()
+    connection.close()
     return matched_product_list
     
+
+def get_product_from_category(category):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    result = get_product_from_key({'type':'category',
+                                              'key':category})
+    cursor.close()
+    connection.close()
+    return result
+
 
 def get_product_from_key(key):  
     '''
@@ -171,31 +173,42 @@ def get_product_from_key(key):
         
     # Query to get category details (use JOIN for efficiency)
     query = """
-        SELECT c._key, c.categoryName, c.categoryPicture, 
-            p._key, p.productName, p.productDescription, p.productPicture
+        SELECT p._key, p.productName, p.productDescription, p.productPicture
         FROM categories c
         INNER JOIN product_categories pc ON c._key = pc.category_key
         INNER JOIN products p ON pc.product_key = p._key
         WHERE {key_name}._key = ? """.format(key_name=key_name)
     
     cursor.execute(query, (key['key'],))
+
     results = []
     for row in cursor.fetchall():
-        category_data = {
-            "_key": row[0],
-            "categoryName": row[1],
-            "categoryPicture": row[2]
-        }
-
+        
         product_data = {
-            "_key": row[3],
-            "productCategoryId": get_category_key_from_product(row[3]),
-            "productName": row[4],
-            "productDescription": row[5],
-            "productPicture": row[6],
+            "_key": row[0],
+            "productName": row[1],
+            "productDescription": row[2],
+            "productPicture": row[3],
             "reviews": [],
             "variations": []
         }
+        
+        # Query to get list of category that product belongs to
+        query = """
+            SELECT c._key, c.categoryName, c.categoryPicture
+            FROM product_categories pc
+            INNER JOIN categories c ON pc.category_key = c._key
+            WHERE pc.product_key = ?
+        """
+        cursor.execute(query, (product_data['_key'],))
+        category_data = [
+            {
+                "_key": row[0],
+                "categoryName": row[1],
+                "categoryPicture": row[2],
+            }
+            for row in cursor.fetchall()
+        ]
 
         # Query to get reviews (using product_data["_key"] directly)
         cursor.execute("SELECT userId, comment FROM Reviews WHERE productKey=?", (product_data["_key"],))
@@ -220,9 +233,6 @@ def get_product_from_key(key):
             "categoryDetails": category_data,
             "productDetails": product_data
         })
-
-    # Close connection
-    connection.close()
 
     return results
 
