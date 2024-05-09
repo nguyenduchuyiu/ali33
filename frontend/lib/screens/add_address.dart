@@ -1,6 +1,6 @@
-import 'package:ali33/constants/route_animation.dart';
+// ignore_for_file: use_build_context_synchronously, avoid_print
+
 import 'package:ali33/models/user_model.dart';
-import 'package:ali33/screens/map_screen.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
 import 'package:flutter/material.dart';
@@ -16,10 +16,10 @@ class AddAddressScreen extends StatefulWidget {
 }
 
 class _AddAddressScreenState extends State<AddAddressScreen> {
-  TextEditingController _addressController = TextEditingController();
-  TextEditingController _houseNoController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
-  TextEditingController _nameController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _houseNoController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   bool isLoading = false;
   Position? _currentPosition;
 
@@ -98,7 +98,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Address"),
+        title: const Text("Add Address"),
       ),
       bottomNavigationBar: nextButton(
         "Save Address",
@@ -108,10 +108,8 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
           });
           bool res = await ApiService().addAddress(
             DeliveryAddress(
-                point: _currentPosition!.latitude.toString() +
-                    " " +
-                    _currentPosition!.longitude.toString(),
-                address: _houseNoController.text+ "," + _addressController.text),
+                point: "${_currentPosition!.latitude} ${_currentPosition!.longitude}",
+                address: "${_houseNoController.text},${_addressController.text}"),
           );
           setState(() {
             isLoading = false;
@@ -127,7 +125,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                   child: Container(
                     // height: size.height,
                     // width: size.width,
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -170,13 +168,13 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                             // )
                           ],
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Card(
                               elevation: 5,
-                              child: Container(
+                              child: SizedBox(
                                 height: 50,
                                 width: 50,
                                 child: Icon(
@@ -185,19 +183,19 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                                 ),
                               ),
                             ),
-                            SizedBox(width: 10),
-                            Card(
+                            const SizedBox(width: 10),
+                            const Card(
                               elevation: 2,
-                              child: Container(
+                              child: SizedBox(
                                 height: 50,
                                 width: 50,
                                 child: Icon(Icons.work),
                               ),
                             ),
-                            SizedBox(width: 10),
-                            Card(
+                            const SizedBox(width: 10),
+                            const Card(
                               elevation: 2,
-                              child: Container(
+                              child: SizedBox(
                                 height: 50,
                                 width: 50,
                                 child: Icon(Icons.location_on),
@@ -205,13 +203,13 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Text("Contact Person Name",
                             style: Theme.of(context)
                                 .textTheme
-                                .headline2!
+                                .displayMedium!
                                 .copyWith(fontWeight: FontWeight.bold)),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         TextFormField(
                           controller: _nameController,
                           decoration: InputDecoration(
@@ -235,13 +233,13 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Text("Phone No",
                             style: Theme.of(context)
                                 .textTheme
-                                .headline2!
+                                .displayMedium!
                                 .copyWith(fontWeight: FontWeight.bold)),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         TextFormField(
                           controller: _phoneController,
                           decoration: InputDecoration(
@@ -265,13 +263,13 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Text("Flat,House No.",
                             style: Theme.of(context)
                                 .textTheme
-                                .headline2!
+                                .displayMedium!
                                 .copyWith(fontWeight: FontWeight.bold)),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         TextFormField(
                           controller: _houseNoController,
                           decoration: InputDecoration(
@@ -295,13 +293,13 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         Text("Area, Street, Sector, Village, City",
                             style: Theme.of(context)
                                 .textTheme
-                                .headline2!
+                                .displayMedium!
                                 .copyWith(fontWeight: FontWeight.bold)),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         TextFormField(
                           controller: _addressController,
                           decoration: InputDecoration(

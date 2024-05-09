@@ -1,7 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:ali33/constants/route_animation.dart';
 import 'package:ali33/models/user_model.dart';
 import 'package:ali33/screens/add_address.dart';
-import 'package:ali33/screens/map_screen.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
 import 'package:ali33/widgets/error_builder.dart';
@@ -61,11 +62,11 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
             return ListView(
               primary: false,
               children: [
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 GestureDetector(
                   onTap: () async {
                     bool res = await Navigator.push(
-                        context, SlideLeftRoute(widget: AddAddressScreen()));
+                        context, SlideLeftRoute(widget: const AddAddressScreen()));
                     if (res) getAddresses();
                   },
                   child: Card(
@@ -77,8 +78,8 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("Add a New Address",
-                              style: Theme.of(context).textTheme.headline2),
-                          Icon(Icons.arrow_forward_ios)
+                              style: Theme.of(context).textTheme.displayMedium),
+                          const Icon(Icons.arrow_forward_ios)
                         ],
                       ),
                     ),
@@ -121,7 +122,7 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                                     Text(
                                       userModel!.proprietorName,
                                       style:
-                                          Theme.of(context).textTheme.headline1,
+                                          Theme.of(context).textTheme.displayLarge,
                                     ),
                                     SizedBox(
                                       width: size.width * 0.7,
@@ -130,14 +131,14 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                                         maxLines: 4,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline4,
+                                            .headlineMedium,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                     Text(
                                       "Phone number: 9382038283",
                                       style:
-                                          Theme.of(context).textTheme.headline3,
+                                          Theme.of(context).textTheme.displaySmall,
                                     ),
                                   ],
                                 )
@@ -171,9 +172,9 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                                             }
                                           }
                                         },
-                                        child: Text("Remove"),
+                                        child: const Text("Remove"),
                                       ),
-                                      SizedBox(width: 20),
+                                      const SizedBox(width: 20),
                                       OutlinedButton(
                                         style: OutlinedButton.styleFrom(
                                           elevation: 2,
@@ -198,11 +199,11 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                                             }
                                           }
                                         },
-                                        child: Text("Set Address"),
+                                        child: const Text("Set Address"),
                                       )
                                     ],
                                   )
-                                : SizedBox.shrink()
+                                : const SizedBox.shrink()
                           ],
                         ),
                       );

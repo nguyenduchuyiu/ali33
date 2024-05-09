@@ -1,9 +1,7 @@
 import 'package:ali33/constants/constant_values.dart';
 import 'package:ali33/constants/route_animation.dart';
 import 'package:ali33/models/order_item_model.dart';
-import 'package:ali33/models/order_model.dart';
 import 'package:ali33/screens/order_track.dart';
-import 'package:ali33/screens/product_details.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
 import 'package:ali33/widgets/build_photo.dart';
@@ -49,7 +47,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 return Center(
                     child: Text(
                   "No Orders Found! Add One",
-                  style: Theme.of(context).textTheme.headline3,
+                  style: Theme.of(context).textTheme.displaySmall,
                 ));
               }
               return ListView.builder(
@@ -67,7 +65,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           ));
                     },
                     child: Container(
-                      margin: EdgeInsets.all(8),
+                      margin: const EdgeInsets.all(8),
                       // height: size.height * 0.2,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -79,7 +77,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                               Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(16),
-                                    color: Color(0xffF0E0D8),
+                                    color: const Color(0xffF0E0D8),
                                   ),
                                   height: size.height * 0.17,
                                   width: size.width * 0.32,
@@ -92,30 +90,28 @@ class _OrdersScreenState extends State<OrdersScreen> {
                               // SizedBox(height: size.height * 0.02),
                             ],
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                   "${order.productDetails.productName} (${order.orderDetails.productDetails.noOfItems} items)",
-                                  style: Theme.of(context).textTheme.headline2),
-                              SizedBox(height: 5),
+                                  style: Theme.of(context).textTheme.displayMedium),
+                              const SizedBox(height: 5),
                               Text(
-                                  order.orderDetails.productDetails
-                                          .variationQuantity
-                                          .toString() +
-                                      " KG",
-                                  style: Theme.of(context).textTheme.headline4),
-                              SizedBox(height: 5),
+                                  "${order.orderDetails.productDetails
+                                          .variationQuantity} KG",
+                                  style: Theme.of(context).textTheme.headlineMedium),
+                              const SizedBox(height: 5),
                               Text(
                                   dollarSymbol +
                                       order.orderDetails.paidPrice.toString(),
-                                  style: Theme.of(context).textTheme.headline1),
-                              SizedBox(height: 5),
+                                  style: Theme.of(context).textTheme.displayLarge),
+                              const SizedBox(height: 5),
                               Text(
-                               order.orderDetails.deliveryStages.length == 4?  "Delivered on ${order.orderDetails.deliveryStages[3].toString().split(' ')[0]}": "Delivery on ${ order.orderDetails.deliveryStages.last.add(Duration(days: 3)).toString().split(' ')[0] }",
-                                  style: Theme.of(context).textTheme.bodyText1),
+                               order.orderDetails.deliveryStages.length == 4?  "Delivered on ${order.orderDetails.deliveryStages[3].toString().split(' ')[0]}": "Delivery on ${ order.orderDetails.deliveryStages.last.add(const Duration(days: 3)).toString().split(' ')[0] }",
+                                  style: Theme.of(context).textTheme.bodyLarge ),
                             ],
                           )
                         ],

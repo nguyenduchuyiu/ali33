@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:ali33/constants/route_animation.dart';
 import 'package:ali33/screens/login.dart';
 import 'package:ali33/services/api_service.dart';
@@ -52,203 +54,200 @@ class _SignupScreenState extends State<SignupScreen> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       // backgroundColor: Colors.white,
-      body: Container(
-        child: Stack(
-          // alignment: Alignment.topLeft,
-          children: [
-            /// Wavy line
-            ClipPath(
-              clipper: ProsteBezierCurve(
-                position: ClipPosition.bottom,
-                list: [
-                  BezierCurveSection(
-                    start: Offset(0, 175),
-                    top: Offset(size.width / 4, 150),
-                    end: Offset(size.width / 2, 175),
-                  ),
-                  BezierCurveSection(
-                    start: Offset(size.width / 2, 175),
-                    top: Offset(size.width / 4 * 3, 200),
-                    end: Offset(size.width, 175),
-                  ),
-                ],
-              ),
-              child: Container(
-                height: 200,
-                color: Color(0xffFFF0C9),
-              ),
+      body: Stack(
+        // alignment: Alignment.topLeft,
+        children: [
+          /// Wavy line
+          ClipPath(
+            clipper: ProsteBezierCurve(
+              position: ClipPosition.bottom,
+              list: [
+                BezierCurveSection(
+                  start: const Offset(0, 175),
+                  top: Offset(size.width / 4, 150),
+                  end: Offset(size.width / 2, 175),
+                ),
+                BezierCurveSection(
+                  start: Offset(size.width / 2, 175),
+                  top: Offset(size.width / 4 * 3, 200),
+                  end: Offset(size.width, 175),
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Spacer(),
-                      Image.asset(
-                        "images/logo.png",
-                        height: 100,
-                        alignment: Alignment.topCenter,
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        "ALI33",
-                        style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.black),
-                      ),
-                      Spacer()
-                    ],
-                  ),
-                  SizedBox(height: 50),
-                  Text(
-                    "SIGN UP",
-                    style: Theme.of(context).textTheme.headline2,
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    "Username",
-                    style: Theme.of(context).textTheme.headline3,
-                  ),
-                  Form(
-                    key: usernameKey,
-                    child: TextFormField(
-                      controller: username,
-                      validator: (String? val) => val!.isEmpty
-                          ? "Field can't be empty"
-                          : null,
-                      decoration: InputDecoration(
-                        hintText: "John Doe",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Text(
-                    "Email/Phone",
-                    style: Theme.of(context).textTheme.headline3,
-                  ),
-                  Form(
-                    key: userIdKey,
-                    child: TextFormField(
-                      controller: userId,
-                      validator: (String? val) => val!.isEmpty
-                          ? "Field can't be empty"
-                          : (!emailValidator(val) &&
-                                  !_phoneNumberValidator(val))
-                              ? "Enter correct email id/phone no"
-                              : null,
-                      decoration: InputDecoration(
-                        hintText: "example@gmail.com / 0123456789",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Text(
-                    "Password",
-                    style: Theme.of(context).textTheme.headline3,
-                  ),
-                  Form(
-                    key: passwordKey,
-                    child: TextFormField(
-                      controller: password,
-                      validator: (String? val) => val!.isEmpty
-                          ? "Field can't be empty"
-                          : (!passwordValidator(val))
-                          ? "Require at least 8 characters, one uppercase, one lowercase, one number, and one special character"
-                          : null,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        suffixIcon: IconButton(
-                        icon: Icon(_showPassword ? Icons.visibility : Icons.visibility_off),
-                        onPressed: () {
-                          setState(() {
-                            _showPassword = !_showPassword;
-                          });
-                        },
-                        ),
-                      ),
-                      obscureText: !_showPassword
-                    ),
-                  ),
-                  Text(
-                    "Re-enter Password",
-                    style: Theme.of(context).textTheme.headline3,
-                  ),
-                  Form(
-                    key: repassKey,
-                    child: TextFormField(
-                      controller: repass,
-                      validator: (String? val) => val != password.text
-                          ? "Password is not matched!"
-                          : null,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        suffixIcon: IconButton(
-                        icon: Icon(_showPassword ? Icons.visibility : Icons.visibility_off),
-                        onPressed: () {
-                          setState(() {
-                            _showPassword = !_showPassword;
-                          });
-                        },
-                        ),
-                      ),
-                      obscureText: !_showPassword
-                    ),
-                  )
-                ],
-              ),
+            child: Container(
+              height: 200,
+              color: const Color(0xffFFF0C9),
             ),
-            if (isLoading) loadingAnimation(),
-            Positioned(
-            bottom: 100,
-            left: 550,
-            child: Row(
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Spacer(),
+                    Image.asset(
+                      "images/logo.png",
+                      height: 100,
+                      alignment: Alignment.topCenter,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      "ALI33",
+                      style: Theme.of(context).textTheme.displayLarge!.copyWith(color: Colors.black),
+                    ),
+                    const Spacer()
+                  ],
+                ),
+                const SizedBox(height: 50),
+                Text(
+                  "SIGN UP",
+                  style: Theme.of(context).textTheme.displayMedium,
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  "Username",
+                  style: Theme.of(context).textTheme.displaySmall,
+                ),
+                Form(
+                  key: usernameKey,
+                  child: TextFormField(
+                    controller: username,
+                    validator: (String? val) => val!.isEmpty
+                        ? "Field can't be empty"
+                        : null,
+                    decoration: InputDecoration(
+                      hintText: "John Doe",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ),
+                Text(
+                  "Email/Phone",
+                  style: Theme.of(context).textTheme.displaySmall,
+                ),
+                Form(
+                  key: userIdKey,
+                  child: TextFormField(
+                    controller: userId,
+                    validator: (String? val) => val!.isEmpty
+                        ? "Field can't be empty"
+                        : (!emailValidator(val) &&
+                                !_phoneNumberValidator(val))
+                            ? "Enter correct email id/phone no"
+                            : null,
+                    decoration: InputDecoration(
+                      hintText: "example@gmail.com / 0123456789",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ),
+                Text(
+                  "Password",
+                  style: Theme.of(context).textTheme.displaySmall,
+                ),
+                Form(
+                  key: passwordKey,
+                  child: TextFormField(
+                    controller: password,
+                    validator: (String? val) => val!.isEmpty
+                        ? "Field can't be empty"
+                        : (!passwordValidator(val))
+                        ? "Require at least 8 characters, one uppercase, one lowercase, one number, and one special character"
+                        : null,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      suffixIcon: IconButton(
+                      icon: Icon(_showPassword ? Icons.visibility : Icons.visibility_off),
+                      onPressed: () {
+                        setState(() {
+                          _showPassword = !_showPassword;
+                        });
+                      },
+                      ),
+                    ),
+                    obscureText: !_showPassword
+                  ),
+                ),
+                Text(
+                  "Re-enter Password",
+                  style: Theme.of(context).textTheme.displaySmall,
+                ),
+                Form(
+                  key: repassKey,
+                  child: TextFormField(
+                    controller: repass,
+                    validator: (String? val) => val != password.text
+                        ? "Password is not matched!"
+                        : null,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      suffixIcon: IconButton(
+                      icon: Icon(_showPassword ? Icons.visibility : Icons.visibility_off),
+                      onPressed: () {
+                        setState(() {
+                          _showPassword = !_showPassword;
+                        });
+                      },
+                      ),
+                    ),
+                    obscureText: !_showPassword
+                  ),
+                )
+              ],
+            ),
+          ),
+          if (isLoading) loadingAnimation(),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 nextButton("Sign up", () async {
                   if (usernameKey.currentState!.validate()
@@ -266,14 +265,14 @@ class _SignupScreenState extends State<SignupScreen> {
                     });
                     if (isRegistered  != null) {
                       if (!isRegistered) {
-                          final bool success_signup = await ApiService().signup({
+                          final bool successSignup = await ApiService().signup({
                                                                         "type": isPhone ? "phone" : "email",
                                                                         "username": username.text,
                                                                         "userId": userId.text,
                                                                         "password": password.text
                                                                         });
-                          if (success_signup) {
-                            Navigator.pushReplacement(context, SlideLeftRoute(widget: LoginScreen(isEditing: false)));
+                          if (successSignup) {
+                            Navigator.pushReplacement(context, SlideLeftRoute(widget: const LoginScreen(isEditing: false)));
                             toastMessage('Account created successfully!');
                           } else {
                             toastMessage('Signup failed. Please try again or contact support.');
@@ -285,15 +284,13 @@ class _SignupScreenState extends State<SignupScreen> {
                       }
                     }
                   }),
-                SizedBox(width: 10), // spacing between 2 botton
+                const SizedBox(width: 10), // spacing between 2 botton
                 nextButton("Log in", () async {
-                  Navigator.pushReplacement(context, SlideLeftRoute(widget: LoginScreen(isEditing: false)));
+                  Navigator.pushReplacement(context, SlideLeftRoute(widget: const LoginScreen(isEditing: false)));
                 })
               ]
-            )
           )
-          ],
-        ),
+        ],
       ),
     );
   }

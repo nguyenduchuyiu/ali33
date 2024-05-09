@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:ali33/constants/app_them_data.dart';
 import 'package:ali33/services/theme_provider_service.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart'; // Use connectivity_plus
 import 'package:ali33/screens/home.dart';
 import 'package:ali33/screens/login.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 bool? isViewd;
 String? token;
@@ -59,7 +62,7 @@ class _ConnectionCheckWrapperState extends State<ConnectionCheckWrapper> {
     if (_isConnected) {
       return widget.child;
     } else {
-      return Scaffold(
+      return const Scaffold(
         body: Center(
           child: Text('No internet connection!'),
         ),
@@ -68,8 +71,49 @@ class _ConnectionCheckWrapperState extends State<ConnectionCheckWrapper> {
   }
 }
 
+// //Huy added
+// class MyWebView extends StatefulWidget {
+//   const MyWebView({Key? key}) : super(key: key);
+
+//   @override
+//   State<MyWebView> createState() => _MyWebViewState();
+// }
+
+// class _MyWebViewState extends State<MyWebView> {
+//   late final WebViewController controller;
+
+//   @override
+//   void initState() {
+//     super.initState(); // Call super.initState() first
+
+//     controller = WebViewController()
+//       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+//       ..clearCache()
+//       ..loadRequest(Uri.parse('https://courses.uet.vnu.edu.vn'));
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return WebViewWidget(controller: controller);
+//   }
+// }
+//
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return MaterialApp(
+  //     title: 'UET Course :)', // Name in app switcher
+  //     home: Directionality(
+  //       textDirection: TextDirection.ltr,
+  //       child: Scaffold(
+  //         appBar: AppBar(title: const Text('Home')),
+  //         body: const MyWebView(),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -78,15 +122,15 @@ class MyApp extends StatelessWidget {
       child: Consumer<AppThemeNotifier>(
         builder: (context, AppThemeNotifier appThemeNotifier, child) {
           return MaterialApp( // Move MaterialApp to the outer level
-            title: 'ali33',
+            title: 'ALI33',
             debugShowCheckedModeBanner: false,
             theme: appThemeNotifier.darkTheme
                 ? AppThemeData.darkTheme
                 : AppThemeData.lightTheme,
             home: ConnectionCheckWrapper( // Wrap ConnectionCheckWrapper inside MaterialApp
               child: token != null
-                  ? HomeScreen()
-                  : LoginScreen(isEditing: false),
+                  ? const HomeScreen()
+                  : const LoginScreen(isEditing: false),
             ),
           );
         },
@@ -94,62 +138,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-// import 'package:ali33/constants/app_them_data.dart';
-// import 'package:ali33/services/theme_provider_service.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-// import 'package:flutter_web_plugins/url_strategy.dart';
-// import 'package:provider/provider.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-// // import 'package:connectivity_wrapper/connectivity_wrapper.dart';
-// import 'package:connectivity_plus/connectivity_plus.dart';
-// import 'package:ali33/screens/home.dart';
-// import 'package:ali33/screens/login.dart';
 
-// bool? isViewd;
-// String? token;
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   final SharedPreferences prefs = await SharedPreferences.getInstance();
-//   SystemChrome.setSystemUIOverlayStyle(
-//       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-//   isViewd = prefs.getBool('onBoard');
-//   token = prefs.getString("token");
-//   print("isviewd $isViewd");
-//   print("token $token");
-//   ModeDataStorageService().setTheme(false); 
-
-//   usePathUrlStrategy();
-//   runApp(const MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({Key? key}) : super(key: key);
-
-//   // This widget is the root of your application.
-//   @override
-//   Widget build(BuildContext context) {
-//     return ChangeNotifierProvider<AppThemeNotifier>(
-//       create: (context) => AppThemeNotifier(false),
-//       child: Consumer<AppThemeNotifier>(
-//         builder: (context, AppThemeNotifier appThemeNotifier, child) {
-//           return ConnectivityAppWrapper(
-//             app: MaterialApp(
-//               title: 'ali33',
-//               debugShowCheckedModeBanner: false,
-//               theme: appThemeNotifier.darkTheme
-//                   ? AppThemeData.darkTheme
-//                   : AppThemeData.lightTheme,
-//               // darkTheme: ThemeData.dark(),
-//               home: token != null 
-//                   ? HomeScreen() 
-//                   : LoginScreen(isEditing: false),
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
 
 

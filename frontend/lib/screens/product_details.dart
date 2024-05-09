@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, avoid_print
+
 import 'package:ali33/bloc/cart_bloc.dart';
 import 'package:ali33/constants/constant_values.dart';
 import 'package:ali33/constants/route_animation.dart';
@@ -192,7 +194,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       width: size.width,
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 166, 41, 126),
+                          color: const Color.fromARGB(255, 166, 41, 126),
                           borderRadius: BorderRadius.circular(16)),
                       child: buildPhoto(
                           widget.productModel.productDetails.productPicture,
@@ -206,7 +208,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     width: size.width,
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 7, 175, 236),
+                        color: const Color.fromARGB(255, 7, 175, 236),
                         borderRadius: BorderRadius.circular(16)),
                     child: buildPhoto(
                         widget.productModel.productDetails.productPicture,
@@ -242,7 +244,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 .variations[selectedIndex].sellingPrice
                                 .toString(),
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            color: Color.fromARGB(255, 167, 190, 52),
+                            color: const Color.fromARGB(255, 167, 190, 52),
                             decoration: TextDecoration.lineThrough)),
                     const SizedBox(width: 10),
                     Text(
@@ -287,7 +289,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               style: Theme.of(context)
                                   .textTheme
                                   .displayMedium!
-                                  .copyWith(color: Color.fromARGB(255, 51, 175, 144)),
+                                  .copyWith(color: const Color.fromARGB(255, 51, 175, 144)),
                             ),
                           ),
                           Container(
@@ -343,7 +345,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ],
                           ),
                           const SizedBox(height: 5),
-                          Text("Worth buying this at this low price and thanks to ali33 for this fabulous products.",style: Theme.of(context).textTheme.headline4,)
+                          Text("Worth buying this at this low price and thanks to ali33 for this fabulous products.",style: Theme.of(context).textTheme.headlineMedium,)
                         ],
                       ),
                     );
@@ -485,7 +487,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   "Add to Cart",
                   style: Theme.of(context)
                       .textTheme
-                      .headline2!
+                      .displayMedium!
                       .copyWith(color: Colors.white),
                 ),
               ),
@@ -598,7 +600,7 @@ class _AddtoCartWidgetState extends State<AddtoCartWidget> {
                               style: Theme.of(context).textTheme.displaySmall,
                             ),
                             const SizedBox(width: 10),
-                            Text(dollarSymbol+widget.productModel.productDetails.variations[widget.selectedIndex].offerPrice.toString(),style: Theme.of(context).textTheme.headline3,),
+                            Text(dollarSymbol+widget.productModel.productDetails.variations[widget.selectedIndex].offerPrice.toString(),style: Theme.of(context).textTheme.displaySmall,),
                             const SizedBox(width: 5),
                             Text( "saved $dollarSymbol${calculateSavedAmount(widget.productModel.productDetails.variations[widget.selectedIndex].sellingPrice , widget.productModel.productDetails.variations[widget.selectedIndex].offerPrice)}",style: Theme.of(context).textTheme.headlineMedium,),
                             const Spacer(),

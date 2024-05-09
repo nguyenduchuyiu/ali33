@@ -70,7 +70,7 @@ class ProductDetails {
   });
 
   String key;
-  String productCategoryId;
+  List<String> productCategoryId;
   String productDescription;
   String productName;
   String productPicture;
@@ -79,14 +79,14 @@ class ProductDetails {
 
   factory ProductDetails.fromJson(Map<String, dynamic> json) => ProductDetails(
         key: json["_key"],
-        productCategoryId: json["productCategoryId"],
+        productCategoryId: json['productCategoryId'].cast<String>(),
         productDescription: json["productDescription"],
         productName: json["productName"],
         productPicture: json["productPicture"],
         reviews:
             List<Review>.from(json["reviews"].map((x) => Review.fromJson(x))),
-        variations: List<Variation>.from(
-            json["variations"].map((x) => Variation.fromJson(x))),
+        variations: 
+            List<Variation>.from(json["variations"].map((x) => Variation.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {

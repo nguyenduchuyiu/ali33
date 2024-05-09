@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:proste_bezier_curve/proste_bezier_curve.dart';
 
 class NoInternetScreen extends StatefulWidget {
-  NoInternetScreen({Key? key}) : super(key: key);
+  const NoInternetScreen({Key? key}) : super(key: key);
 
   @override
   State<NoInternetScreen> createState() => _NoInternetScreenState();
@@ -13,7 +13,7 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         height: size.height,
         width: size.width,
         // decoration: BoxDecoration(
@@ -32,7 +32,7 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
                   BezierCurveSection(
                     start: Offset(size.width, 60),
                     top: Offset(size.width * 0.5, 0),
-                    end: Offset(0, 60),
+                    end: const Offset(0, 60),
                   ),
                 ],
               ),
@@ -43,8 +43,8 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SizedBox(height: 60),
-                    Text(
+                    const SizedBox(height: 60),
+                    const Text(
                       "No Internet Connection",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -52,8 +52,8 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
                         color: Colors.white,
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Text(
+                    const SizedBox(height: 10),
+                    const Text(
                       "You are not connected to internet. Make sure to check network settings.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -62,10 +62,10 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
                         color: Colors.white,
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          fixedSize: Size(180, 56), backgroundColor: Colors.white,
+                          fixedSize: const Size(180, 56), backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30))),
                       onPressed: () => setState(() {}),
@@ -77,7 +77,7 @@ class _NoInternetScreenState extends State<NoInternetScreen> {
                             fontWeight: FontWeight.w600),
                       ),
                     ),
-                    Spacer()
+                    const Spacer()
                   ],
                 ),
               ),

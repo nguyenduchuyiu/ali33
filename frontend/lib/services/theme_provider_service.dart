@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,21 +31,21 @@ class ModeDataStorageService {
   final THEME_STATUS = "THEMESTATUS";
 
   setTheme(bool value) async {
-    final SharedPreferences _prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    await _prefs.setBool(THEME_STATUS, value);
+    await prefs.setBool(THEME_STATUS, value);
   }
 
   Future<bool> getTheme() async {
-    final SharedPreferences _prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    bool? res = _prefs.getBool(THEME_STATUS);
+    bool? res = prefs.getBool(THEME_STATUS);
     if (res != null && res == true) {
       return true;
     } else if (res != null && res == false) {
       return false;
     } else {
-      var brightness = SchedulerBinding.instance!.window.platformBrightness;
+      var brightness = SchedulerBinding.instance.window.platformBrightness;
       bool isDarkMode = brightness == Brightness.dark;
       return isDarkMode;
     }

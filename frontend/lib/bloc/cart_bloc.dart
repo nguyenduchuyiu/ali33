@@ -1,10 +1,8 @@
-import 'dart:io';
+// ignore_for_file: must_be_immutable, avoid_print
+
 import 'package:ali33/models/cart_item_model.dart';
-import 'package:ali33/models/product_model.dart';
-import 'package:ali33/screens/product_details.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,7 +73,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc() : super(CartInitialState());
   final ApiService _apiService = ApiService();
 
-  @override
   Stream<CartState> mapEventToState(CartEvent event) async* {
     if (event is FetchCartItems) {
       yield CartProductsLoading();

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:ali33/constants/constant_values.dart';
 import 'package:ali33/models/product_model.dart';
 import 'package:ali33/models/user_model.dart';
@@ -159,7 +161,7 @@ class _HomePageState extends State<HomePage> {
                                     category = "popular_brand";
                                     break;
                                   case 2:
-                                    category = "cant_see";
+                                    category = "free_delivery";
                                     break;
                                 }
                                 setState(() {
@@ -291,7 +293,7 @@ class Products extends StatelessWidget {
                   tag: index,
                   child: Card(
                       elevation: 10,
-                      shadowColor: Color.fromARGB(255, 7, 1, 7).withOpacity(0.3),
+                      shadowColor: const Color.fromARGB(255, 7, 1, 7).withOpacity(0.3),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                       child: Padding(

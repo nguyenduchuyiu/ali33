@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -8,14 +7,14 @@ Widget nextButton(String text, Function() onPressed) {
       padding: const EdgeInsets.all(16.0),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xffF67552),
-          fixedSize: Size(200, 56),
+          backgroundColor: const Color(0xffF67552),
+          fixedSize: const Size(200, 56),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         ),
         onPressed: onPressed,
         child: Text(
           text,
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,color: Colors.white),
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold,color: Colors.white),
         ),
       ),
     )
@@ -23,7 +22,7 @@ Widget nextButton(String text, Function() onPressed) {
 }
 
 Widget loadingAnimation() {
-  return Center(child: CircularProgressIndicator());
+  return const Center(child: CircularProgressIndicator());
 }
 
 Future<bool?> toastMessage(message) {

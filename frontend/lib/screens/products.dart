@@ -51,17 +51,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     child: const Text("No Products Available in this Category"));
               }
               return GridView.builder(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 itemCount: state.products.length,
                 primary: false,
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+                  crossAxisCount: 5,
                   crossAxisSpacing: 5,
                   mainAxisSpacing: 5,
-                  childAspectRatio: 0.9,
+                  childAspectRatio: 1,
                 ),
                 itemBuilder: (context, index) {
                   ProductModel model = state.products[index];
@@ -93,7 +93,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       tag: index,
                       child: Card(
                           elevation: 5,
-                          shadowColor: Color(0xffFFA500).withOpacity(0.3),
+                          shadowColor: const Color(0xffFFA500).withOpacity(0.3),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8)),
                           child: Padding(
@@ -103,22 +103,27 @@ class _ProductsScreenState extends State<ProductsScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                buildPhoto(model.productDetails.productPicture,
-                                    size.height * 0.15),
+                                Expanded(
+                                  child:Center(
+                                    child: buildPhoto(
+                                        model.productDetails.productPicture,
+                                        size.height,
+                                        300,
+                                        BoxFit.contain),
+                                    )
+                              ),
                                 Text(
                                   model.productDetails.productName,
-                                  style: Theme.of(context).textTheme.headline1,
+                                  style: Theme.of(context).textTheme.displayLarge,
                                 ),
                                 Text(
-                                  model.productDetails.variations[0].quantity
-                                          .toString() +
-                                      " kg",
-                                  style: Theme.of(context).textTheme.bodyText2,
+                                  "${model.productDetails.variations[0].quantity} kg",
+                                  style: Theme.of(context).textTheme.bodyMedium ,
                                 ),
-                                SizedBox(height: 5),
+                                const SizedBox(height: 5),
                                 Text(
                                   "\$${model.productDetails.variations[0].offerPrice}",
-                                  style: Theme.of(context).textTheme.headline3,
+                                  style: Theme.of(context).textTheme.displaySmall,
                                 )
                               ],
                             ),

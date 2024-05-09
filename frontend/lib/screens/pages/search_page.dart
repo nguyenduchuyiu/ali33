@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_brace_in_string_interps, avoid_print
+
 import 'package:ali33/models/product_model.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
@@ -37,7 +39,7 @@ class _SearchPageState extends State<SearchPage> {
     return Container(
       height: size.height,
       width: size.width,
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -54,12 +56,12 @@ class _SearchPageState extends State<SearchPage> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
               child: Container(
                 height: 50,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   // borderRadius: BorderRadius.circular(8),
                   // border: Border.all(color: Colors.grey),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: const Row(
                   children: [
                     Icon(Icons.search_rounded),
                     SizedBox(width: 10),
@@ -76,16 +78,16 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
           SizedBox(height: size.height * 0.03),
-          Text("Recent Searches", style: Theme.of(context).textTheme.headline2),
+          Text("Recent Searches", style: Theme.of(context).textTheme.displayMedium),
           // SizedBox(height: size.height * 0.01),
           recentSearches(),
           // SizedBox(height: size.height * 0.02),
-          Text("Top Categories", style: Theme.of(context).textTheme.headline2),
+          Text("Top Categories", style: Theme.of(context).textTheme.displayMedium),
           // SizedBox(height: size.height * 0.01),
           topCategories(),
           SizedBox(height: size.height * 0.02),
           Text("Popular Searches",
-              style: Theme.of(context).textTheme.headline2),
+              style: Theme.of(context).textTheme.displayMedium),
           SizedBox(height: size.height * 0.01),
           popularSearches()
         ],
@@ -114,11 +116,11 @@ class _SearchPageState extends State<SearchPage> {
                   Container(
                     alignment: Alignment.center,
                     width: MediaQuery.of(context).size.width * 0.25,
-                    margin: EdgeInsets.symmetric(horizontal: 5),
+                    margin: const EdgeInsets.symmetric(horizontal: 5),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10),
+                          topLeft: const Radius.circular(10),
+                          topRight: const Radius.circular(10),
                           bottomLeft: Radius.circular(
                               selectedCartIndex == index ? 0 : 10),
                           bottomRight: Radius.circular(
@@ -130,17 +132,17 @@ class _SearchPageState extends State<SearchPage> {
                       children: [
                         Image.asset("images/temp/vege.png",
                             height: MediaQuery.of(context).size.height * 0.1),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         Text(
                           "Carrot",
                           style: Theme.of(context)
                               .textTheme
-                              .headline4!
+                              .headlineMedium!
                               .copyWith(fontWeight: FontWeight.w600,color: Colors.white),
                         ),
-                        SizedBox(height: 2),
-                        Text("\$ 46.05 /-",style: TextStyle(color: Colors.white),),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 2),
+                        const Text("\$ 46.05 /-",style: TextStyle(color: Colors.white),),
+                        const SizedBox(height: 10),
                       ],
                     ),
                   ),
@@ -150,13 +152,13 @@ class _SearchPageState extends State<SearchPage> {
                           alignment: Alignment.center,
                           width: MediaQuery.of(context).size.width * 0.25,
                           decoration: BoxDecoration(
-                              color: Color(0xffA1CAF1).withOpacity(0.5),
-                              borderRadius: BorderRadius.only(
+                              color: const Color(0xffA1CAF1).withOpacity(0.5),
+                              borderRadius: const BorderRadius.only(
                                   bottomLeft: Radius.circular(16),
                                   bottomRight: Radius.circular(16))),
-                          child: Text("Add to Cart"),
+                          child: const Text("Add to Cart"),
                         )
-                      : SizedBox.shrink()
+                      : const SizedBox.shrink()
                 ],
               ),
             );
@@ -167,10 +169,10 @@ class _SearchPageState extends State<SearchPage> {
   Widget topCategories() {
     return GridView.builder(
       itemCount: topCat.length,
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         mainAxisSpacing: 5,
         crossAxisSpacing: 5,
@@ -179,7 +181,7 @@ class _SearchPageState extends State<SearchPage> {
       itemBuilder: (context, index) {
         return Container(
           alignment: Alignment.center,
-          padding: EdgeInsets.only(left: 20, right: 10),
+          padding: const EdgeInsets.only(left: 20, right: 10),
           decoration: BoxDecoration(
             color: Colors.grey,
             borderRadius: BorderRadius.circular(10),
@@ -188,7 +190,7 @@ class _SearchPageState extends State<SearchPage> {
             topCat[index],
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.bodyText1!.copyWith(),
+            style: Theme.of(context).textTheme.bodyLarge !.copyWith(),
           ),
         );
       },
@@ -199,18 +201,18 @@ class _SearchPageState extends State<SearchPage> {
     // List<String> reverseRecent = searches.reversed.toList();
     return searches.isEmpty
         ? Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Text(
               "No recent searches",
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ))
         : GridView.builder(
             itemCount: searches.length,
             padding: const EdgeInsets.all(8),
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
               mainAxisSpacing: 5,
               crossAxisSpacing: 5,
@@ -221,7 +223,7 @@ class _SearchPageState extends State<SearchPage> {
                 // height: 30,
                 // width: MediaQuery.of(context).size.width*0.2,
                 // alignment: Alignment.center,
-                padding: EdgeInsets.only(left: 10, right: 10),
+                padding: const EdgeInsets.only(left: 10, right: 10),
                 decoration: BoxDecoration(
                   color: Colors.grey,
                   borderRadius: BorderRadius.circular(10),
@@ -237,7 +239,7 @@ class _SearchPageState extends State<SearchPage> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style:
-                            Theme.of(context).textTheme.bodyText1,
+                            Theme.of(context).textTheme.bodyLarge ,
                       ),
                     ),
                     GestureDetector(
@@ -251,7 +253,7 @@ class _SearchPageState extends State<SearchPage> {
                         print("searches ${searches}");
                         setState(() {});
                       },
-                      child: Icon(Icons.clear),
+                      child: const Icon(Icons.clear),
                     )
                   ],
                 ),
@@ -289,7 +291,7 @@ class CustomSearchDelegate extends SearchDelegate {
             FocusManager.instance.primaryFocus?.requestFocus();
             // buildSuggestions(context);
           },
-          icon: Icon(Icons.close))
+          icon: const Icon(Icons.close))
     ];
   }
 
@@ -300,7 +302,7 @@ class CustomSearchDelegate extends SearchDelegate {
         FocusManager.instance.primaryFocus?.unfocus();
         close(context, null);
       },
-      icon: Icon(Icons.arrow_back),
+      icon: const Icon(Icons.arrow_back),
     );
   }
 
@@ -332,14 +334,14 @@ class CustomSearchDelegate extends SearchDelegate {
               itemBuilder: (context, index) {
                 ProductModel result = snapshot.data![index];
                 return ListTile(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                   title: Text(result.productDetails.productName),
-                  trailing: Icon(Icons.arrow_forward_ios),
+                  trailing: const Icon(Icons.arrow_forward_ios),
                 );
               },
             );
           }
-          return SizedBox.shrink();
+          return const SizedBox.shrink();
         },
       );
     }
@@ -347,10 +349,10 @@ class CustomSearchDelegate extends SearchDelegate {
       itemCount: recent.length,
       itemBuilder: (context, index) {
         return ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 20),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20),
           title: Text(recent[index]),
-          leading: Icon(Icons.history_outlined),
-          trailing: Icon(Icons.arrow_forward_ios),
+          leading: const Icon(Icons.history_outlined),
+          trailing: const Icon(Icons.arrow_forward_ios),
           onTap: () {
             query = recent[index];
           },
@@ -373,7 +375,7 @@ class CustomSearchDelegate extends SearchDelegate {
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
             child: Text(
               "Search failed! Try again",
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyLarge ,
             ),
           );
         } else {
@@ -383,7 +385,7 @@ class CustomSearchDelegate extends SearchDelegate {
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
               child: Text(
                 "No products found",
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyLarge ,
               ),
             );
           }
@@ -392,9 +394,9 @@ class CustomSearchDelegate extends SearchDelegate {
             itemBuilder: (context, index) {
               ProductModel result = snapshot.data![index];
               return ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                 title: Text(result.productDetails.productName),
-                trailing: Icon(Icons.arrow_forward_ios),
+                trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {
                   if (!recent.contains(result.productDetails.productName)) {
                     recent.add(result.productDetails.productName);
@@ -416,7 +418,7 @@ class CustomSearchDelegate extends SearchDelegate {
     //     padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
     //     child: Text(
     //       "No products matched",
-    //       style: Theme.of(context).textTheme.bodyText1,
+    //       style: Theme.of(context).textTheme.bodyLarge ,
     //     ),
     //   );
     // }

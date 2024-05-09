@@ -75,141 +75,13 @@ def create_user(username, contact_info, info_type, password):
         cursor.close()
 
 
-# def get_product_data(category):
-#     # Replace with your actual logic to retrieve product data based on product_id
-#     # This could involve database queries, API calls, etc.
-#     # For this example, we'll return a sample product
-#     return { 'result': [{
-#             "categoryDetails": {
-#                 "_key": "cat_123",
-#                 "categoryName": "Electronics",
-#                 "categoryPicture": "http://127.0.0.1:5000/static/images/20"
-#             },
-#             "productDetails": {
-#                 "_key": "prod_456",
-#                 "productCategoryId": "cat_123",
-#                 "productDescription": "A high-quality smartphone with advanced features.",
-#                 "productName": "Smartphone X",
-#                 "productPicture": "http://127.0.0.1:5000/static/images/iphone11promax.png",
-#                 "reviews": [
-#                 {
-#                     "comment": "Great phone!",
-#                     "userId": "user_789"
-#                 },
-#                 {
-#                     "comment": "Excellent camera quality.",
-#                     "userId": "user_012"
-#                 }
-#                 ],
-#                 "variations": [
-#                 {
-#                     "availabilityQuantity": 10,
-#                     "discountPrice": 0,
-#                     "offerPrice": 999,
-#                     "quantity": 1,
-#                     "sellingPrice": 1099
-#                 },
-#                 {
-#                     "availabilityQuantity": 5,
-#                     "discountPrice": 50,
-#                     "offerPrice": 1449,
-#                     "quantity": 2,
-#                     "sellingPrice": 1599
-#                 }
-#                 ]
-#             }
-#         },
-#                 {
-#                 "categoryDetails": {
-#                     "_key": "cat_456",
-#                     "categoryName": "Home Appliances",
-#                     "categoryPicture": "http://127.0.0.1:5000/static/images/20"
-#                 },
-#                 "productDetails": {
-#                     "_key": "prod_789",
-#                     "productCategoryId": "cat_456",
-#                     "productDescription": "A modern refrigerator with ample storage space and energy-efficient features.",
-#                     "productName": "Refrigerator Z",
-#                     "productPicture": "http://127.0.0.1:5000/static/images/refrigerator.png",
-#                     "reviews": [
-#                     {
-#                         "comment": "Keeps food fresh for a long time!",
-#                         "userId": "user_321"
-#                     },
-#                     {
-#                         "comment": "Spacious and well-designed.",
-#                         "userId": "user_654"
-#                     }
-#                     ],
-#                     "variations": [
-#                     {
-#                         "availabilityQuantity": 8,
-#                         "discountPrice": 100,
-#                         "offerPrice": 1999,
-#                         "quantity": 1,
-#                         "sellingPrice": 2099
-#                     },
-#                     {
-#                         "availabilityQuantity": 3,
-#                         "discountPrice": 250,
-#                         "offerPrice": 3749,
-#                         "quantity": 2,
-#                         "sellingPrice": 3999
-#                     }
-#                     ]
-#                 }
-#                 },
-#                 {
-#                 "categoryDetails": {
-#                     "_key": "cat_456",
-#                     "categoryName": "Home Appliances",
-#                     "categoryPicture": "http://127.0.0.1:5000/static/images/"
-#                 },
-#                 "productDetails": {
-#                     "_key": "prod_789",
-#                     "productCategoryId": "cat_456",
-#                     "productDescription": "A modern refrigerator with ample storage space and energy-efficient features.",
-#                     "productName": "Hieu's Crush",
-#                     "productPicture": "http://127.0.0.1:5000/static/images/lover.png",
-#                     "reviews": [
-#                     {
-#                         "comment": "Keeps food fresh for a long time!",
-#                         "userId": "user_321"
-#                     },
-#                     {
-#                         "comment": "Spacious and well-designed.",
-#                         "userId": "user_654"
-#                     }
-#                     ],
-#                     "variations": [
-#                     {
-#                         "availabilityQuantity": 8,
-#                         "discountPrice": 100,
-#                         "offerPrice": 9999999999999999999,
-#                         "quantity": 52,
-#                         "sellingPrice": 2099
-#                     },
-#                     {
-#                         "availabilityQuantity": 3,
-#                         "discountPrice": 250,
-#                         "offerPrice": 3749,
-#                         "quantity": 2,
-#                         "sellingPrice": 3999
-#                     }
-#                     ]
-#                 }
-#                 }]
-#     }
-
-
-
-def get_product_data(category):
+def get_all_category():
     # Connect to DB
     connection = get_db_connection()
     cursor = connection.cursor()
     
     # Query to get category details
-    cursor.execute("SELECT _key, categoryName, categoryPicture FROM Categories WHERE _key=?", (category,))
+    cursor.execute("SELECT * FROM categories")
     category_details = cursor.fetchall()
     
     # List to hold the results
@@ -221,53 +93,87 @@ def get_product_data(category):
             "categoryName": category_detail[1],
             "categoryPicture": category_detail[2]
         }
-        
-        # Query to get product details
-        cursor.execute("SELECT _key, productCategoryId, productName, productDescription, productPicture FROM Products WHERE productCategoryId=?", (category_data["_key"],))
-        product_details = cursor.fetchall()
-        
-        for product_detail in product_details:
-            product_data = {
-                "_key": product_detail[0],
-                "productCategoryId": product_detail[1],
-                "productDescription": product_detail[2],
-                "productName": product_detail[3],
-                "productPicture": product_detail[4],
-                "reviews": [],
-                "variations": []
-            }
-            
-            # Query to get reviews
-            cursor.execute("SELECT userId, comment FROM Reviews WHERE productKey=?", (product_data["_key"],))
-            reviews = cursor.fetchall()
-            for review in reviews:
-                product_data["reviews"].append({
-                    "userId": review[0],
-                    "comment": review[1]
-                })
-            
-            # Query to get variations
-            cursor.execute("SELECT availabilityQuantity, discountPrice, offerPrice, quantity, sellingPrice FROM Variations WHERE productKey=?", (product_data["_key"],))
-            variations = cursor.fetchall()
-            for variation in variations:
-                product_data["variations"].append({
-                    "availabilityQuantity": variation[0],
-                    "discountPrice": variation[1],
-                    "offerPrice": variation[2],
-                    "quantity": variation[3],
-                    "sellingPrice": variation[4]
-                })
-            
-            results.append({
-                "categoryDetails": category_data,
-                "productDetails": product_data
-            })
+        results.append(category_data)
+    return jsonify({'result': results})
+
+
+def get_category_from_product(product_key):
+    # Connect to DB
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    # Query to get category keys for the given product
+    cursor.execute("""
+        SELECT c._key
+        FROM Categories c
+        INNER JOIN product_categories pc ON c._key = pc.category_key
+        WHERE pc.product_key = ?
+    """, (product_key,))
+
+    category_keys = [row[0] for row in cursor.fetchall()]  # Extract category keys
+
+    return category_keys  # Return a list of category keys
     
+
+
+def get_product_from_category(category_key):  # Use category_key for consistency
+    # Connect to DB
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    # Query to get category details (use JOIN for efficiency)
+    cursor.execute("""
+        SELECT c._key, c.categoryName, c.categoryPicture, 
+               p._key, p.productName, p.productDescription, p.productPicture
+        FROM categories c
+        INNER JOIN product_categories pc ON c._key = pc.category_key
+        INNER JOIN products p ON pc.product_key = p._key
+        WHERE c._key = ?
+    """, (category_key,))
+
+    results = []
+    for row in cursor.fetchall():
+        category_data = {
+            "_key": row[0],
+            "categoryName": row[1],
+            "categoryPicture": row[2]
+        }
+
+        product_data = {
+            "_key": row[3],
+            "productCategoryId": get_category_from_product(row[3]),
+            "productName": row[4],
+            "productDescription": row[5],
+            "productPicture": row[6],
+            "reviews": [],
+            "variations": []
+        }
+
+        # Query to get reviews (using product_data["_key"] directly)
+        cursor.execute("SELECT userId, comment FROM Reviews WHERE productKey=?", (product_data["_key"],))
+        for review in cursor.fetchall():
+            product_data["reviews"].append({
+                "userId": review[0],
+                "comment": review[1]
+            })
+
+        # Query to get variations (using product_data["_key"] directly)
+        cursor.execute("SELECT availabilityQuantity, discountPrice, offerPrice, quantity, sellingPrice FROM Variations WHERE productKey=?", (product_data["_key"],))
+        for variation in cursor.fetchall():
+            product_data["variations"].append({
+                "availabilityQuantity": variation[0],
+                "discountPrice": variation[1],
+                "offerPrice": variation[2],
+                "quantity": variation[3],
+                "sellingPrice": variation[4]
+            })
+
+        results.append({
+            "categoryDetails": category_data,
+            "productDetails": product_data
+        })
+
     # Close connection
     connection.close()
-    
-    # Return the result as json
-    return jsonify({'result': results })
 
-# Example use:
-# print(get_product_data('Electronics')) # Pass the category name as parameter
+    return jsonify({'result': results})

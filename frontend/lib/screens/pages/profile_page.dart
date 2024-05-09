@@ -1,12 +1,12 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
 import 'package:ali33/bloc/cart_bloc.dart';
 import 'package:ali33/constants/route_animation.dart';
 import 'package:ali33/models/user_model.dart';
 import 'package:ali33/screens/cart.dart';
 import 'package:ali33/screens/delivery_address.dart';
 import 'package:ali33/screens/login.dart';
-import 'package:ali33/screens/order_track.dart';
 import 'package:ali33/screens/orders.dart';
-import 'package:ali33/screens/place_order.dart';
 import 'package:ali33/screens/profile.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/services/theme_provider_service.dart';
@@ -86,7 +86,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           userModel: snapshots.data!,
                         )),
                       );
-                      if (res != null && res) {
+                      if (res) {
                         await getCurrentUser();
                         setState(() {});
                       }
@@ -98,7 +98,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
                       child: Container(
-                        padding: EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(16),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -108,7 +108,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Text(snapshots.data!.shopName,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline1!
+                                        .displayLarge!
                                         .copyWith(
                                             fontWeight: FontWeight.bold,
                                             color: Colors.white)),
@@ -116,39 +116,39 @@ class _ProfilePageState extends State<ProfilePage> {
                                   "Edit",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyText1!
+                                      .bodyLarge !
                                       .copyWith(color: Colors.white),
                                 )
                               ],
                             ),
-                            SizedBox(height: 5),
+                            const SizedBox(height: 5),
                             Row(
                               children: [
-                                Icon(Icons.phone, color: Colors.white),
-                                SizedBox(width: 8),
+                                const Icon(Icons.phone, color: Colors.white),
+                                const SizedBox(width: 8),
                                 Text(
                                   "9502493929",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline3!
+                                      .displaySmall!
                                       .copyWith(
                                         color: Colors.white,
                                       ),
                                 ),
                               ],
                             ),
-                            SizedBox(height: 5),
+                            const SizedBox(height: 5),
                             Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.email,
                                   color: Colors.white,
                                 ),
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 Text(snapshots.data!.emailId,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline3!
+                                        .displaySmall!
                                         .copyWith(
                                           color: Colors.white,
                                         )),
@@ -162,7 +162,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   SizedBox(height: size.height * 0.05),
                   ListView(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     children: [
                       buildItem(
                           "Cart Items",
@@ -177,11 +177,11 @@ class _ProfilePageState extends State<ProfilePage> {
                       buildItem(
                           "Orders",
                           () => Navigator.push(
-                              context, SlideLeftRoute(widget: OrdersScreen()))),
+                              context, SlideLeftRoute(widget: const OrdersScreen()))),
                       buildItem(
                           "My Address",
                           () => Navigator.push(context,
-                              SlideLeftRoute(widget: DeliveryAddressScreen()))),
+                              SlideLeftRoute(widget: const DeliveryAddressScreen()))),
                       buildItem(
                           "Theme Mode",
                           () => {
@@ -199,14 +199,14 @@ class _ProfilePageState extends State<ProfilePage> {
                         Navigator.pushAndRemoveUntil(
                             context,
                             SlideRightRoute(
-                                widget: LoginScreen(isEditing: false)),
+                                widget: const LoginScreen(isEditing: false)),
                             (route) => false);
                       }
                     },
                     child: Container(
                       width: 150,
                       padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Theme.of(context).primaryColor,
@@ -216,12 +216,12 @@ class _ProfilePageState extends State<ProfilePage> {
                           Text(
                             "Logout",
                             style:
-                                Theme.of(context).textTheme.headline1!.copyWith(
+                                Theme.of(context).textTheme.displayLarge!.copyWith(
                                       color: Colors.white,
                                     ),
                           ),
-                          SizedBox(width: 10),
-                          Icon(
+                          const SizedBox(width: 10),
+                          const Icon(
                             Icons.logout_outlined,
                             color: Colors.white,
                           )
@@ -246,13 +246,13 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               Text(
                 title,
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.displaySmall,
               ),
-              Icon(Icons.keyboard_arrow_right, size: 30)
+              const Icon(Icons.keyboard_arrow_right, size: 30)
             ],
           ),
-          SizedBox(height: 2),
-          Divider(thickness: 2),
+          const SizedBox(height: 2),
+          const Divider(thickness: 2),
         ],
       ),
     );

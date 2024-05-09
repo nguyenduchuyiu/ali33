@@ -47,7 +47,7 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Order Tracking"),
+        title: const Text("Order Tracking"),
       ),
       body: Container(
         height: size.height,
@@ -56,20 +56,20 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               widget.orderCombinedModel.orderDetails.orderedDate
                   .toLocal()
                   .toString()
                   .split(" ")[0],
-              style: Theme.of(context).textTheme.headline3,
+              style: Theme.of(context).textTheme.displaySmall,
             ),
             Text("Order ID: ${widget.orderCombinedModel.orderDetails.key}",
-                style: Theme.of(context).textTheme.headline1),
+                style: Theme.of(context).textTheme.displayLarge),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
+                SizedBox(
                   height: size.height * 0.6,
                   width: size.width * 0.2,
                   child: IconStepper(
@@ -87,29 +87,27 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
                     icons:
                         // List<Icon>.from(widget.orderCombinedModel.orderDetails.deliveryStages.map((e) =>  Icon(Icons.check, color: Colors.white)))
                         [
-                      widget.orderCombinedModel.orderDetails.deliveryStages
-                                  .length >
-                              0
-                          ? Icon(Icons.check, color: Colors.white)
-                          : Icon(Icons.radio_button_checked,
+                      widget.orderCombinedModel.orderDetails.deliveryStages.isNotEmpty
+                          ? const Icon(Icons.check, color: Colors.white)
+                          : const Icon(Icons.radio_button_checked,
                               color: Colors.green),
                       widget.orderCombinedModel.orderDetails.deliveryStages
                                   .length >
                               1
-                          ? Icon(Icons.check, color: Colors.white)
-                          : Icon(Icons.radio_button_checked,
+                          ? const Icon(Icons.check, color: Colors.white)
+                          : const Icon(Icons.radio_button_checked,
                               color: Colors.green),
                       widget.orderCombinedModel.orderDetails.deliveryStages
                                   .length >
                               2
-                          ? Icon(Icons.check, color: Colors.white)
-                          : Icon(Icons.radio_button_checked,
+                          ? const Icon(Icons.check, color: Colors.white)
+                          : const Icon(Icons.radio_button_checked,
                               color: Colors.green),
                       widget.orderCombinedModel.orderDetails.deliveryStages
                                   .length >
                               3
-                          ? Icon(Icons.check, color: Colors.white)
-                          : Icon(Icons.radio_button_checked,
+                          ? const Icon(Icons.check, color: Colors.white)
+                          : const Icon(Icons.radio_button_checked,
                               color: Colors.green),
                     ],
                   ),
@@ -117,18 +115,18 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
                 Expanded(
                   child: ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     padding: EdgeInsets.zero,
                     itemCount: widget
                         .orderCombinedModel.orderDetails.deliveryStages.length,
                     itemBuilder: (context, index) {
                       return Row(
                         children: [
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.width / 1.5,
                             child: ListTile(
                               contentPadding:
-                                  EdgeInsets.symmetric(vertical: 16.0),
+                                  const EdgeInsets.symmetric(vertical: 16.0),
                               leading: Icon(
                                 getIcon(index),
                                 size: 40.0,
@@ -138,12 +136,12 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
                                 getTitel(index),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline4!
+                                    .headlineMedium!
                                     .copyWith(fontWeight: FontWeight.bold),
                               ),
                               subtitle: Text(
                                 "${widget.orderCombinedModel.orderDetails.deliveryStages[index]}",
-                                style: TextStyle(fontSize: 14.0),
+                                style: const TextStyle(fontSize: 14.0),
                               ),
                             ),
                           ),
@@ -162,13 +160,13 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
               child: Container(
-                margin: EdgeInsets.symmetric(vertical: 0),
+                margin: const EdgeInsets.symmetric(vertical: 0),
                 width: size.width,
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(Icons.home, size: 60),
+                    const Icon(Icons.home, size: 60),
                     SizedBox(
                       width: size.width * 0.7,
                       child: Column(
@@ -176,7 +174,7 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
                         children: [
                           Text(
                             "Sai Teja Dande",
-                            style: Theme.of(context).textTheme.headline1,
+                            style: Theme.of(context).textTheme.displayLarge,
                           ),
                           SizedBox(
                             width: size.width * 0.7,
@@ -184,13 +182,13 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
                               widget.orderCombinedModel.orderDetails
                                   .deliveryAddress.address,
                               maxLines: 4,
-                              style: Theme.of(context).textTheme.headline4,
+                              style: Theme.of(context).textTheme.headlineMedium,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           Text(
                             "Phone number: 4181984929052",
-                            style: Theme.of(context).textTheme.headline3,
+                            style: Theme.of(context).textTheme.displaySmall,
                           ),
                         ],
                       ),

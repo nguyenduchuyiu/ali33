@@ -1,8 +1,7 @@
-import logging
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from security import check_password, create_jwt_token
-from database_module import get_product_data, get_user, is_registered, create_user
+from database_module import get_all_category, get_product_from_category, get_user, is_registered, create_user
 from dotenv import load_dotenv
 from flask_jwt_extended import jwt_required, get_jwt_identity
 load_dotenv('backend\key.env')
@@ -131,35 +130,27 @@ def get_products_by_category():
     if not category:
         return jsonify({"error": "Category parameter is required"}), 400
     
-    product_data_list = get_product_data(category=category)  # Adapt to fetch by category
+    product_data_list = get_product_from_category(category)  # Adapt to fetch by category
     
     if product_data_list:
         return product_data_list, 200
     else:
         return jsonify({"error": "Products not found for the given category"}), 404
-
     
-UPLOAD_FOLDER = 'backend/assets/images'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-import os
-@app.route('/', methods=['GET', 'POST'])
-def upload_file():
-    if request.method == 'POST':
-        if 'image' not in request.files:
-            return 'Không có file được chọn'
-        file = request.files['image']
-        if file.filename == '':
-            return 'Không có file được chọn'
-        filename = file.filename
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(filepath)
-        return 'File đã được upload!'
-    return render_template('upload.html')
+    
+@app.route('/products/get-all-categories')
+def get_categories_by_category(): 
+    category_data_list = get_all_category()
+    
+    if category_data_list:
+        return category_data_list, 200
+    else:
+        return jsonify({"error": "Categories not found"}), 404
 
-@app.route('/images/<string:product_name>')
-def get_image(product_name):
-    image_path = f'/static/images/{product_name}.png'
-    return render_template('template.html', image_path=image_path)
+# @app.route('/images/<string:product_name>')
+# def get_image(product_name):
+#     image_path = f'/static/images/{product_name}.png'
+#     return render_template('template.html', image_path=image_path)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)

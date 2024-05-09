@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, avoid_print, use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:ali33/constants/route_animation.dart';
@@ -70,14 +72,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Text(
                 "Choose Option",
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: 5),
               GestureDetector(
                 onTap: () => Navigator.pop(context, "gallery"),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
+                  children: [
                     Text("Pick from Gallery"),
                     Icon(Icons.photo)
                   ],
@@ -86,9 +88,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 5),
               GestureDetector(
                 onTap: () => Navigator.pop(context, "camera"),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
+                  children: [
                     Text("Pick from Gallery"),
                     Icon(Icons.camera_alt),
                   ],
@@ -184,8 +186,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 8),
-              // title: Text("Log out of The Leaflet?",style: Theme.of(context).textTheme.headline5,),
+              contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+              // title: Text("Log out of The Leaflet?",style: Theme.of(context).textTheme.headlineSmall ,),
               content: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,12 +195,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   Text(
                     "Are you sure? You want to Delete your Account",
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Theme.of(context).textTheme.headlineSmall ,
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 10),
-                  Text("You will loose all your categories, bookmarks."),
-                  SizedBox(height: 30),
+                  const SizedBox(height: 10),
+                  const Text("You will loose all your categories, bookmarks."),
+                  const SizedBox(height: 30),
                   // Container(
                   //   height: 1,
                   //   width: double.infinity,
@@ -207,21 +209,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   // SizedBox(height: 8),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      fixedSize: Size(double.maxFinite - 10, 48), backgroundColor: Colors.blueAccent,
+                      fixedSize: const Size(double.maxFinite - 10, 48), backgroundColor: Colors.blueAccent,
                     ),
                     onPressed: () => Navigator.pop(context, false),
-                    child: Text(
+                    child: const Text(
                       "Cancel",
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      fixedSize: Size(double.maxFinite - 10, 48), backgroundColor: Theme.of(context).primaryColor,
+                      fixedSize: const Size(double.maxFinite - 10, 48), backgroundColor: Theme.of(context).primaryColor,
                     ),
                     onPressed: () => Navigator.pop(context, true),
-                    child: Text(
+                    child: const Text(
                       "Delete",
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
@@ -509,19 +511,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Text("Email",
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline2!
+                                  .displayMedium!
                                   .copyWith(fontWeight: FontWeight.bold)),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           GestureDetector(
-                            child: Icon(Icons.edit),
+                            child: const Icon(Icons.edit),
                             onTap: () async {
                               String res = await Navigator.push(
                                 context,
                                 SlideLeftRoute(
-                                    widget: LoginScreen(isEditing : false)),
+                                    widget: const LoginScreen(isEditing : false)),
                               );
-                              if (res != null && res != "")
+                              if (res != "") {
                                 _emailController.text = res;
+                              }
                             },
                           )
                         ],
@@ -564,19 +567,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Text("Phone",
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline2!
+                                  .displayMedium!
                                   .copyWith(fontWeight: FontWeight.bold)),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           GestureDetector(
-                              child: Icon(Icons.edit),
+                              child: const Icon(Icons.edit),
                               onTap: () async {
                                 String res = await Navigator.push(
                                   context,
                                   SlideLeftRoute(
-                                      widget: LoginScreen(isEditing : false)),
+                                      widget: const LoginScreen(isEditing : false)),
                                 );
-                                if (res != null && res != "")
+                                if (res != "") {
                                   _phoneController.text = res;
+                                }
                               })
                         ],
                       ),
@@ -631,7 +635,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       title,
       style: Theme.of(context)
           .textTheme
-          .headline2!
+          .displayMedium!
           .copyWith(fontWeight: FontWeight.bold),
     );
   }

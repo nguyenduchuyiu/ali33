@@ -1,6 +1,10 @@
+// ignore_for_file: avoid_print
+
 import 'package:ali33/bloc/products_bloc.dart';
-import 'package:ali33/constants/route_animation.dart';
 import 'package:ali33/models/product_model.dart';
+import 'package:ali33/screens/home.dart';
+import 'package:ali33/screens/login.dart';
+import 'package:ali33/screens/pages/home_page.dart';
 import 'package:ali33/screens/products.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
@@ -48,7 +52,7 @@ class _ProductsPageState extends State<ProductsPage> {
           return Container(
             alignment: Alignment.center,
             child: Text("No Categories Found",
-                style: Theme.of(context).textTheme.headline3),
+                style: Theme.of(context).textTheme.displaySmall),
           );
         }
         print(snapshots.data);
@@ -59,10 +63,10 @@ class _ProductsPageState extends State<ProductsPage> {
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
             itemCount: snapshots.data!.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+              crossAxisCount: 4,
               crossAxisSpacing: 5,
               mainAxisSpacing: 5,
-              childAspectRatio: 0.9,
+              childAspectRatio: 1,
             ),
             itemBuilder: (context, index) {
               CategoryDetails category = snapshots.data![index];
@@ -83,7 +87,7 @@ class _ProductsPageState extends State<ProductsPage> {
                 },
                 child: Card(
                     elevation: 5,
-                    shadowColor: Color(0xffFFA500).withOpacity(0.3),
+                    shadowColor: const Color(0xffFFA500).withOpacity(0.3),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                     child: Padding(
@@ -93,12 +97,19 @@ class _ProductsPageState extends State<ProductsPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          buildPhoto(
-                              category.categoryPicture, size.height * 0.2),
-                          SizedBox(height: 10),
+                            Expanded(
+                              child:Center(
+                                child: buildPhoto(
+                                        category.categoryPicture, 
+                                        size.height,
+                                        300,
+                                        BoxFit.contain  )
+                              )
+                            ),
+                          const SizedBox(height: 10),
                           Text(
                             category.categoryName,
-                            style: Theme.of(context).textTheme.headline2,
+                            style: Theme.of(context).textTheme.displayMedium,
                           ),
                         ],
                       ),

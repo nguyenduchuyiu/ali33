@@ -124,12 +124,12 @@
 //                 children: [
 //                   Text(
 //                     'OTP Verification',
-//                     style: Theme.of(context).textTheme.headline1,
+//                     style: Theme.of(context).textTheme.displayLarge,
 //                   ),
 //                   SizedBox(height: 5),
 //                   Text(
 //                     "We've sent your code to ${widget.primary}",
-//                     style: Theme.of(context).textTheme.headline3,
+//                     style: Theme.of(context).textTheme.displaySmall,
 //                     maxLines: 1,
 //                     overflow: TextOverflow.ellipsis,
 //                   ),
@@ -139,7 +139,7 @@
 //                     children: [
 //                       Text(
 //                         "This code expires in ",
-//                         style: Theme.of(context).textTheme.bodyText1,
+//                         style: Theme.of(context).textTheme.bodyLarge ,
 //                       ),
 //                       Countdown(
 //                         animation: StepTween(
@@ -340,7 +340,7 @@
 //                           'Resend OTP',
 //                           style: Theme.of(context)
 //                               .textTheme
-//                               .headline3!
+//                               .displaySmall!
 //                               .copyWith(
 //                                   fontWeight: FontWeight.w800,
 //                                   decoration: TextDecoration.underline,

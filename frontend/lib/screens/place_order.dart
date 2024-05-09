@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, must_be_immutable
+
 import 'package:ali33/constants/constant_values.dart';
 import 'package:ali33/models/cart_item_model.dart';
 import 'package:ali33/models/order_model.dart';
@@ -28,7 +30,7 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Order Now"),
+        title: const Text("Order Now"),
         automaticallyImplyLeading: false,
         leading: BackButton(
           onPressed: () => Navigator.pop(context, false),
@@ -37,17 +39,17 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
       body: Stack(
         children: [
           ListView(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 10),
-              Text("Address", style: Theme.of(context).textTheme.headline1),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
+              Text("Address", style: Theme.of(context).textTheme.displayLarge),
+              const SizedBox(height: 10),
               Row(
                 children: [
                   Image.asset("images/map.png",
                       width: size.width * 0.4, fit: BoxFit.contain),
-                  SizedBox(width: 20),
+                  const SizedBox(width: 20),
                   SizedBox(
                     width: size.width * 0.45,
                     child: Column(
@@ -55,11 +57,11 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                       children: [
                         Text(
                           "Sai Teja D",
-                          style: Theme.of(context).textTheme.headline2,
+                          style: Theme.of(context).textTheme.displayMedium,
                         ),
                         Text(
                           "41/D, jubliee hills Road no 5 Hyderabad, Telangana, 500033 India",
-                          style: Theme.of(context).textTheme.bodyText2,
+                          style: Theme.of(context).textTheme.bodyMedium ,
                         ),
                       ],
                     ),
@@ -68,12 +70,12 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
               ),
               SizedBox(height: size.height * 0.02),
               Text("Payment Method",
-                  style: Theme.of(context).textTheme.headline1),
+                  style: Theme.of(context).textTheme.displayLarge),
               SizedBox(height: size.height * 0.01),
               Card(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
-                child: Container(
+                child: SizedBox(
                   height: size.height * 0.15,
                   width: size.width,
                   // decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
@@ -88,9 +90,9 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                           Text("Pay On Delivery / Cash On Delivery",
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline4!
+                                  .headlineMedium!
                                   .copyWith(fontWeight: FontWeight.w600)),
-                          Text(
+                          const Text(
                               "you can pay money directly when order reaches you.")
                         ],
                       ),
@@ -100,13 +102,13 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
               ),
               SizedBox(height: size.height * 0.02),
               Text("Payment Details",
-                  style: Theme.of(context).textTheme.headline1),
+                  style: Theme.of(context).textTheme.displayLarge),
               SizedBox(height: size.height * 0.01),
               Card(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                   child: Column(
                     children: [
                       Row(
@@ -114,49 +116,49 @@ class _PlaceOrderScreenState extends State<PlaceOrderScreen> {
                         children: [
                           Text(
                             "Shipping Cost",
-                            style: Theme.of(context).textTheme.headline3,
+                            style: Theme.of(context).textTheme.displaySmall,
                           ),
                           Text(
                             "$dollarSymbol 40",
                             style: Theme.of(context)
                                 .textTheme
-                                .headline3!
+                                .displaySmall!
                                 .copyWith(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             "Subtotal",
-                            style: Theme.of(context).textTheme.headline3,
+                            style: Theme.of(context).textTheme.displaySmall,
                           ),
                           Text(
                             dollarSymbol + widget.subTotal.toString(),
                             style: Theme.of(context)
                                 .textTheme
-                                .headline3!
+                                .displaySmall!
                                 .copyWith(fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
-                      SizedBox(height: 5),
-                      Divider(thickness: 2),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 5),
+                      const Divider(thickness: 2),
+                      const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             "Total",
-                            style: Theme.of(context).textTheme.headline1,
+                            style: Theme.of(context).textTheme.displayLarge,
                           ),
                           Text(
                             dollarSymbol + (widget.subTotal + 40).toString(),
                             style: Theme.of(context)
                                 .textTheme
-                                .headline1!
+                                .displayLarge!
                                 .copyWith(fontWeight: FontWeight.bold),
                           ),
                         ],

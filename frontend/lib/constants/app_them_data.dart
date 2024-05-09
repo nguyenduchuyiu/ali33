@@ -11,7 +11,7 @@ class AppThemeData {
       secondary: const Color(0xffCCAB9D),
     ),
 
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       iconTheme: IconThemeData(color: Colors.white),
     ),
 
@@ -22,38 +22,38 @@ class AppThemeData {
     fontFamily: "Inter",
 
     textTheme: const TextTheme(
-      headline1: TextStyle(
+      displayLarge: TextStyle(
         fontSize: 22,
         fontWeight: FontWeight.w700,
         color: Colors.black,
       ),
-      headline2: TextStyle(
+      displayMedium: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.w600,
         color: Colors.black,
       ),
-      headline3: TextStyle(
+      displaySmall: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w500,
         color: Colors.black,
       ),
-      headline4: TextStyle(
+      headlineMedium: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w400,
         color: Colors.black,
       ),
-      headline5: TextStyle(
+      headlineSmall : TextStyle(
         color: Colors.black,
       ),
-      headline6: TextStyle(
+      titleLarge : TextStyle(
         color: Colors.black,
       ),
-      bodyText1: TextStyle(
+      bodyLarge : TextStyle(
         fontSize: 14,
         color: Colors.black,
         fontWeight: FontWeight.w600,
       ),
-      bodyText2: TextStyle(
+      bodyMedium : TextStyle(
         fontSize: 14,
         color: Colors.black,
       ),
@@ -66,7 +66,7 @@ class AppThemeData {
       primary: const Color(0xffF67552),
       secondary: const Color(0xffCCAB9D),
     ),
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       iconTheme: IconThemeData(color: Colors.white),
     ),
     iconTheme: const IconThemeData(
@@ -74,29 +74,29 @@ class AppThemeData {
     ),
     fontFamily: "Inter",
     textTheme: const TextTheme(
-      headline1: TextStyle(
+      displayLarge: TextStyle(
         fontSize: 22,
         fontWeight: FontWeight.w700,
       ),
-      headline2: TextStyle(
+      displayMedium: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.w600,
       ),
-      headline3: TextStyle(
+      displaySmall: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w500,
       ),
-      headline4: TextStyle(
+      headlineMedium: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w400,
       ),
-      headline5: TextStyle(),
-      headline6: TextStyle(),
-      bodyText1: TextStyle(
+      headlineSmall : TextStyle(),
+      titleLarge : TextStyle(),
+      bodyLarge : TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.w600,
       ),
-      bodyText2: TextStyle(
+      bodyMedium : TextStyle(
         fontSize: 14,
       ),
     ).apply(displayColor: Colors.white),

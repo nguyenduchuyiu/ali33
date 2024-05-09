@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, prefer_interpolation_to_compose_strings
+
 import 'dart:io';
 import 'package:ali33/models/cart_item_model.dart';
 import 'package:ali33/models/order_item_model.dart';
@@ -22,10 +24,10 @@ class ApiService {
   final String productBaseUrl = "http://127.0.0.1:5000/products";
   final String orderBaseUrl = "http://127.0.0.1:5000/orders";
 
-  // final String baseUrl = "http://192.168.1.76:5000";
-  // final String userBaseUrl = "http://192.168.1.76:5000/users";
-  // final String productBaseUrl = "http://192.168.1.76:5000/products";
-  // final String orderBaseUrl = "http://192.168.1.76:5000/orders";
+  // final String baseUrl = "http://192.168.0.101:5000";
+  // final String userBaseUrl = "http://192.168.0.101:5000/users";
+  // final String productBaseUrl = "http://192.168.0.101:5000/products";
+  // final String orderBaseUrl = "http://192.168.0.101:5000/orders";
 
   Future<bool?> checkUser(Map<String, String> data) async {
     try {
@@ -168,7 +170,7 @@ class ApiService {
       UserModel user = UserModel.fromJson(response.data!["result"]);
       return user;
     } on DioException catch (e) {
-      print("dio error occured: ${e}");
+      print("dio error occured: $e");
       if (e.error is SocketException) {
         internetToastMessage();
       } else {
