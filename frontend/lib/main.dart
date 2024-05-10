@@ -127,7 +127,7 @@ class MyApp extends StatelessWidget {
                 : AppThemeData.lightTheme,
             home: ConnectionCheckWrapper( // Wrap ConnectionCheckWrapper inside MaterialApp
               child: token != null
-                  ? const HomeScreen()
+                  ? const HomeScreen(selectedPage: 0,)
                   : const LoginScreen(isEditing: false),
             ),
           );

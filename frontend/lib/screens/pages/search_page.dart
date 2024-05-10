@@ -1,9 +1,12 @@
 // ignore_for_file: unnecessary_brace_in_string_interps, avoid_print
 
 import 'package:ali33/models/product_model.dart';
+import 'package:ali33/screens/home.dart';
+import 'package:ali33/screens/search_results_page.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SearchPage extends StatefulWidget {
@@ -173,10 +176,10 @@ class _SearchPageState extends State<SearchPage> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
+        crossAxisCount: 4,
         mainAxisSpacing: 5,
         crossAxisSpacing: 5,
-        childAspectRatio: 3,
+        childAspectRatio: 4,
       ),
       itemBuilder: (context, index) {
         return Container(
@@ -213,10 +216,10 @@ class _SearchPageState extends State<SearchPage> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
+              crossAxisCount: 4,
               mainAxisSpacing: 5,
               crossAxisSpacing: 5,
-              childAspectRatio: 3,
+              childAspectRatio: 4,
             ),
             itemBuilder: (context, index) {
               return Container(
@@ -308,7 +311,12 @@ class CustomSearchDelegate extends SearchDelegate {
 
   @override
   void showResults(BuildContext context) {
-    // TODO: implement showResults
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => SearchResultsScreen(query: query),
+    //   ),
+    // );
     super.showResults(context);
   }
 
@@ -319,13 +327,11 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     // recent = recent.reversed.toList();
-    print("suggestions");
 
     if (query.isNotEmpty) {
       return FutureBuilder<List<ProductModel>>(
         future: searchProduct(),
         builder: (context, snapshot) {
-          print("future");
           if (snapshot.connectionState == ConnectionState.waiting) {
             return loadingAnimation();
           } else if (snapshot.connectionState == ConnectionState.done) {
@@ -361,66 +367,103 @@ class CustomSearchDelegate extends SearchDelegate {
     );
   }
 
-  @override
-  Widget buildResults(BuildContext context) {
-    // if (query.isNotEmpty) {
-    return FutureBuilder<List<ProductModel>>(
-      future: searchProduct(),
-      builder: (context, snapshot) {
-        print("future");
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return loadingAnimation();
-        } else if (snapshot.hasError) {
+@override
+Widget buildResults(BuildContext context) {
+  return FutureBuilder<List<ProductModel>>(
+    future: searchProduct(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return loadingAnimation();
+      } else if (snapshot.hasError) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
+          child: Text(
+            "Search failed! Try again",
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        );
+      } else {
+        if (snapshot.data!.isNotEmpty) {
+          if (!recent.contains(query)) {
+            recent.add(query);
+            if (recent.length > 6) {
+              recent.removeAt(0);
+            }
+            prefs.setStringList("searches", recent);
+          }
+          // Navigate to SearchResultScreen and pass the data
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SearchResultsScreen(results: snapshot.data!, searchTerm: query,),
+              ),
+            );
+          });
+          // Display an empty container while navigating
+          return const SizedBox.shrink();
+        } else {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
             child: Text(
-              "Search failed! Try again",
-              style: Theme.of(context).textTheme.bodyLarge ,
+              "No products found",
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
           );
-        } else {
-          // else if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.data!.isEmpty) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
-              child: Text(
-                "No products found",
-                style: Theme.of(context).textTheme.bodyLarge ,
-              ),
-            );
-          }
-          return ListView.builder(
-            itemCount: snapshot.data!.length,
-            itemBuilder: (context, index) {
-              ProductModel result = snapshot.data![index];
-              return ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                title: Text(result.productDetails.productName),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  if (!recent.contains(result.productDetails.productName)) {
-                    recent.add(result.productDetails.productName);
-                    if (recent.length > 6) {
-                      recent.removeAt(0);
-                    }
-                    prefs.setStringList("searches", recent);
-                  }
-                },
-              );
-            },
-          );
         }
-        // return SizedBox.shrink();
-      },
-    );
-    // } else {
-    //   return Padding(
-    //     padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
-    //     child: Text(
-    //       "No products matched",
-    //       style: Theme.of(context).textTheme.bodyLarge ,
-    //     ),
-    //   );
-    // }
-  }
+      }
+    },
+  );
+}
+
+  // @override
+  // Widget buildResults(BuildContext context) {
+  //   return FutureBuilder<List<ProductModel>>(
+  //     future: searchProduct(),
+  //     builder: (context, snapshot) {
+  //       if (snapshot.connectionState == ConnectionState.waiting) {
+  //         return loadingAnimation();
+  //       } else if (snapshot.hasError) {
+  //         return Padding(
+  //           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
+  //           child: Text(
+  //             "Search failed! Try again",
+  //             style: Theme.of(context).textTheme.bodyLarge ,
+  //           ),
+  //         );
+  //       } else {
+  //         if (snapshot.data!.isEmpty) {
+  //           return Padding(
+  //             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
+  //             child: Text(
+  //               "No products found",
+  //               style: Theme.of(context).textTheme.bodyLarge ,
+  //             ),
+  //           );
+  //         }
+  //         return ListView.builder(
+  //           itemCount: snapshot.data!.length,
+  //           itemBuilder: (context, index) {
+  //             ProductModel result = snapshot.data![index];
+  //             return ListTile(
+  //               contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+  //               title: Text(result.productDetails.productName),
+  //               trailing: const Icon(Icons.arrow_forward_ios),
+  //               onTap: () {
+  //                 if (!recent.contains(result.productDetails.productName)) {
+  //                   recent.add(result.productDetails.productName);
+  //                   if (recent.length > 6) {
+  //                     recent.removeAt(0);
+  //                   }
+  //                   prefs.setStringList("searches", recent);
+  //                 }
+  //               },
+  //             );
+  //           },
+  //         );
+  //       }
+  //       // return SizedBox.shrink();
+  //     },
+  //   );
+  // }
 }

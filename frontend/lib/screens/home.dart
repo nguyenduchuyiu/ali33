@@ -5,7 +5,8 @@ import 'package:ali33/screens/pages/search_page.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final int selectedPage;
+  const HomeScreen({super.key, required this.selectedPage});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -22,11 +23,12 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> dummyPages = [
     const HomePage(),
     const SizedBox(),
-    const SizedBox(),
+    const SearchPage(),
     const SizedBox(),
   ];
   @override
   void initState() {
+    _selectedPage = widget.selectedPage;
     super.initState();
   }
 
@@ -48,10 +50,11 @@ class _HomeScreenState extends State<HomeScreen> {
         currentIndex: _selectedPage,
         onTap: (int page) {
           setState(() {
-            if(page == 1){
+            if(page == 0){
             dummyPages[page] = _pages[page];
-            }
-            else if(page ==2){
+            }else if(page == 1){
+            dummyPages[page] = _pages[page];
+            }else if(page ==2){
               dummyPages[page] = _pages[page];
             }else if(page ==3 ){
               dummyPages[page] = _pages[page];

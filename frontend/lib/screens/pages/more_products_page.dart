@@ -2,9 +2,6 @@
 
 import 'package:ali33/bloc/products_bloc.dart';
 import 'package:ali33/models/product_model.dart';
-import 'package:ali33/screens/home.dart';
-import 'package:ali33/screens/login.dart';
-import 'package:ali33/screens/pages/home_page.dart';
 import 'package:ali33/screens/products.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
@@ -33,12 +30,10 @@ class _ProductsPageState extends State<ProductsPage> {
   void initState() {
     super.initState();
     getCategories();
-    // print("prducts");
   }
 
   @override
   Widget build(BuildContext context) {
-    print("prducts");
     Size size = MediaQuery.of(context).size;
     return FutureBuilder<List<CategoryDetail>>(
       future: categories,
@@ -55,7 +50,6 @@ class _ProductsPageState extends State<ProductsPage> {
                 style: Theme.of(context).textTheme.displaySmall),
           );
         }
-        print(snapshots.data);
         return SizedBox(
           height: size.height,
           width: size.width,

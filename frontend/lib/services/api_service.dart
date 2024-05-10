@@ -52,7 +52,6 @@ class ApiService {
     try {
       Response<Map<String, dynamic>> response =
           await _dio.post("$userBaseUrl/user", data: userModel.toJson());
-      print(response);
 
       await UserDataStorageService().setToken(response.data!["authToken"]);
       return true;
@@ -95,7 +94,6 @@ class ApiService {
   Future<bool> signup(Map<String, String> data) async {
     try {
       Response<Map<String, dynamic>> response = await _dio.post("$userBaseUrl/signup", data: data);
-      print('response $response');
 
       if (response.statusCode == 201) {
         return true;
@@ -301,7 +299,6 @@ class ApiService {
     try {
       Response<Map<String, dynamic>> response =
           await _dio.get(productBaseUrl + "/get-all-categories");
-      print(response);
       List<CategoryDetail> categories =
           categoriesFromJson(response.data!["result"]);
       return categories;
@@ -325,7 +322,6 @@ class ApiService {
     try {
       Response<Map<String, dynamic>> response =
           await _dio.get(productBaseUrl + "/category");
-      print(response);
       CategoryDetail category =
           CategoryDetail.fromJson(response.data!["result"]);
       return category;
@@ -349,7 +345,6 @@ class ApiService {
     try {
       Response<Map<String, dynamic>> response =
           await _dio.get(productBaseUrl + "/product");
-      print(response);
       ProductModel product = ProductModel.fromJson(response.data!["result"]);
       return product;
     } on DioException catch (e) {
@@ -550,7 +545,6 @@ class ApiService {
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=$mapApiKey';
     try {
       Response<Map<String, dynamic>> response = await _dio.post(requestUrl);
-      // print(response.data!["predictions"][0]);
       List<PlaceModel> placesSuggestions =
           placesModelFromJson(response.data!["predictions"]);
       return placesSuggestions;
