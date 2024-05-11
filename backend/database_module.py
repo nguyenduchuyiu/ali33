@@ -1,3 +1,4 @@
+import datetime
 import sqlite3
 from flask import jsonify
 import threading
@@ -21,7 +22,7 @@ def is_registered(contact_info):
     if not contact_info:
         return jsonify({'error': 'Missing contact_info'}), 400
      
-    query = "SELECT id FROM users WHERE contact_info = ?"
+    query = "SELECT _key FROM users WHERE contact_info = ?"
     cur.execute(query, (contact_info,))
 
     user_exists = cur.fetchone() is not None  # Check if a row was returned
@@ -32,28 +33,33 @@ def is_registered(contact_info):
     return user_exists
 
 
-def get_user(contact_info):
-    """
-    Retrieves user information from the MySQL database based on the given contact info.
-    """
+def get_user_for_login(contact_info):
     conn = get_db_connection()
-    cur = conn.cursor() 
-    query = "SELECT * FROM users WHERE contact_info = ?"
-    cur.execute(query, (contact_info,)) 
+    cur = conn.cursor()
+
+    query = """
+        SELECT
+            u._key,
+            u.password_hash
+        FROM users u
+        WHERE u.contact_info = ?
+    """
+    cur.execute(query, (contact_info,))
     user_data = cur.fetchone()
     cur.close()
     conn.close()
-    if user_data:
-        return {
-            'id': user_data[0],
-            'username': user_data[1],
-            'password_hash': user_data[4]
-        }
-    else:
-        return None 
+    
+    if not user_data:
+        return None  #
+
+    user_info = {
+        '_key': user_data[0],
+        'password_hash': user_data[1]
+    }
+    return user_info
 
 
-def create_user(username, contact_info, info_type, password):
+def create_user(username, contact_info, user_type, password):
     """
     Creates a new user in the database.
     """
@@ -63,15 +69,30 @@ def create_user(username, contact_info, info_type, password):
 
     # Hash the password
     hashed_password = generate_password_hash(password)
+    current_datetime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     try:
         cursor.execute(
-            "INSERT INTO users (username, contact_info, info_type, password_hash) VALUES (?, ?, ?, ?)",
-            (username, contact_info, info_type, hashed_password),
-        )
+            """
+            INSERT INTO users (
+                username, 
+                contact_info, 
+                password_hash, 
+                deviceToken, 
+                dob, 
+                shopName, 
+                phoneNo, 
+                profilePic, 
+                userType, 
+                proprietorName, 
+                gst
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (username, contact_info, hashed_password, "", current_datetime, "", "", "", user_type, "", "") 
+            )
         conn.commit()
         return True
-    except Exception:
+    except Exception as e:
         return False
     finally:
         cursor.close()

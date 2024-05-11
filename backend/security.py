@@ -51,6 +51,7 @@ def check_password(user, password):
         return False
     return True
 
+
 def generate_password_hash(password):
     """
     Hash password with the given password.

@@ -215,7 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                                                 });
                                   if (successLogin) {
                                     toastMessage("Successful Login");
-                                    Navigator.pushReplacement(context, SlideLeftRoute(widget: const HomeScreen(selectedPage : 1)));
+                                    Navigator.pushReplacement(context, SlideLeftRoute(widget: const HomeScreen(selectedPage : 0)));
                                   }
                                   else {
                                     toastMessage('Wrong email (phone) or password!');

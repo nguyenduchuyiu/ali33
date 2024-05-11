@@ -36,11 +36,11 @@ def authenticate_user():
     if not contact_info or not password:
         return jsonify({'error': 'Missing email or password'}), 400
 
-    user = dm.get_user(contact_info) 
+    user = dm.get_user_for_login(contact_info) 
 
     if not check_password(user, password):
         return jsonify({'error': 'Invalid credentials'}), 401
-    token = create_jwt_token(user['id'])
+    token = create_jwt_token(user['_key'])
 
     return jsonify({'token': token}), 200
 
@@ -73,6 +73,7 @@ Processing an user getting request.
 # @jwt_required()  # Requires a valid JWT token
 @app.route('/users/user', methods=['GET'])
 def get_user_info():
+    # user_info = dm.get_user_info()
     return jsonify({
         'result': {
                     "_key": "ex_key",
