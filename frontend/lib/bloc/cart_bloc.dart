@@ -15,18 +15,18 @@ abstract class CartEvent extends Equatable {
 }
 
 class FetchCartItems extends CartEvent {
-  late int userKey;
+  final int userKey;
 
-  FetchCartItems(int? key);
+  FetchCartItems({required this.userKey});
 
   @override
   List<Object> get props => [userKey];
 }
 
 class RemoveItemFromCart extends CartEvent {
-  late int userKey;
+  final int userKey;
   final CartItem item;
-  RemoveItemFromCart({required this.item});
+  RemoveItemFromCart({required this.userKey, required this.item});
 
   @override
   String toString() {
@@ -35,10 +35,10 @@ class RemoveItemFromCart extends CartEvent {
 }
 
 class ChangeNoOfProducts extends CartEvent {
-  late int userKey;
+  final int userKey;
   final Map<String, dynamic> item;
 
-  ChangeNoOfProducts(this.item);
+  ChangeNoOfProducts({required this.userKey, required this.item});
 }
 
 class CartState extends Equatable {

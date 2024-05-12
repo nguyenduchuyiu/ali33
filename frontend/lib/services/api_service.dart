@@ -166,10 +166,11 @@ class ApiService {
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response = await _dio.get("$userBaseUrl/user");
+      print(response);
       UserModel user = UserModel.fromJson(response.data!["result"]);
       return user;
     } on DioException catch (e) {
-      print("dio error occured: $e");
+      print("get cur user dio error occured: ${e.message}");
       if (e.error is SocketException) {
         internetToastMessage();
       } else {
@@ -408,26 +409,23 @@ class ApiService {
     return [];
   }
 
-  Future<bool> addToCart(CartItem cartItem) async {
+  Future<bool> addToCart(CartItem cartItem, userKey) async {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
-      Response<Map<String, dynamic>> response =
-          await _dio.post(userBaseUrl + "/cart", data: cartItem.toJson());
-      print("in try cart");
+      Map<String, dynamic> data = {'cartItem': cartItem.toJson(),
+                                    'userKey': userKey};
+      Response<Map<String, dynamic>> response = await _dio.post(userBaseUrl + "/add-to-cart", data: data);
       print(response);
 
       return true;
     } on DioException catch (e) {
-      print("dio error occured: ${e.response}");
+      print("dio error occured on add to cart: ${e.response}");
       if (e.error is SocketException) {
         internetToastMessage();
-      } else {
-        // toastMessage("Something went wrong! Try again");
       }
     } catch (e) {
       print("Exception Occured at addtocart : $e");
-      // toastMessage("Something went wrong! Try again");
     }
     return false;
   }
@@ -436,15 +434,16 @@ class ApiService {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
-      Response<Map<String, dynamic>> response = await _dio.get(
-                                                userBaseUrl + "/cart", 
-                                                queryParameters:{'userKey': userKey});
+      Map<String, dynamic> data = {'userKey': userKey};
+      Response<Map<String, dynamic>> response = await _dio.post(
+                                                userBaseUrl + "/get-cart-items", 
+                                                data: data);
       print(response.data!['result']);
 
       CartCombinedModel prods = CartCombinedModel.fromJson(response.data!['result']);
       return prods;
     } on DioException catch (e) {
-      print("dio error occured: ${e.response}");
+      print("dio error occured: ${e.message}");
       if (e.error is SocketException) {
         internetToastMessage();
       } else {

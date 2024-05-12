@@ -31,7 +31,7 @@ class _CartScreenState extends State<CartScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<CartBloc>().add(FetchCartItems(widget.userKey));
+    context.read<CartBloc>().add(FetchCartItems(userKey: widget.userKey));
   }
 
   @override
@@ -123,7 +123,7 @@ class _CartScreenState extends State<CartScreen> {
                         print("dismissed");
                         context
                             .read<CartBloc>()
-                            .add(RemoveItemFromCart(item: item.cartItem));
+                            .add(RemoveItemFromCart(item: item.cartItem, userKey: widget.userKey));
                       },
                       child: Card(
                         margin: const EdgeInsets.all(5),
@@ -250,7 +250,7 @@ class _CartScreenState extends State<CartScreen> {
                                               //     item.cartItem.quantity--;
 
                                               context.read<CartBloc>().add(
-                                                  ChangeNoOfProducts(citem));
+                                                  ChangeNoOfProducts(item: citem, userKey: widget.userKey));
                                             }
                                           },
                                           child: const Text(
@@ -291,7 +291,7 @@ class _CartScreenState extends State<CartScreen> {
                                               //     item.cartItem.quantity++;
 
                                               context.read<CartBloc>().add(
-                                                  ChangeNoOfProducts(citem));
+                                                  ChangeNoOfProducts(item: citem, userKey: widget.userKey));
                                             }
                                           },
                                           child: const Text("+",
@@ -403,7 +403,7 @@ class _CartScreenState extends State<CartScreen> {
                                 if (res) {
                                   context
                                       .read<CartBloc>()
-                                      .add(FetchCartItems(widget.userKey));
+                                      .add(FetchCartItems(userKey: widget.userKey));
                                   setState(() {});
                                 }
                               },
@@ -450,7 +450,7 @@ class _CartScreenState extends State<CartScreen> {
                     print(res);
                     if (res) {
                       setState(() {
-                        context.read<CartBloc>().add(FetchCartItems(widget.userKey));
+                        context.read<CartBloc>().add(FetchCartItems(userKey: widget.userKey));
                       });
                     }
                   })
@@ -462,7 +462,7 @@ class _CartScreenState extends State<CartScreen> {
         return Scaffold(
           appBar: AppBar(title: const Text("Cart Preview")),
           body: buildErrorWidget(
-              context, () => context.read<CartBloc>().add(FetchCartItems(widget.userKey))),
+              context, () => context.read<CartBloc>().add(FetchCartItems(userKey: widget.userKey))),
         );
       },
     );
