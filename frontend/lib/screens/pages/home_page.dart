@@ -61,56 +61,100 @@ class _HomePageState extends State<HomePage> {
                 context, () => getUser(), "Items not Found! Try again");
           }
           return ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            shrinkWrap: true,
+            // padding: const EdgeInsets.symmetric(horizontal: 16),
+            // shrinkWrap: true, 
+            
             children: [
-              SizedBox(height: size.height * 0.01),
-              Row(
-                children: [
-                  Image.asset("images/logo.png", height: 46),
-                  const SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Hi ${snapshots.data!.proprietorName}",
-                          style: Theme.of(context)
-                              .textTheme
-                              .displayMedium!
-                              .copyWith(fontWeight: FontWeight.w700)),
-                      Text("Welcome to ALI33",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium!
-                              .copyWith(fontWeight: FontWeight.w500)),
-                    ],
-                  )
-                ],
-              ),
-              // This is the Search Box 88-110
-              // SizedBox(height: size.height * 0.02),
               // Container(
-              //   height: 46,
-              //   decoration: BoxDecoration(
-              //     borderRadius: BorderRadius.circular(10),
-              //     border: Border.all(color: Colors.grey),
-              //   ),
               //   padding: const EdgeInsets.symmetric(horizontal: 16),
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //     children: [
-              //       Row(
-              //         children: [
-              //           const Icon(Icons.search_rounded),
-              //           const SizedBox(width: 10),
-              //           Text("Search",style: Theme.of(context).textTheme.displaySmall,),
-              //         ],
-              //       ),
-              //       const Icon(Icons.menu),
-              //     ],
+              //   // shrinkWrap: true, 
+              //   height: 80,
+              //   width: size.width-16*2,
+              //   decoration: const BoxDecoration(
+              //     gradient: LinearGradient(
+              //       begin: Alignment.topLeft,
+              //       end: Alignment.bottomRight,
+              //       colors: [
+              //         Color(0xff8a2387), // Start color
+              //         Color(0xffe94057),
+              //         Color(0xfff27121) // End color
+              //       ]
+              //     ),
               //   ),
+
+              //   child: Row(
+              //   children: [
+              //     InkWell(
+              //       onTap: () {
+              //         Navigator.of(context).pushAndRemoveUntil(
+              //           MaterialPageRoute(builder: (context) => const HomeScreen(selectedPage: 0)), // Giả sử HomePage là trang đầu tiên trong HomeScreen
+              //           (Route<dynamic> route) => false,
+              //         );
+              //       },
+              //       child: Image.asset("images/logo.png", height: 55,),
+              //     ),
+              //     const SizedBox(width: 10),
+              //     Column(
+              //       mainAxisAlignment: MainAxisAlignment.center,
+              //       children: [
+              //         // SizedBox(height: 18,),
+              //         Text("Hi ${snapshots.data!.proprietorName}",
+              //             style: Theme.of(context)
+              //                 .textTheme
+              //                 .displayMedium!
+              //                 .copyWith(fontWeight: FontWeight.w700,fontSize: 17)),
+              //         Text("Welcome to ALI33",
+              //             style: Theme.of(context)
+              //                 .textTheme
+              //                 .headlineMedium!
+              //                 .copyWith(fontWeight: FontWeight.w500,fontSize: 15)),
+              //       ],
+              //     ),
+              //     Spacer(),
+              //     InkWell(
+              //       onTap: () {
+              //         // Handle the tap
+              //         Navigator.of(context).push(
+              //           MaterialPageRoute(builder: (context) => const ProfilePage()),
+              //         );
+              //       },
+              //       child: CircleAvatar(
+              //         radius: 30,
+              //         backgroundImage: AssetImage("images/user.jpeg"),
+              //       ),
+              //     )
+              //   ],
               // ),
+              // ),
+              
+              //This is the Search Box 88-110
               SizedBox(height: size.height * 0.02),
-              SizedBox(
+              Container(
+                padding: EdgeInsets.fromLTRB(size.width*0.0213333333, 0, size.width*0.0213333333, 0),
+                height: 46,
+                width: size.width-60,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey),
+                ),
+                // padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.search_rounded),
+                        const SizedBox(width: 10),
+                        Text("Search",style: Theme.of(context).textTheme.displaySmall,),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: size.height * 0.02),
+              Container(
+                padding: EdgeInsets.fromLTRB(size.width*0.0213333333, 10, size.width*0.0213333333, 0),
+                child: Column(children: <Widget> [SizedBox(
                 height: size.height * 0.25,
                 child: ListView.builder(
                   itemCount: bannerImages.length,
@@ -223,6 +267,9 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: size.height * 0.01),
               Products(size: size, category: category)
+              ],
+              ),
+              )  
             ],
           );
         });
