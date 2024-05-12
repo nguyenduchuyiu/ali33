@@ -40,7 +40,7 @@ class CategoryDetail {
     required this.categoryPicture,
   });
 
-  String key;
+  int key;
   String categoryName;
   String categoryPicture;
 
@@ -68,7 +68,7 @@ class ProductDetails {
     required this.variations,
   });
 
-  String key;
+  int key;
   String productDescription;
   String productName;
   String productPicture;

@@ -10,7 +10,7 @@ from security import generate_password_hash
 # Thread-local storage for database connections
 thread_local = threading.local()
 
-def get_db_connection(path='backend/assets/database/database.db'):
+def get_db_connection(path='E:/ali33/backend/assets/database/database.db'):
     if not hasattr(thread_local, 'db_conn'):
         thread_local.db_conn = sqlite3.connect(path)
     return thread_local.db_conn
@@ -196,8 +196,8 @@ def get_product_from_key(key):
     query = """
         SELECT p._key, p.productName, p.productDescription, p.productPicture
         FROM categories c
-        INNER JOIN product_categories pc ON c._key = pc.category_key
-        INNER JOIN products p ON pc.product_key = p._key
+        INNER JOIN product_categories pc ON c._key = pc.categoryKey
+        INNER JOIN products p ON pc.productKey = p._key
         WHERE {key_name}._key = ? """.format(key_name=key_name)
     
     cursor.execute(query, (key['key'],))
@@ -218,8 +218,8 @@ def get_product_from_key(key):
         query = """
             SELECT c._key, c.categoryName, c.categoryPicture
             FROM product_categories pc
-            INNER JOIN categories c ON pc.category_key = c._key
-            WHERE pc.product_key = ?
+            INNER JOIN categories c ON pc.categoryKey = c._key
+            WHERE pc.productKey = ?
         """
         cursor.execute(query, (product_data['_key'],))
         category_data = [
@@ -232,7 +232,7 @@ def get_product_from_key(key):
         ]
 
         # Query to get reviews (using product_data["_key"] directly)
-        cursor.execute("SELECT userId, comment FROM Reviews WHERE productKey=?", (product_data["_key"],))
+        cursor.execute("SELECT userKey, comment FROM Reviews WHERE productKey=?", (product_data["_key"],))
         for review in cursor.fetchall():
             product_data["reviews"].append({
                 "userId": review[0],

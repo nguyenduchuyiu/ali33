@@ -1,9 +1,5 @@
-// To parse this JSON data, do
-//
-//     final orderModel = orderModelFromJson(jsonString);
-
 import 'dart:convert';
-import 'package:ali33/models/user_model.dart';
+
 
 List<OrderModel> orderModelFromJson(List<dynamic> list) =>
     List<OrderModel>.from(list.map((x) => OrderModel.fromJson(x)));
@@ -23,14 +19,14 @@ class OrderModel {
     required this.deliveryAddress,
   });
 
-  String? key;
+  int? key;
   DateTime orderedDate;
-  String userId;
+  int userId;
   ProductOrderingDetails productDetails;
   int paidPrice;
   int paymentStatus;
-  List<DateTime> deliveryStages;
-  DeliveryAddress deliveryAddress;
+  List<String> deliveryStages;
+  String deliveryAddress;
 
   factory OrderModel.fromJson(Map<String, dynamic> json) => OrderModel(
         key: json["_key"],
@@ -40,10 +36,9 @@ class OrderModel {
         productDetails: ProductOrderingDetails.fromJson(json["productDetails"]),
         paidPrice: json["paidPrice"],
         paymentStatus: json["paymentStatus"],
-        deliveryStages: List<DateTime>.from(json["deliveryStages"]
-            .map((e) => DateTime.fromMillisecondsSinceEpoch(e, isUtc: false))),
-        deliveryAddress: DeliveryAddress.fromJson(json["deliveryAddress"]),
-      );
+        deliveryStages: List<String>.from(json["deliveryStages"]),
+        deliveryAddress: json["deliveryAddress"],
+  );
 
   Map<String, dynamic> toJson() => {
         "orderedDate": orderedDate.toUtc().millisecondsSinceEpoch,
@@ -51,39 +46,11 @@ class OrderModel {
         "productDetails": productDetails.toJson(),
         "paidPrice": paidPrice,
         "paymentStatus": paymentStatus,
-        "deliveryStages": List<int>.from(
-            deliveryStages.map((e) => e.toUtc().millisecondsSinceEpoch)),
-        "deliveryAddress": deliveryAddress.toJson(),
+        "deliveryStages": deliveryStages,
+        "deliveryAddress": deliveryAddress,
       };
 }
 
-class DeliveryStages {
-  DeliveryStages({
-    required this.stageOne,
-    required this.stageTwo,
-    required this.stageThree,
-    required this.stageFour,
-  });
-
-  String stageOne;
-  String stageTwo;
-  String stageThree;
-  String stageFour;
-
-  factory DeliveryStages.fromJson(Map<String, dynamic> json) => DeliveryStages(
-        stageOne: json["stageOne"],
-        stageTwo: json["stageTwo"],
-        stageThree: json["stageThree"],
-        stageFour: json["stageFour"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "stageOne": stageOne,
-        "stageTwo": stageTwo,
-        "stageThree": stageThree,
-        "stageFour": stageFour,
-      };
-}
 
 class ProductOrderingDetails {
   ProductOrderingDetails({
@@ -92,7 +59,7 @@ class ProductOrderingDetails {
     required this.variationQuantity,
   });
 
-  String productKey;
+  int productKey;
   int noOfItems;
   int variationQuantity;
 
@@ -109,25 +76,4 @@ class ProductOrderingDetails {
         "variationQuantity": variationQuantity,
       };
 }
-
-// class DeliveryAddress {
-//   DeliveryAddress({
-//     required this.point,
-//     required this.address,
-//   });
-
-//   String point;
-//   String address;
-
-//   factory DeliveryAddress.fromJson(Map<String, dynamic> json) =>
-//       DeliveryAddress(
-//         point: json["point"],
-//         address: json["address"],
-//       );
-
-//   Map<String, dynamic> toJson() => {
-//         "point": point,
-//         "address": address,
-//       };
-// }
 

@@ -48,7 +48,7 @@ class CartItem {
     required this.variationQuantity,
   });
 
-  String productKey;
+  int productKey;
   int noOfItems;
   int variationQuantity;
 

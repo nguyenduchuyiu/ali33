@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable, avoid_print
+// ignore_for_file: must_be_immutable
 
 import 'package:ali33/models/cart_item_model.dart';
 import 'package:ali33/services/api_service.dart';
@@ -14,11 +14,20 @@ abstract class CartEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class FetchCartItems extends CartEvent {}
+class FetchCartItems extends CartEvent {
+  late int userKey;
+
+  FetchCartItems(int? key);
+
+  @override
+  List<Object> get props => [userKey];
+}
 
 class RemoveItemFromCart extends CartEvent {
+  late int userKey;
   final CartItem item;
   RemoveItemFromCart({required this.item});
+
   @override
   String toString() {
     return super.toString();
@@ -26,16 +35,11 @@ class RemoveItemFromCart extends CartEvent {
 }
 
 class ChangeNoOfProducts extends CartEvent {
+  late int userKey;
   final Map<String, dynamic> item;
 
   ChangeNoOfProducts(this.item);
 }
-
-// class DecreaseNoOfProducts extends CartEvent {
-//   final int numberOfProds;
-
-//   DecreaseNoOfProducts(this.numberOfProds);
-// }
 
 class CartState extends Equatable {
   @override
@@ -46,6 +50,7 @@ class CartInitialState extends CartState {}
 
 class CartProductsLoading extends CartState {}
 
+// ignore: must_be_immutable
 class CartProductsFetched extends CartState {
   CartCombinedModel products;
   CartProductsFetched({required this.products});
@@ -69,42 +74,41 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class CartBloc extends Bloc<CartEvent, CartState> {
-  CartBloc() : super(CartInitialState());
-  final ApiService _apiService = ApiService();
+  CartBloc() : super(CartInitialState()) {
+    
+    on<FetchCartItems>((event, emit) async {
+      emit(CartProductsLoading());
+      try {
+        CartCombinedModel? prods = await _apiService.getCartItems(event.userKey);
+        emit(CartProductsFetched(products: prods!));
+      } catch (e) {
+        emit(CartError(error: e as Error)); // Handle errors properly
+      }
+    });
 
-  Stream<CartState> mapEventToState(CartEvent event) async* {
-    if (event is FetchCartItems) {
-      yield CartProductsLoading();
-      CartCombinedModel? prods = await _apiService.getCartItems();
-      yield CartProductsFetched(products: prods!);
-      // try {
-      //   List<CartModel> prods = await _apiService.getCartItems();
-      //   yield CartProductsFetched(products: prods);
-      // } on DioException catch (e) {
-      //   print("dio error at cart bloc occured: ${e.response}");
-      //   if (e.error is SocketException) {
-      //     // yield CartError();
-      //   } else {}
-      // } on Error catch (e) {
-      //   // e. = "Couldn't Reach Server! Check your Internet Connection"
-      //   yield CartError(error: e);
-      //   print("error in cart bloc: $e");
-      // }
-    } else if (event is RemoveItemFromCart) {
-      yield CartProductsLoading();
-      bool res = await _apiService.removeFromCart([event.item]);
-      print("result $res");
-      // if (res) {
-      CartCombinedModel? prods = await _apiService.getCartItems();
-      yield CartProductsFetched(products: prods!);
-      // } else {
-      //   yield CartError(error: Error());
-      // }
-    } else if (event is ChangeNoOfProducts) {
-      yield CartProductsLoading();
-      bool res = await _apiService.changeNoOfProdCart(event.item);
-      CartCombinedModel? prods = await _apiService.getCartItems();
-      yield CartProductsFetched(products: prods!);
-    }
+    on<RemoveItemFromCart>((event, emit) async { 
+      emit(CartProductsLoading());
+      try {
+        bool res = await _apiService.removeFromCart([event.item]);
+        print("result $res");
+        CartCombinedModel? prods = await _apiService.getCartItems(event.userKey);
+        emit(CartProductsFetched(products: prods!)); 
+      } catch (e) {
+        emit(CartError(error: e as Error)); 
+      }
+    });
+
+    on<ChangeNoOfProducts>((event, emit) async {
+      emit(CartProductsLoading());
+      try {
+        bool res = await _apiService.changeNoOfProdCart(event.item);
+        CartCombinedModel? prods = await _apiService.getCartItems(event.userKey);
+        emit(CartProductsFetched(products: prods!)); 
+      } catch (e) {
+        emit(CartError(error: e as Error)); 
+      }
+    });
   }
+
+  final ApiService _apiService = ApiService();
 }

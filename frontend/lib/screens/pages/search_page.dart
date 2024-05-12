@@ -305,7 +305,7 @@ class CustomSearchDelegate extends SearchDelegate {
         FocusManager.instance.primaryFocus?.unfocus();
         close(context, null);
       },
-      icon: const Icon(Icons.arrow_back),
+      icon: const Icon(Icons.arrow_back, color: Colors.black),
     );
   }
 
