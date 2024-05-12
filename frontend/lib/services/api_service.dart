@@ -166,7 +166,6 @@ class ApiService {
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response = await _dio.get("$userBaseUrl/user");
-      print(response);
       UserModel user = UserModel.fromJson(response.data!["result"]);
       return user;
     } on DioException catch (e) {
@@ -416,8 +415,6 @@ class ApiService {
       Map<String, dynamic> data = {'cartItem': cartItem.toJson(),
                                     'userKey': userKey};
       Response<Map<String, dynamic>> response = await _dio.post(userBaseUrl + "/add-to-cart", data: data);
-      print(response);
-
       return true;
     } on DioException catch (e) {
       print("dio error occured on add to cart: ${e.response}");
@@ -438,8 +435,6 @@ class ApiService {
       Response<Map<String, dynamic>> response = await _dio.post(
                                                 userBaseUrl + "/get-cart-items", 
                                                 data: data);
-      print(response.data!['result']);
-
       CartCombinedModel prods = CartCombinedModel.fromJson(response.data!['result']);
       return prods;
     } on DioException catch (e) {
@@ -450,7 +445,7 @@ class ApiService {
         toastMessage("Something went wrong! Try again");
       }
     } catch (e) {
-      print("Exception Occured at addtocart : $e");
+      print("Exception Occured at get cart item : $e");
       // throw Error;
       toastMessage("Something went wrong! Try again");
     }
