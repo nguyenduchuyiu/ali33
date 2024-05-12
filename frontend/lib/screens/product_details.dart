@@ -55,7 +55,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         leading: IconButton(
             onPressed: () => Navigator.pop(context),
             icon: const Icon(
-              Icons.arrow_back, color: Colors.black,
+              Icons.arrow_back, color: Colors.blueGrey,
             )),
       ),
       body: SafeArea(
