@@ -30,7 +30,7 @@ class UserModel {
   DateTime dob;
   String emailId;
   String shopName;
-  List<String> orders;
+  List<int> orders;
   String phoneNo;
   String profilePic;
   String userType;
@@ -46,7 +46,7 @@ class UserModel {
         dob: DateTime.fromMillisecondsSinceEpoch(json["dob"], isUtc: false),
         emailId: json["emailId"],
         shopName: json["shopName"],
-        orders: List<String>.from(json["orders"]),
+        orders: List<int>.from(json["orders"]),
         phoneNo: json["phoneNo"],
         profilePic: json["profilePic"],
         userType: json["userType"],

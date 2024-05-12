@@ -5,25 +5,27 @@ DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS variations;
 DROP TABLE IF EXISTS reviews;
 DROP TABLE IF EXISTS product_categories;
-DROP TABLE IF EXISTS carts;
+DROP TABLE IF EXISTS cart_items;
 DROP TABLE IF EXISTS orders;
 
 
 CREATE TABLE users (
-    _key INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT NOT NULL,
-    contact_info TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,
-    deviceToken TEXT NOT NULL,
-    dob DATE NOT NULL,
-    shopName TEXT,
-    phoneNo TEXT NOT NULL,
-    profilePic TEXT,
-    userType TEXT NOT NULL,
-    proprietorName TEXT,
-    gst TEXT 
+  _key INTEGER PRIMARY KEY AUTOINCREMENT,
+  hashed_password TEXT NOT NULL,
+  deliveryAddress TEXT,
+  deviceToken TEXT,
+  dob DATETIME,
+  emailId TEXT NOT NULL,
+  shopName TEXT,
+  phoneNo TEXT,
+  profilePic TEXT,
+  userType TEXT,
+  proprietorName TEXT NOT NULL,
+  gst TEXT
 );
 
+INSERT INTO users (_key, hashed_password, deliveryAddress, deviceToken, dob, emailId, shopName, phoneNo, profilePic, userType, proprietorName, gst)
+VALUES (1, 'hashed_password123', '123 Main Street, Anytown, CA 54321', 'somedevicetoken123', '2000-01-01', 'user1@example.com', 'User1 Shop', '555-123-4567', 'https://example.com/profilepic1.jpg', 'buyer', 'John Doe', '1234567890');
 
 CREATE TABLE categories (
     _key INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -78,22 +80,24 @@ CREATE TABLE orders (
     orderedDate DATETIME NOT NULL, 
     paidPrice INTEGER NOT NULL,
     paymentStatus INTEGER NOT NULL,
-    address TEXT NOT NULL, 
     stageOne TEXT NOT NULL,
     stageTwo TEXT NOT NULL,
     stageThree TEXT NOT NULL,
     stageFour TEXT NOT NULL,
-    FOREIGN KEY (userKey) REFERENCES users(_key),
-    FOREIGN KEY (cartKey) REFERENCES carts(_key)
+    FOREIGN KEY (userKey) REFERENCES users(_key)
 );
 
 
-CREATE TABLE carts (
+CREATE TABLE cart_items (
     _key INTEGER PRIMARY KEY AUTOINCREMENT,
-    productKey TEXT NOT NULL,
+    userKey INTEGER NOT NULL,
+    productKey INTEGER NOT NULL,
     noOfItems INTEGER NOT NULL,
-    variationQuantity INTEGER NOT NULL
+    variationQuantity INTEGER NOT NULL,
+    FOREIGN KEY (userKey) REFERENCES users(_key),
+    FOREIGN KEY (productKey) REFERENCES products(_key)
 );
+
 
 
 -- Sample Data Insertion (adjust as needed)

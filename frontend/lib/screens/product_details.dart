@@ -321,8 +321,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             deliveryStages: ["Pending Order"],
                             deliveryAddress: "",                          
                         );
-                  bool addedToCart = true;
-                  // bool addedToCart =  await ApiService().addToCart(CartItem(productKey: widget.productModel.productDetails.key, noOfItems: noOfProdAdded, variationQuantity: widget.productModel.productDetails.variations[selectedIndex].quantity));
+                  bool addedToCart =  await ApiService().addToCart(
+                    CartItem(
+                      productKey: widget.productModel.productDetails.key, 
+                      noOfItems: noOfProdAdded, 
+                      variationQuantity: widget.productModel.productDetails.variations[selectedIndex].quantity),
+                    user.key!
+                    );
                    setState(() {
                   isLoading = false;
                 });

@@ -1,9 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from security import check_password, create_jwt_token
+import security as sc
 import database_module as dm 
 from dotenv import load_dotenv
-from flask_jwt_extended import jwt_required, get_jwt_identity
 load_dotenv('backend\key.env')
 
 app = Flask(__name__)
@@ -41,9 +40,10 @@ def authenticate_user():
 
     user = dm.get_user_for_login(contact_info) 
 
-    if not check_password(user, password):
+    if not sc.check_password(user, password):
         return jsonify({'error': 'Invalid credentials'}), 401
-    token = create_jwt_token(user['_key'])
+    
+    token = sc.create_jwt_token(user['_key'])
 
     return jsonify({'token': token}), 200
 
@@ -56,13 +56,12 @@ def sign_up():
     data = request.get_json()
     username = data.get('username')
     contact_info = data.get('userId')
-    info_type = data.get('type')
     password = data.get('password')
     
     if not username or not contact_info or not type or not password:
         return jsonify({'error': 'Missing required fields'}), 400
 
-    success = dm.create_user(username, contact_info, info_type, password)
+    success = dm.create_user(username, contact_info, password)
     
     if success:
         return jsonify({'message': 'User created successfully'}), 201
@@ -70,11 +69,27 @@ def sign_up():
         return jsonify({'error': 'Failed to create user'}), 400
     
 
-'''
-Processing an user getting request.
-'''
-# @jwt_required()  # Requires a valid JWT token
+
 @app.route('/users/user', methods=['GET'])
+def get_current_user():
+    auth_header = request.headers.get('Authorization')
+
+    if not auth_header:
+        return jsonify({"error": "Authorization header missing"}), 401
+
+    userKey = sc.decode_jwt_token(token=auth_header)
+    
+    if userKey is None:
+        return jsonify({"error": "Session expired"}), 404
+        
+    user = dm.get_user_by_key(userKey)
+        
+    if user is not None:
+        return jsonify({'result': user}), 200
+    
+    return jsonify({'error':'User not found'}), 404
+
+
 def get_user_info():
     # user_info = dm.get_user_info()
     return jsonify({
@@ -100,26 +115,6 @@ def get_user_info():
                     "gst": "2354123412" 
                     }
     })
-# @jwt_required()
-# def get_user_info():
-#     try:
-#         user_id = get_jwt_identity()
-#         user = get_user(user_id)
-
-#         if not user:
-#             return jsonify({'error': 'User not found'}), 404
-
-#         return jsonify({
-#             "result": {
-#                 "id": user['id'],
-#                 "name": user['username']
-#                 # ... other user information
-#             }
-#         })
-
-#     except Exception as e:
-#         logging.error(f"Error retrieving user information: {e}")
-#         return jsonify({'error': 'An error occurred while processing your request'}), 500
 
 
 @app.route('/products/get-all-products')
@@ -161,13 +156,29 @@ def search_product():
         return jsonify({"error": "Product not found"}), 404
 
 
-@app.route('/users/cart' ,methods=['GET'])
-def getCart():
-    userKey = request.get_json()['userKey']
-    pass
+@app.route('/users/add-to-cart', methods=['POST'])
+def addToCart():
+    data = request.get_json()
+    cartItem = data['cartItem']
+    userKey = data['userKey']
+    if dm.add_to_cart(cartItem, userKey):
+        return jsonify({"result": "Succesfully add to your cart"}), 200
+    return jsonify({"error":"Failure adding to your cart"}), 400
+   
     
+@app.route('/users/get-cart-items', methods=['POST'])
+def getCartItems():
+    data = request.get_json()
+    userKey = data['userKey']
+    cart_items = dm.get_cart_items(userKey)
+    
+    if cart_items:
+        return jsonify({"result":cart_items}), 200
+    
+    return jsonify({"error":"Cart items not found"}), 404
 
-    
+
+
 
 
 # @app.route('/images/<string:product_name>')
