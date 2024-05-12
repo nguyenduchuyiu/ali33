@@ -166,7 +166,6 @@ class ApiService {
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response = await _dio.get("$userBaseUrl/user");
-      print(response);
       UserModel user = UserModel.fromJson(response.data!["result"]);
       return user;
     } on DioException catch (e) {
@@ -438,7 +437,7 @@ class ApiService {
       Response<Map<String, dynamic>> response = await _dio.post(
                                                 userBaseUrl + "/get-cart-items", 
                                                 data: data);
-      print(response.data!['result']);
+      print('CartCombinedModel:  ${response.data!['result']}');
 
       CartCombinedModel prods = CartCombinedModel.fromJson(response.data!['result']);
       return prods;

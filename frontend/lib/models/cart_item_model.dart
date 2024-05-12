@@ -13,7 +13,7 @@ class CartCombinedModel {
   factory CartCombinedModel.fromJson(Map<String, dynamic> json) =>
       CartCombinedModel(
         cartModel: List<CartModel>.from(
-            json["others"].map((x) => CartModel.fromJson(x))),
+            json["cartModel"].map((x) => CartModel.fromJson(x))),
         userDetails: UserModel.fromJson(json["userDetails"]),
       );
 

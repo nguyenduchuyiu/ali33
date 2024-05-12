@@ -73,15 +73,11 @@ def sign_up():
 @app.route('/users/user', methods=['GET'])
 def get_current_user():
     auth_header = request.headers.get('Authorization')
-
     if not auth_header:
         return jsonify({"error": "Authorization header missing"}), 401
-
     userKey = sc.decode_jwt_token(token=auth_header)
-    
     if userKey is None:
         return jsonify({"error": "Session expired"}), 404
-        
     user = dm.get_user_by_key(userKey)
         
     if user is not None:
@@ -89,32 +85,6 @@ def get_current_user():
     
     return jsonify({'error':'User not found'}), 404
 
-
-def get_user_info():
-    # user_info = dm.get_user_info()
-    return jsonify({
-        'result': {
-                    "_key": 1,
-                    "cartItems": [
-                        {
-                        "productKey": 1,
-                        "noOfItems":1,
-                        "variationQuantity":1
-                        },
-                    ],
-                    "deliveryAddress": "Ha Noi",
-                    "deviceToken": "ex_deviceToken",
-                    "dob": 1678886400000,
-                    "emailId": "huy@gmail.com",
-                    "shopName": "nguyenduchuyiu",
-                    "orders": ["ex_order1", "ex_order2"],
-                    "phoneNo": "0337 118 147",
-                    "profilePic": "ex_profilePic",
-                    "userType": "customer",
-                    "proprietorName": "Nguyen Duc Huy",
-                    "gst": "2354123412" 
-                    }
-    })
 
 
 @app.route('/products/get-all-products')
@@ -160,20 +130,39 @@ def search_product():
 def addToCart():
     data = request.get_json()
     cartItem = data['cartItem']
-    userKey = data['userKey']
-    if dm.add_to_cart(cartItem, userKey):
+    auth_header = request.headers.get('Authorization')
+    if not auth_header:
+        return jsonify({"error": "Authorization header missing"}), 401
+    userKey = sc.decode_jwt_token(token=auth_header)
+    if userKey is None:
+        return jsonify({"error": "Session expired"}), 404
+    user = dm.get_user_by_key(userKey)
+    
+    if dm.add_to_cart(cartItem, user['_key']):
         return jsonify({"result": "Succesfully add to your cart"}), 200
     return jsonify({"error":"Failure adding to your cart"}), 400
    
     
 @app.route('/users/get-cart-items', methods=['POST'])
 def getCartItems():
-    data = request.get_json()
-    userKey = data['userKey']
-    cart_items = dm.get_cart_items(userKey)
+    auth_header = request.headers.get('Authorization')
+    if not auth_header:
+        return jsonify({"error": "Authorization header missing"}), 401
+    userKey = sc.decode_jwt_token(token=auth_header)
+    if userKey is None:
+        return jsonify({"error": "Session expired"}), 404
+    user = dm.get_user_by_key(userKey)
+    productDetails = []
+    for item in user['cartItems']:
+        product = dm.get_product_from_key(item['productKey'])
+        productDetails.append(product)
+        
     
     if cart_items:
-        return jsonify({"result":cart_items}), 200
+        return jsonify({"result":{
+                            "userDetails": user,
+                            "cartModel": cart_items,
+                            }}), 200
     
     return jsonify({"error":"Cart items not found"}), 404
 
