@@ -3,16 +3,7 @@ import 'package:ali33/screens/pages/more_products_page.dart';
 import 'package:ali33/screens/pages/profile_page.dart';
 import 'package:ali33/screens/pages/search_page.dart';
 import 'package:flutter/material.dart';
-import 'package:ali33/constants/constant_values.dart';
-import 'package:ali33/models/product_model.dart';
-import 'package:ali33/models/user_model.dart';
-import 'package:ali33/screens/home.dart';
-import 'package:ali33/screens/pages/profile_page.dart';
-import 'package:ali33/screens/product_details.dart';
-import 'package:ali33/services/api_service.dart';
-import 'package:ali33/widgets/basic.dart';
-import 'package:ali33/widgets/build_photo.dart';
-import 'package:flutter/material.dart';
+
 
 class HomeScreen extends StatefulWidget {
   final int selectedPage;
