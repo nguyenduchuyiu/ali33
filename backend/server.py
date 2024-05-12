@@ -152,16 +152,16 @@ def getCartItems():
     if userKey is None:
         return jsonify({"error": "Session expired"}), 404
     user = dm.get_user_by_key(userKey)
-    productDetails = []
+    cartModels = []
     for item in user['cartItems']:
-        product = dm.get_product_from_key(item['productKey'])
-        productDetails.append(product)
-        
-    
-    if cart_items:
-        return jsonify({"result":{
+        product = dm.get_product_from_key({"key": item["productKey"], 
+                                           "type": "product"})
+        cartModels.append({"cartItemDetails": item,
+                          "productDetails": product[0]["productDetails"]})
+    if user and cartModels:
+        return jsonify({"result": {
                             "userDetails": user,
-                            "cartModel": cart_items,
+                            "cartModels": cartModels
                             }}), 200
     
     return jsonify({"error":"Cart items not found"}), 404

@@ -45,7 +45,7 @@ class _CartScreenState extends State<CartScreen> {
               appBar: AppBar(title: const Text("Cart Preview")),
               body: loadingAnimation());
         } else if (state is CartProductsFetched) {
-          if (state.products.cartModel.isEmpty) {
+          if (state.products.cartModels.isEmpty) {
             return Scaffold(
               appBar: AppBar(title: const Text("Cart Preview")),
               body: Container(
@@ -55,7 +55,7 @@ class _CartScreenState extends State<CartScreen> {
               ),
             );
           }
-          List<int> calculatedValues = calculateTotal(state.products.cartModel);
+          List<int> calculatedValues = calculateTotal(state.products.cartModels);
 
           return Scaffold(
             appBar: AppBar(title: const Text("Cart Preview")),
@@ -94,13 +94,13 @@ class _CartScreenState extends State<CartScreen> {
                 ),
                 SizedBox(height: size.height * 0.01),
                 ListView.builder(
-                  itemCount: state.products.cartModel.length,
+                  itemCount: state.products.cartModels.length,
                   primary: false,
                   shrinkWrap: true,
                   // padding: EdgeInsets.symmetric(horizontal: 8),
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    CartModel item = state.products.cartModel[index];
+                    CartModel item = state.products.cartModels[index];
 
                     int variationIndex = item.productDetails.variations.indexOf(
                         item.productDetails.variations.firstWhere((element) =>
@@ -435,9 +435,9 @@ class _CartScreenState extends State<CartScreen> {
                   nextButton("Pay  $dollarSymbol${calculatedValues[0]}",
                       () async {
                     List<OrderModel> orders = generateOrderList(
-                        state.products.cartModel, state.products.userDetails);
+                        state.products.cartModels, state.products.userDetails);
                     List<CartItem> cartItems = List<CartItem>.from(
-                            state.products.cartModel.map((e) => e.cartItem))
+                            state.products.cartModels.map((e) => e.cartItem))
                         .toList();
                     bool res = await Navigator.push(
                         context,
