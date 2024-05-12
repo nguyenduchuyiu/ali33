@@ -101,7 +101,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                      'Wellcome',
+                      'Welcome',
                       style :
                         TextStyle(
                           fontSize: 40.0,
@@ -119,7 +119,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           )
                       ),
                       SizedBox(height: 20.0),
-                      Container(
+                      SizedBox(
                         width: 300.0,
                         child: 
                         Form(
@@ -148,7 +148,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                       ),
                       SizedBox(height: sizeBoxSize1,),
-                      Container(
+                      SizedBox(
                         width: 300,
                         child: 
                         Form(
@@ -180,47 +180,49 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                       ),
                       SizedBox(height: sizeBoxSize1,),
-                      Container(
+                      SizedBox(
                         width:300.0,
                         child: Form(
                           key: passwordKey,
-                          child: TextFormField(
-                            controller: password,
-                            validator: (String? val) => val!.isEmpty
-                                ? "Field can't be empty"
-                                : (!passwordValidator(val))
-                                ? "Require at least 8 characters, one uppercase, one lowercase, one number, and one special character"
-                                : null,
-                            decoration: InputDecoration(
-                              hintText: 'Create your password',
-                              // border: OutlineInputBorder(
-                              //   borderRadius: BorderRadius.circular(5),
-                              //   borderSide: const BorderSide(color: Colors.black),
-                              // ),
-                              // enabledBorder: OutlineInputBorder(
-                              //   borderRadius: BorderRadius.circular(5),
-                              //   borderSide: const BorderSide(color: Colors.black),
-                              // ),
-                              // focusedBorder: OutlineInputBorder(
-                              //   borderRadius: BorderRadius.circular(5),
-                              //   borderSide: const BorderSide(color: Colors.black),
-                              // ),
-                              suffixIcon: IconButton(
-                              iconSize: 17,
-                              icon: Icon(_showPassword ? Icons.visibility : Icons.visibility_off),
-                              onPressed: () {
-                                setState(() {
-                                  _showPassword = !_showPassword;
-                                });
-                              },
+                          child: Flexible(
+                            child: TextFormField(
+                              controller: password,
+                              validator: (String? val) => val!.isEmpty
+                                  ? "Field can't be empty"
+                                  : (!passwordValidator(val))
+                                  ? "Require at least 8 characters, one uppercase, one lowercase, one number, and one special character"
+                                  : null,
+                              decoration: InputDecoration(
+                                hintText: 'Create your password',
+                                // border: OutlineInputBorder(
+                                //   borderRadius: BorderRadius.circular(5),
+                                //   borderSide: const BorderSide(color: Colors.black),
+                                // ),
+                                // enabledBorder: OutlineInputBorder(
+                                //   borderRadius: BorderRadius.circular(5),
+                                //   borderSide: const BorderSide(color: Colors.black),
+                                // ),
+                                // focusedBorder: OutlineInputBorder(
+                                //   borderRadius: BorderRadius.circular(5),
+                                //   borderSide: const BorderSide(color: Colors.black),
+                                // ),
+                                suffixIcon: IconButton(
+                                iconSize: 17,
+                                icon: Icon(_showPassword ? Icons.visibility : Icons.visibility_off),
+                                onPressed: () {
+                                  setState(() {
+                                    _showPassword = !_showPassword;
+                                  });
+                                },
+                                ),
                               ),
-                            ),
-                            obscureText: !_showPassword
+                              obscureText: !_showPassword
+                            )
                           ),
                         ),
                       ),
                       SizedBox(height: sizeBoxSize1,),
-                      Container(
+                      SizedBox(
                         width: 300.0,
                         child: 
                         Form(
@@ -262,67 +264,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       SizedBox(
                         width: 300,
                         height: 50,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pushReplacement(
-                              PageRouteBuilder(
-                                pageBuilder: (context, animation1, animation2) => const LoginScreen(isEditing: false),
-                                transitionDuration: Duration(seconds: 1),
-                                transitionsBuilder: (context, animation, animationTime, child) {
-                                  animation = CurvedAnimation(parent: animation, curve: Curves.fastOutSlowIn);
-                                  return FadeTransition(
-                                    opacity: animation,
-                                    child: child,
-                                  );
-                                },
-                              ),
-                            );// Your button press functionality
-                          },
-                          style: ButtonStyle(
-                            elevation: MaterialStateProperty.all(0), // Remove elevation (shadow)
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(4)),
-                              ),
-                            ),
-                            padding: MaterialStateProperty.all(EdgeInsets.zero),
-                            // Setting the background to transparent
-                            backgroundColor: MaterialStateProperty.all(Colors.transparent),
-                            // Apply overlay color to ensure splash effect is transparent
-                            overlayColor: MaterialStateProperty.all(Colors.transparent),
-                          ),
-                          child: Ink(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Color(0xffe94057),
-                                  Color(0xfff27121) // End color
-                                ],
-                              ),
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
-                            ),
-                            child: Container(
-                              width: 300,
-                              height: 50,
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Sign in",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: sizeBoxSize1,),
-                      SizedBox(
-                        width: 300,
-                        height: 50,
-                        child: ElevatedButton(
+child: ElevatedButton(
                           onPressed: () async {
                             if (usernameKey.currentState!.validate()
                             && userIdKey.currentState!.validate() 
@@ -398,6 +340,67 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                           ),
                         ),
+                      ),
+                      SizedBox(height: sizeBoxSize1,),
+                      SizedBox(
+                        width: 300,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pushReplacement(
+                              PageRouteBuilder(
+                                pageBuilder: (context, animation1, animation2) => const LoginScreen(isEditing: false),
+                                transitionDuration: Duration(seconds: 1),
+                                transitionsBuilder: (context, animation, animationTime, child) {
+                                  animation = CurvedAnimation(parent: animation, curve: Curves.fastOutSlowIn);
+                                  return FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            );// Your button press functionality
+                          },
+                          style: ButtonStyle(
+                            elevation: MaterialStateProperty.all(0), // Remove elevation (shadow)
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(4)),
+                              ),
+                            ),
+                            padding: MaterialStateProperty.all(EdgeInsets.zero),
+                            // Setting the background to transparent
+                            backgroundColor: MaterialStateProperty.all(Colors.transparent),
+                            // Apply overlay color to ensure splash effect is transparent
+                            overlayColor: MaterialStateProperty.all(Colors.transparent),
+                          ),
+                          child: Ink(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Color(0xffe94057),
+                                  Color(0xfff27121) // End color
+                                ],
+                              ),
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                            ),
+                            child: Container(
+                              width: 300,
+                              height: 50,
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Log in",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                        ,
                       )
                     ],
                   ),

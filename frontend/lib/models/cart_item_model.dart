@@ -4,21 +4,21 @@ import 'package:ali33/models/user_model.dart';
 class CartCombinedModel {
   CartCombinedModel({
     required this.userDetails,
-    required this.cartModel,
+    required this.cartModels,
   });
 
   UserModel userDetails;
-  List<CartModel> cartModel;
+  List<CartModel> cartModels;
 
   factory CartCombinedModel.fromJson(Map<String, dynamic> json) =>
       CartCombinedModel(
-        cartModel: List<CartModel>.from(
-            json["others"].map((x) => CartModel.fromJson(x))),
+        cartModels: List<CartModel>.from(
+            json["cartModels"].map((x) => CartModel.fromJson(x))),
         userDetails: UserModel.fromJson(json["userDetails"]),
       );
 
   Map<String, dynamic> toJson() =>
-      {"userDetails": userDetails, "cartModel": cartModel};
+      {"userDetails": userDetails, "cartModels": cartModels};
 }
 
 List<CartModel> cartItemsFromJson(List<dynamic> json) =>
@@ -27,17 +27,14 @@ List<CartModel> cartItemsFromJson(List<dynamic> json) =>
 class CartModel {
   CartModel(
       {required this.cartItem,
-      required this.productDetails,
-      required this.categoryDetails});
+      required this.productDetails});
 
   CartItem cartItem;
   ProductDetails productDetails;
-  CategoryDetail categoryDetails;
 
   factory CartModel.fromJson(Map<String, dynamic> json) => CartModel(
         cartItem: CartItem.fromJson(json["cartItemDetails"]),
         productDetails: ProductDetails.fromJson(json["productDetails"]),
-        categoryDetails: CategoryDetail.fromJson(json["categoryDetails"]),
       );
 }
 
@@ -48,7 +45,7 @@ class CartItem {
     required this.variationQuantity,
   });
 
-  String productKey;
+  int productKey;
   int noOfItems;
   int variationQuantity;
 

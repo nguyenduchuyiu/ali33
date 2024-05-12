@@ -4,9 +4,7 @@ import 'package:ali33/constants/route_animation.dart';
 import 'package:ali33/screens/home.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:proste_bezier_curve/proste_bezier_curve.dart';
 import 'package:ali33/screens/signup.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -159,7 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ? "Field can't be empty"
                             : null,
                         decoration: InputDecoration(
-                          hintText: "Enter your passworld",
+                          hintText: "Enter your password",
                           // border: OutlineInputBorder(
                           //   borderRadius: BorderRadius.circular(15),
                           //   borderSide: const BorderSide(color: Colors.black),
@@ -201,8 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             setState(() {
                               isLoading = true;
                             });
-                            bool? isRegistered = await ApiService().checkUser({'userId': userId.text, 
-                                                                              'type': isPhone? 'phone' : 'email'});
+                            bool? isRegistered = await ApiService().checkUser({'userId': userId.text});
                             setState(() {
                               isLoading = false;
                             });
@@ -215,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                                                                 });
                                   if (successLogin) {
                                     toastMessage("Successful Login");
-                                    Navigator.pushReplacement(context, SlideLeftRoute(widget: const HomeScreen(selectedPage : 1)));
+                                    Navigator.pushReplacement(context, SlideLeftRoute(widget: const HomeScreen(selectedPage : 0)));
                                   }
                                   else {
                                     toastMessage('Wrong email (phone) or password!');

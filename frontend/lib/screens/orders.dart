@@ -110,8 +110,9 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                   style: Theme.of(context).textTheme.displayLarge),
                               const SizedBox(height: 5),
                               Text(
-                               order.orderDetails.deliveryStages.length == 4?  "Delivered on ${order.orderDetails.deliveryStages[3].toString().split(' ')[0]}": "Delivery on ${ order.orderDetails.deliveryStages.last.add(const Duration(days: 3)).toString().split(' ')[0] }",
-                                  style: Theme.of(context).textTheme.bodyLarge ),
+                                "I'm shipping!!!",
+                              //  order.orderDetails.deliveryStages.length == 4?  "Delivered on ${order.orderDetails.deliveryStages[3].toString().split(' ')[0]}": "Delivery on ${ order.orderDetails.deliveryStages.last.add(const Duration(days: 3)).toString().split(' ')[0] }",
+                                style: Theme.of(context).textTheme.bodyLarge ),
                             ],
                           )
                         ],

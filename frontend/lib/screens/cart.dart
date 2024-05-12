@@ -7,6 +7,7 @@ import 'package:ali33/models/cart_item_model.dart';
 import 'package:ali33/models/order_model.dart';
 import 'package:ali33/models/user_model.dart';
 import 'package:ali33/screens/delivery_address.dart';
+import 'package:ali33/screens/login.dart';
 import 'package:ali33/screens/place_order.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
@@ -14,27 +15,23 @@ import 'package:ali33/widgets/build_photo.dart';
 import 'package:ali33/widgets/error_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+ 
 class CartScreen extends StatefulWidget {
-  const CartScreen({Key? key}) : super(key: key);
+  final int userKey;
+  const CartScreen({Key? key, required this.userKey}) : super(key: key);
 
   @override
   State<CartScreen> createState() => _CartScreenState();
 }
 
 class _CartScreenState extends State<CartScreen> {
-  // int count = 1;
-
   bool isLoading = false;
 
-  Future<UserModel?> getCurrentUser() async {
-    return await ApiService().getCurrentUser();
-  }
 
   @override
   void initState() {
     super.initState();
-    context.read<CartBloc>().add(FetchCartItems());
+    context.read<CartBloc>().add(FetchCartItems(userKey: widget.userKey));
   }
 
   @override
@@ -48,7 +45,7 @@ class _CartScreenState extends State<CartScreen> {
               appBar: AppBar(title: const Text("Cart Preview")),
               body: loadingAnimation());
         } else if (state is CartProductsFetched) {
-          if (state.products.cartModel.isEmpty) {
+          if (state.products.cartModels.isEmpty) {
             return Scaffold(
               appBar: AppBar(title: const Text("Cart Preview")),
               body: Container(
@@ -58,7 +55,7 @@ class _CartScreenState extends State<CartScreen> {
               ),
             );
           }
-          List<int> calculatedValues = calculateTotal(state.products.cartModel);
+          List<int> calculatedValues = calculateTotal(state.products.cartModels);
 
           return Scaffold(
             appBar: AppBar(title: const Text("Cart Preview")),
@@ -97,13 +94,13 @@ class _CartScreenState extends State<CartScreen> {
                 ),
                 SizedBox(height: size.height * 0.01),
                 ListView.builder(
-                  itemCount: state.products.cartModel.length,
+                  itemCount: state.products.cartModels.length,
                   primary: false,
                   shrinkWrap: true,
                   // padding: EdgeInsets.symmetric(horizontal: 8),
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    CartModel item = state.products.cartModel[index];
+                    CartModel item = state.products.cartModels[index];
 
                     int variationIndex = item.productDetails.variations.indexOf(
                         item.productDetails.variations.firstWhere((element) =>
@@ -126,7 +123,7 @@ class _CartScreenState extends State<CartScreen> {
                         print("dismissed");
                         context
                             .read<CartBloc>()
-                            .add(RemoveItemFromCart(item: item.cartItem));
+                            .add(RemoveItemFromCart(item: item.cartItem, userKey: widget.userKey));
                       },
                       child: Card(
                         margin: const EdgeInsets.all(5),
@@ -253,7 +250,7 @@ class _CartScreenState extends State<CartScreen> {
                                               //     item.cartItem.quantity--;
 
                                               context.read<CartBloc>().add(
-                                                  ChangeNoOfProducts(citem));
+                                                  ChangeNoOfProducts(item: citem, userKey: widget.userKey));
                                             }
                                           },
                                           child: const Text(
@@ -294,7 +291,7 @@ class _CartScreenState extends State<CartScreen> {
                                               //     item.cartItem.quantity++;
 
                                               context.read<CartBloc>().add(
-                                                  ChangeNoOfProducts(citem));
+                                                  ChangeNoOfProducts(item: citem, userKey: widget.userKey));
                                             }
                                           },
                                           child: const Text("+",
@@ -398,14 +395,15 @@ class _CartScreenState extends State<CartScreen> {
                           children: [
                             GestureDetector(
                               onTap: () async {
-                                bool res = await Navigator.push(
-                                    context,
-                                    SlideLeftRoute(
-                                        widget: const DeliveryAddressScreen()));
+                                bool res = true; // Huy test
+                                // bool res = await Navigator.push(
+                                //     context,
+                                //     SlideLeftRoute(
+                                //         widget: const DeliveryAddressScreen()));
                                 if (res) {
                                   context
                                       .read<CartBloc>()
-                                      .add(FetchCartItems());
+                                      .add(FetchCartItems(userKey: widget.userKey));
                                   setState(() {});
                                 }
                               },
@@ -423,8 +421,7 @@ class _CartScreenState extends State<CartScreen> {
                             SizedBox(
                               width: size.width * 0.8,
                               child: Text(
-                                state.products.userDetails.deliveryAddress[0]
-                                    .address,
+                                state.products.userDetails.deliveryAddress,
                                 softWrap: true,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
@@ -438,9 +435,9 @@ class _CartScreenState extends State<CartScreen> {
                   nextButton("Pay  $dollarSymbol${calculatedValues[0]}",
                       () async {
                     List<OrderModel> orders = generateOrderList(
-                        state.products.cartModel, state.products.userDetails);
+                        state.products.cartModels, state.products.userDetails);
                     List<CartItem> cartItems = List<CartItem>.from(
-                            state.products.cartModel.map((e) => e.cartItem))
+                            state.products.cartModels.map((e) => e.cartItem))
                         .toList();
                     bool res = await Navigator.push(
                         context,
@@ -453,7 +450,7 @@ class _CartScreenState extends State<CartScreen> {
                     print(res);
                     if (res) {
                       setState(() {
-                        context.read<CartBloc>().add(FetchCartItems());
+                        context.read<CartBloc>().add(FetchCartItems(userKey: widget.userKey));
                       });
                     }
                   })
@@ -465,7 +462,7 @@ class _CartScreenState extends State<CartScreen> {
         return Scaffold(
           appBar: AppBar(title: const Text("Cart Preview")),
           body: buildErrorWidget(
-              context, () => context.read<CartBloc>().add(FetchCartItems())),
+              context, () => context.read<CartBloc>().add(FetchCartItems(userKey: widget.userKey))),
         );
       },
     );
@@ -491,8 +488,8 @@ class _CartScreenState extends State<CartScreen> {
           //     stageTwo: "",
           //     stageThree: "",
           //     stageFour: ""),
-          deliveryStages: [DateTime.now().toUtc()],
-          deliveryAddress: user.deliveryAddress[0]);
+          deliveryStages: ["Order Placed"], // Huy test
+          deliveryAddress: user.deliveryAddress);
     }).toList());
   }
 

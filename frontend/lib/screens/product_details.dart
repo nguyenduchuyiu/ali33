@@ -1,9 +1,10 @@
-// ignore_for_file: use_build_context_synchronously, avoid_print
+// ignore_for_file: use_build_context_synchronously, avoid_print, must_be_immutable
 
 import 'package:ali33/bloc/cart_bloc.dart';
 import 'package:ali33/constants/constant_values.dart';
 import 'package:ali33/constants/route_animation.dart';
 import 'package:ali33/models/cart_item_model.dart';
+import 'package:ali33/models/order_model.dart';
 import 'package:ali33/models/product_model.dart';
 import 'package:ali33/models/user_model.dart';
 import 'package:ali33/screens/cart.dart';
@@ -12,6 +13,8 @@ import 'package:ali33/widgets/basic.dart';
 import 'package:ali33/widgets/build_photo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ali33/services/authenticate_service.dart';
+
 
 class ProductDetailsScreen extends StatefulWidget {
   final int tag;
@@ -52,7 +55,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         leading: IconButton(
             onPressed: () => Navigator.pop(context),
             icon: const Icon(
-              Icons.arrow_back,
+              Icons.arrow_back, color: Colors.black,
             )),
       ),
       body: SafeArea(
@@ -293,29 +296,38 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             ),
             GestureDetector(
               onTap: () async {
+                
                 setState(() {
                   isLoading = true;
                 });
-                UserModel? user = await ApiService().getCurrentUser();
+                UserModel? user = await UserService.authenticateUser(context);
                 if (user != null) {
-                  print("user");
-                  // OrderModel orderModel = OrderModel(
-                  //           orderedDate: DateTime.now().toUtc(),
-                  //           userId: user.key!,
-                  //           quantity: noOfProdAdded,
-                  //           variationQuantity: widget
-                  //               .productModel
-                  //               .productDetails
-                  //               .variations[selectedIndex]
-                  //               .quantity,
-                  //           productId: widget.productModel.productDetails.key,
-                  //           paidPrice: widget.productModel.productDetails
-                  //               .variations[selectedIndex].offerPrice,
-                  //           paymentStatus: 0,
-                  //           deliveryStages: null,
-                  //           deliveryAddress: null,                          
-                  //       );
-                  bool addedToCart =  await ApiService().addToCart(CartItem(productKey: widget.productModel.productDetails.key, noOfItems: noOfProdAdded, variationQuantity: widget.productModel.productDetails.variations[selectedIndex].quantity));
+                  OrderModel orderModel = OrderModel(
+                            orderedDate: DateTime.now().toUtc(),
+                            userId: user.key!,
+                            productDetails: 
+                              ProductOrderingDetails(
+                                productKey: widget.productModel.productDetails.key,
+                                noOfItems: noOfProdAdded,
+                                variationQuantity: widget
+                                .productModel
+                                .productDetails
+                                .variations[selectedIndex]
+                                .quantity,
+                              ),
+                            paidPrice: widget.productModel.productDetails
+                                .variations[selectedIndex].offerPrice,
+                            paymentStatus: 0, // Haven't paid yet
+                            deliveryStages: ["Pending Order"],
+                            deliveryAddress: "",                          
+                        );
+                  bool addedToCart =  await ApiService().addToCart(
+                    CartItem(
+                      productKey: widget.productModel.productDetails.key, 
+                      noOfItems: noOfProdAdded, 
+                      variationQuantity: widget.productModel.productDetails.variations[selectedIndex].quantity),
+                    user.key!
+                    );
                    setState(() {
                   isLoading = false;
                 });
@@ -343,7 +355,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     Navigator.push(
                         context, SlideLeftRoute(widget: BlocProvider<CartBloc>(
                                   create: (context) => CartBloc(),
-                                  child: const CartScreen(),
+                                  child: CartScreen(userKey: user.key!),
                                 )),);
                   }
                 }

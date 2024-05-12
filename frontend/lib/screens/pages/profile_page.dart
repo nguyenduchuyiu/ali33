@@ -7,8 +7,10 @@ import 'package:ali33/screens/cart.dart';
 import 'package:ali33/screens/delivery_address.dart';
 import 'package:ali33/screens/login.dart';
 import 'package:ali33/screens/orders.dart';
+import 'package:ali33/screens/pages/home_page.dart';
 import 'package:ali33/screens/profile.dart';
 import 'package:ali33/services/api_service.dart';
+import 'package:ali33/services/authenticate_service.dart';
 import 'package:ali33/services/theme_provider_service.dart';
 import 'package:ali33/widgets/basic.dart';
 import 'package:ali33/widgets/build_photo.dart';
@@ -17,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
@@ -25,18 +28,12 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  Future<UserModel?>? user;
+  Future<UserModel?>? user ;
   late AppThemeNotifier appThemeNotifier;
-
-  Future<void> getCurrentUser() async {
-    user = ApiService().getCurrentUser();
-    setState(() {});
-  }
 
   @override
   void initState() {
     super.initState();
-    getCurrentUser();
   }
 
   @override
@@ -47,6 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    user = UserService.authenticateUser(context);
     Size size = MediaQuery.of(context).size;
     return FutureBuilder(
         future: user,
@@ -54,11 +52,11 @@ class _ProfilePageState extends State<ProfilePage> {
           if (snapshots.connectionState == ConnectionState.waiting) {
             return loadingAnimation();
           } else if (snapshots.hasError) {
-            return buildErrorWidget(context, () => getCurrentUser());
+            return buildErrorWidget(context, () => UserService.authenticateUser(context));
           }
           if (snapshots.data == null) {
             return buildErrorWidget(
-                context, () => getCurrentUser(), "User not Found! Try again");
+                context, () => UserService.authenticateUser(context), "User not Found! Try again");
           }
           print(snapshots.data);
 
@@ -87,7 +85,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         )),
                       );
                       if (res) {
-                        await getCurrentUser();
+                        await UserService.authenticateUser(context);
                         setState(() {});
                       }
                     },
@@ -171,7 +169,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               SlideLeftRoute(
                                 widget: BlocProvider<CartBloc>(
                                   create: (context) => CartBloc(),
-                                  child: const CartScreen(),
+                                  child: CartScreen(userKey: snapshots.data!.key!,),
                                 ),
                               ))),
                       buildItem(
@@ -180,8 +178,8 @@ class _ProfilePageState extends State<ProfilePage> {
                               context, SlideLeftRoute(widget: const OrdersScreen()))),
                       buildItem(
                           "My Address",
-                          () => Navigator.push(context,
-                              SlideLeftRoute(widget: const DeliveryAddressScreen()))),
+                          () => Navigator.push(context, SlideLeftRoute(widget: HomePage()))),// Huy test
+                              // SlideLeftRoute(widget: const DeliveryAddressScreen()))),
                       buildItem(
                           "Theme Mode",
                           () => {

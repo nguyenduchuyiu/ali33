@@ -85,27 +85,20 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
                     lineDotRadius: 2.0,
                     stepRadius: 16.0,
                     icons:
-                        // List<Icon>.from(widget.orderCombinedModel.orderDetails.deliveryStages.map((e) =>  Icon(Icons.check, color: Colors.white)))
-                        [
+                    [
                       widget.orderCombinedModel.orderDetails.deliveryStages.isNotEmpty
                           ? const Icon(Icons.check, color: Colors.white)
                           : const Icon(Icons.radio_button_checked,
                               color: Colors.green),
-                      widget.orderCombinedModel.orderDetails.deliveryStages
-                                  .length >
-                              1
+                      widget.orderCombinedModel.orderDetails.deliveryStages.length > 1
                           ? const Icon(Icons.check, color: Colors.white)
                           : const Icon(Icons.radio_button_checked,
                               color: Colors.green),
-                      widget.orderCombinedModel.orderDetails.deliveryStages
-                                  .length >
-                              2
+                      widget.orderCombinedModel.orderDetails.deliveryStages.length > 2
                           ? const Icon(Icons.check, color: Colors.white)
                           : const Icon(Icons.radio_button_checked,
                               color: Colors.green),
-                      widget.orderCombinedModel.orderDetails.deliveryStages
-                                  .length >
-                              3
+                      widget.orderCombinedModel.orderDetails.deliveryStages.length > 3
                           ? const Icon(Icons.check, color: Colors.white)
                           : const Icon(Icons.radio_button_checked,
                               color: Colors.green),
@@ -140,7 +133,7 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
                                     .copyWith(fontWeight: FontWeight.bold),
                               ),
                               subtitle: Text(
-                                "${widget.orderCombinedModel.orderDetails.deliveryStages[index]}",
+                                widget.orderCombinedModel.orderDetails.deliveryStages[index],
                                 style: const TextStyle(fontSize: 14.0),
                               ),
                             ),
@@ -180,7 +173,7 @@ class _OrderTrackScreenState extends State<OrderTrackScreen> {
                             width: size.width * 0.7,
                             child: Text(
                               widget.orderCombinedModel.orderDetails
-                                  .deliveryAddress.address,
+                                  .deliveryAddress,
                               maxLines: 4,
                               style: Theme.of(context).textTheme.headlineMedium,
                               overflow: TextOverflow.ellipsis,

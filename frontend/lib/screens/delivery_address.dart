@@ -3,6 +3,8 @@
 import 'package:ali33/constants/route_animation.dart';
 import 'package:ali33/models/user_model.dart';
 import 'package:ali33/screens/add_address.dart';
+import 'package:ali33/screens/home.dart';
+import 'package:ali33/screens/pages/home_page.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
 import 'package:ali33/widgets/error_builder.dart';
@@ -19,7 +21,7 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
   int selected = -1;
   bool isLoading = false;
 
-  late Future<List<DeliveryAddress>> addess;
+  late Future<List<String>> addess;
   late UserModel? userModel;
   void getAddresses() {
     addess = ApiService().getAllAddresses();
@@ -47,7 +49,7 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
         leading: BackButton(onPressed: () => Navigator.pop(context, false)),
         // actions: [IconButton(onPressed: () {}, icon: Icon(Icons.done))],
       ),
-      body: FutureBuilder<List<DeliveryAddress>>(
+      body: FutureBuilder<List<String>>(
           future: addess,
           builder: (context, snapshots) {
             if (snapshots.connectionState == ConnectionState.waiting) {
@@ -65,8 +67,8 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                 const SizedBox(height: 20),
                 GestureDetector(
                   onTap: () async {
-                    bool res = await Navigator.push(
-                        context, SlideLeftRoute(widget: const AddAddressScreen()));
+                    bool res = await Navigator.push(context, SlideLeftRoute(widget: HomeScreen(selectedPage: 1,)));
+                        // context, SlideLeftRoute(widget: const AddAddressScreen()));//Huy test
                     if (res) getAddresses();
                   },
                   child: Card(
@@ -92,7 +94,7 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                     physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(16),
                     itemBuilder: (context, index) {
-                      DeliveryAddress deliveryAddress = snapshots.data![index];
+                      String deliveryAddress = snapshots.data![index];
                       return Container(
                         margin: const EdgeInsets.symmetric(vertical: 8),
                         width: size.width,
@@ -127,7 +129,7 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                                     SizedBox(
                                       width: size.width * 0.7,
                                       child: Text(
-                                        deliveryAddress.address,
+                                        deliveryAddress,
                                         maxLines: 4,
                                         style: Theme.of(context)
                                             .textTheme
@@ -159,8 +161,7 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                                               isLoading = true;
                                             });
                                             bool res = await ApiService()
-                                                .deleteAddress(
-                                                    snapshots.data![selected]);
+                                                .deleteAddress(snapshots.data![selected]);
                                             setState(() {
                                               isLoading = false;
                                               selected = -1;

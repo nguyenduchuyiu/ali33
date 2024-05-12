@@ -1,18 +1,87 @@
+import datetime
 import sqlite3
 from flask import jsonify
 import threading
 import json
 
-from security import generate_password_hash
+import security as sc
 
 
 # Thread-local storage for database connections
 thread_local = threading.local()
 
-def get_db_connection(path='backend/assets/database/database.db'):
+def get_db_connection(path='E:/ali33/backend/assets/database/database.db'):
     if not hasattr(thread_local, 'db_conn'):
         thread_local.db_conn = sqlite3.connect(path)
     return thread_local.db_conn
+
+
+def get_user_by_key(userKey):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute("""
+            SELECT  users._key,
+                    users.proprietorName,
+                    users.deliveryAddress,
+                    users.deviceToken,
+                    users.dob,
+                    users.emailId,
+                    users.shopName,
+                    users.phoneNo,
+                    users.profilePic,
+                    users.userType,
+                    users.gst
+            FROM users
+            WHERE users._key = ?
+        """, (userKey,))
+        user_data = cursor.fetchone()
+
+        if user_data:
+            user = {
+                "_key": user_data[0],
+                "cartItems":[],
+                "proprietorName": user_data[1],
+                "deliveryAddress": user_data[2],
+                "deviceToken": user_data[3],
+                "dob": user_data[4],
+                "emailId": user_data[5],
+                "shopName": user_data[6],
+                "orders": [],
+                "phoneNo": user_data[7],
+                "profilePic": user_data[8],
+                "userType": user_data[9],
+                "gst": user_data[10] 
+            }
+            cursor.execute("""
+                SELECT _key 
+                FROM orders
+                WHERE userKey = ?
+            """, (userKey,))
+            orders_data = cursor.fetchall()
+            for order in orders_data:
+                user["orders"].append(order)
+            
+            cursor.execute("""
+                SELECT productKey, noOfItems, variationQuantity
+                FROM cart_items
+                WHERE userKey = ?
+            """, (userKey,))
+            cart_items_data = cursor.fetchall()
+            for cart_item in cart_items_data:
+                user["cartItems"].append({
+                    "productKey": cart_item[0],
+                    "noOfItems": cart_item[1],
+                    "variationQuantity": cart_item[2]
+                })
+            return user
+        else:
+            return None 
+
+    except Exception:
+        return None  
+
 
 def is_registered(contact_info):
     conn = get_db_connection()
@@ -21,61 +90,77 @@ def is_registered(contact_info):
     if not contact_info:
         return jsonify({'error': 'Missing contact_info'}), 400
      
-    query = "SELECT id FROM users WHERE contact_info = ?"
+    query = "SELECT _key FROM users WHERE emailId = ?"
     cur.execute(query, (contact_info,))
 
-    user_exists = cur.fetchone() is not None  # Check if a row was returned
+    user_exists = cur.fetchone() is not None
 
-    cur.close()
-    conn.close() 
+    
+     
 
     return user_exists
 
 
-def get_user(contact_info):
-    """
-    Retrieves user information from the MySQL database based on the given contact info.
-    """
+def get_user_for_login(contact_info) -> dict:
     conn = get_db_connection()
-    cur = conn.cursor() 
-    query = "SELECT * FROM users WHERE contact_info = ?"
-    cur.execute(query, (contact_info,)) 
+    cur = conn.cursor()
+
+    query = """
+        SELECT
+            u._key,
+            u.hashed_password
+        FROM users u
+        WHERE u.emailId = ?
+    """
+    cur.execute(query, (contact_info,))
     user_data = cur.fetchone()
-    cur.close()
-    conn.close()
-    if user_data:
-        return {
-            'id': user_data[0],
-            'username': user_data[1],
-            'password_hash': user_data[4]
-        }
-    else:
-        return None 
+    
+    
+    
+    if not user_data:
+        return None  #
+
+    user_info = {
+        '_key': user_data[0],
+        'hashed_password': user_data[1]
+    }
+    return user_info
 
 
-def create_user(username, contact_info, info_type, password):
-    """
-    Creates a new user in the database.
-    """
-
+def create_user(username, contact_info, password):
     conn = get_db_connection()
     cursor = conn.cursor()
 
     # Hash the password
-    hashed_password = generate_password_hash(password)
+    hashed_password = sc.generate_password_hash(password)
+    cur_time = int(datetime.datetime.now().timestamp())
 
     try:
         cursor.execute(
-            "INSERT INTO users (username, contact_info, info_type, password_hash) VALUES (?, ?, ?, ?)",
-            (username, contact_info, info_type, hashed_password),
-        )
+            """
+            INSERT INTO users (
+                hashed_password,
+                deliveryAddress ,
+                deviceToken ,
+                dob,
+                emailId ,
+                shopName ,
+                phoneNo,
+                profilePic ,
+                userType,
+                proprietorName ,
+                gst 
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (hashed_password, " ", " ", cur_time , contact_info, " ", " ", " ", " ", username, " ") 
+            )
         conn.commit()
         return True
-    except Exception:
+    except Exception as e:
         return False
     finally:
         cursor.close()
-        conn.close()
+        
 
 
 def get_categories():
@@ -175,8 +260,8 @@ def get_product_from_key(key):
     query = """
         SELECT p._key, p.productName, p.productDescription, p.productPicture
         FROM categories c
-        INNER JOIN product_categories pc ON c._key = pc.category_key
-        INNER JOIN products p ON pc.product_key = p._key
+        INNER JOIN product_categories pc ON c._key = pc.categoryKey
+        INNER JOIN products p ON pc.productKey = p._key
         WHERE {key_name}._key = ? """.format(key_name=key_name)
     
     cursor.execute(query, (key['key'],))
@@ -197,8 +282,8 @@ def get_product_from_key(key):
         query = """
             SELECT c._key, c.categoryName, c.categoryPicture
             FROM product_categories pc
-            INNER JOIN categories c ON pc.category_key = c._key
-            WHERE pc.product_key = ?
+            INNER JOIN categories c ON pc.categoryKey = c._key
+            WHERE pc.productKey = ?
         """
         cursor.execute(query, (product_data['_key'],))
         category_data = [
@@ -211,7 +296,7 @@ def get_product_from_key(key):
         ]
 
         # Query to get reviews (using product_data["_key"] directly)
-        cursor.execute("SELECT userId, comment FROM Reviews WHERE productKey=?", (product_data["_key"],))
+        cursor.execute("SELECT userKey, comment FROM Reviews WHERE productKey=?", (product_data["_key"],))
         for review in cursor.fetchall():
             product_data["reviews"].append({
                 "userId": review[0],
@@ -236,4 +321,39 @@ def get_product_from_key(key):
 
     return results
 
+
+def add_to_cart(cartItem, userKey):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute('''
+            INSERT INTO cart_items (userKey, productKey, noOfItems, variationQuantity)
+            VALUES (?, ?, ?, ?)
+            ''', (userKey, cartItem['productKey'], cartItem['noOfItems'], cartItem['variationQuantity'])) 
+
+        conn.commit()
+        return True
+
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}") 
+        conn.rollback()
+        return False   
+    
+    
+def get_cart_items(userKey):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute('''
+            SELECT * FROM cart_items WHERE userKey = ?
+        ''', (userKey,)) 
+
+        cart_items = cursor.fetchall()
+        return cart_items
+
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+        return None  # Or handle the error appropriately 
     

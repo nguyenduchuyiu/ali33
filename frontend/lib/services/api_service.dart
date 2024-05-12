@@ -14,20 +14,20 @@ import 'package:dio/dio.dart';
 class ApiService {
   final Dio _dio = Dio();
   
-  // final String baseUrl = "http://192.168.0.103:5000";
-  // final String userBaseUrl = "http://192.168.0.103:5000/users";
-  // final String productBaseUrl = "http://192.168.0.103:5000/products";
-  // final String orderBaseUrl = "http://192.168.0.103:5000/orders";
+  // final String baseUrl = "https://nguyenduchuy.pythonanywhere.com/";
+  // final String userBaseUrl = "https://nguyenduchuy.pythonanywhere.com/users";
+  // final String productBaseUrl = "https://nguyenduchuy.pythonanywhere.com/products";
+  // final String orderBaseUrl = "https://nguyenduchuy.pythonanywhere.com/orders";
 
   final String baseUrl = "http://127.0.0.1:5000";
   final String userBaseUrl = "http://127.0.0.1:5000/users";
   final String productBaseUrl = "http://127.0.0.1:5000/products";
   final String orderBaseUrl = "http://127.0.0.1:5000/orders";
 
-  // final String baseUrl = "http://192.168.0.101:5000";
-  // final String userBaseUrl = "http://192.168.0.101:5000/users";
-  // final String productBaseUrl = "http://192.168.0.101:5000/products";
-  // final String orderBaseUrl = "http://192.168.0.101:5000/orders";
+  // final String baseUrl = "http://192.168.0.101:8080";
+  // final String userBaseUrl = "http://192.168.0.101:8080/users";
+  // final String productBaseUrl = "http://192.168.0.101:8080/products";
+  // final String orderBaseUrl = "http://192.168.0.101:8080/orders";
 
   Future<bool?> checkUser(Map<String, String> data) async {
     try {
@@ -75,6 +75,7 @@ class ApiService {
     // _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response = await _dio.post("$userBaseUrl/login", data: data);
+      print(response);
 
       if (response.statusCode == 200) {
         await UserDataStorageService().setToken(response.data!["token"]);
@@ -168,7 +169,7 @@ class ApiService {
       UserModel user = UserModel.fromJson(response.data!["result"]);
       return user;
     } on DioException catch (e) {
-      print("dio error occured: $e");
+      print("get cur user dio error occured: ${e.message}");
       if (e.error is SocketException) {
         internetToastMessage();
       } else {
@@ -181,12 +182,12 @@ class ApiService {
     return null;
   }
  
-  Future<bool> addAddress(DeliveryAddress address) async {
+  Future<bool> addAddress(String address) async {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response =
-          await _dio.post("$userBaseUrl/address", data: address.toJson());
+          await _dio.post("$userBaseUrl/address", data: address);
       print(response);
       return true;
     } on DioException catch (e) {
@@ -203,12 +204,12 @@ class ApiService {
     return false;
   }
 
-  Future<bool> deleteAddress(DeliveryAddress address) async {
+  Future<bool> deleteAddress(String address) async {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response =
-          await _dio.delete(userBaseUrl + "/address", data: address.toJson());
+          await _dio.delete(userBaseUrl + "/address", data: address);
       print(response);
       return true;
     } on DioException catch (e) {
@@ -221,16 +222,12 @@ class ApiService {
     return false;
   }
 
-  Future<List<DeliveryAddress>> getAllAddresses() async {
+  Future<List<String>> getAllAddresses() async {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
-      Response<Map<String, dynamic>> response =
-          await _dio.get(userBaseUrl + "/address");
-      print(response);
-      List<DeliveryAddress> addresses =
-          deliveryAddressessFromJson(response.data!["result"]);
-      return addresses;
+      Response<Map<String, dynamic>> response = await _dio.get(userBaseUrl + "/address");
+      return response.data!['result'];
     } on DioException catch (e) {
       print("dio error occured: ${e.response}");
       if (e.error is SocketException) {
@@ -269,12 +266,12 @@ class ApiService {
     return [];
   }
 
-  Future<bool> setDefaultAddress(DeliveryAddress address) async {
+  Future<bool> setDefaultAddress(String address) async {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response = await _dio
-          .post(userBaseUrl + "/set-default-address", data: address.toJson());
+          .post(userBaseUrl + "/set-default-address", data: address);
       print(response);
       return true;
     } on DioException catch (e) {
@@ -361,9 +358,9 @@ class ApiService {
     return null;
   }
 
-  Future<List<ProductModel>> getAllProducts(String lastDocKey, 
+  Future<List<ProductModel>> getAllProducts(int lastDocKey, 
                                             int limit, 
-                                            String? category)
+                                            int? category)
                                             async {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
@@ -411,54 +408,44 @@ class ApiService {
     return [];
   }
 
-  Future<bool> addToCart(CartItem cartItem) async {
+  Future<bool> addToCart(CartItem cartItem, userKey) async {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
-      Response<Map<String, dynamic>> response =
-          await _dio.post(userBaseUrl + "/cart", data: cartItem.toJson());
-      print("in try cart");
-      print(response);
-
+      Map<String, dynamic> data = {'cartItem': cartItem.toJson(),
+                                    'userKey': userKey};
+      Response<Map<String, dynamic>> response = await _dio.post(userBaseUrl + "/add-to-cart", data: data);
       return true;
     } on DioException catch (e) {
-      print("dio error occured: ${e.response}");
+      print("dio error occured on add to cart: ${e.response}");
       if (e.error is SocketException) {
         internetToastMessage();
-      } else {
-        // toastMessage("Something went wrong! Try again");
       }
     } catch (e) {
       print("Exception Occured at addtocart : $e");
-      // toastMessage("Something went wrong! Try again");
     }
     return false;
   }
 
-  Future<CartCombinedModel?> getCartItems() async {
+  Future<CartCombinedModel?> getCartItems(int userKey) async {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
-      Response<Map<String, dynamic>> response =
-          await _dio.get(userBaseUrl + "/cart");
-      print(response.data!['result']);
-
-      CartCombinedModel prods =
-          CartCombinedModel.fromJson(response.data!['result']);
-      // print(prods[0].cartItem.quantity);
-      // List<CartItem> cartitems =
-      //     cartItemsFromJson(response.data!['result']['cartItemDetails']);
-      // Map<String, dynamic> data = {"cartItems": cartitems, "products": prods};
+      Map<String, dynamic> data = {'userKey': userKey};
+      Response<Map<String, dynamic>> response = await _dio.post(
+                                                userBaseUrl + "/get-cart-items", 
+                                                data: data);
+      CartCombinedModel prods = CartCombinedModel.fromJson(response.data!['result']);
       return prods;
     } on DioException catch (e) {
-      print("dio error occured: ${e.response}");
+      print("dio error occured: ${e.message}");
       if (e.error is SocketException) {
         internetToastMessage();
       } else {
         toastMessage("Something went wrong! Try again");
       }
     } catch (e) {
-      print("Exception Occured at addtocart : $e");
+      print("Exception Occured at get cart item : $e");
       // throw Error;
       toastMessage("Something went wrong! Try again");
     }

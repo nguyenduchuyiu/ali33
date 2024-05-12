@@ -17,7 +17,7 @@ abstract class ProductEvent extends Equatable {
 class FetchProducts extends ProductEvent {
   final int limit;
   final bool isInitial;
-  final String? category;
+  final int? category;
 
   FetchProducts(
       {required this.isInitial, required this.limit, required this.category});
@@ -84,7 +84,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         List<ProductModel> products = [];
 
         products =
-            await _apiService.getAllProducts("0", event.limit, event.category);
+            await _apiService.getAllProducts(1, event.limit, event.category);
 
         return emit(
           state.copyWith(

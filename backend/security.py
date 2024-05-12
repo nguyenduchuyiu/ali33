@@ -3,33 +3,57 @@ import os
 
 import bcrypt
 import jwt
+SECRET_KEY = 'Huy'
 
-
-def create_jwt_token(user_id, expires_in_minutes=30):
+def decode_jwt_token(token, secret_key=SECRET_KEY):
     """
-    Creates a JWT token with the given user ID and expiration time.
+    Decodes a JWT token and checks if it's expired.
 
     Args:
-        user_id (str): The user ID to include in the token payload.
-        expires_in_minutes (int, optional): The expiration time of the token in minutes. Defaults to 30.
+        token: The JWT token to decode.
+        secret_key: The secret key used to encode the token.
 
     Returns:
-        str: The encoded JWT token.
+        The decoded payload of the token if it's not expired.
 
     Raises:
-        ValueError: If there is an error creating the token.
+        ValueError: If the token is invalid, the secret key is not provided, or the token is expired.
     """
+    try:
+        if not secret_key:
+            raise ValueError("Secret key not found.")
+        payload = jwt.decode(token, secret_key, algorithms=['HS256'])
+        
+        # Check if the 'exp' (expiration) claim exists
+        if 'exp' and 'userKey' in payload:
+            expiration_timestamp = payload['exp']
+            now = datetime.datetime.now().timestamp()
+            if now >= expiration_timestamp:
+                # raise ValueError("JWT token is expired")
+                return None
+        else:
+            return None
+            # raise ValueError("JWT token does not contain correct info.")
 
+        return payload['userKey']
+    except jwt.exceptions.DecodeError:
+        return None
+        # raise ValueError("Invalid JWT token")
+    except Exception as e:
+        return None
+        # raise ValueError("Error decoding JWT token") from e
+
+
+def create_jwt_token(userKey, expires_in_minutes=30):
     try:
         payload = {
-            'user_id': user_id,
+            'userKey': userKey,
             'exp': datetime.datetime.now() + datetime.timedelta(minutes=expires_in_minutes)
         }
-        secret_key = os.environ.get('SECRET_KEY')
 
-        if not secret_key:
+        if not SECRET_KEY:
             raise ValueError("Secret key not found in environment variables.")
-        token = jwt.encode(payload, secret_key, algorithm='HS256')
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
         
         return token
     except Exception as e:
@@ -47,9 +71,10 @@ def check_password(user, password):
     Returns:
         bool: Password is correct or not.
     """
-    if not user or not bcrypt.checkpw(password.encode('utf-8'), user['password_hash']):
+    if not user or not bcrypt.checkpw(password.encode('utf-8'), user['hashed_password']):
         return False
     return True
+
 
 def generate_password_hash(password):
     """
@@ -63,3 +88,4 @@ def generate_password_hash(password):
     """
     salt = bcrypt.gensalt()
     return bcrypt.hashpw(password.encode('utf-8'), salt)
+
