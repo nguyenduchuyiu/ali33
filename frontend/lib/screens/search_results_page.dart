@@ -17,7 +17,7 @@ class SearchResultsScreen extends StatefulWidget {
   @override
   State<SearchResultsScreen> createState() => _SearchResultsScreenState();
 }
-
+//khánh
 class _SearchResultsScreenState extends State<SearchResultsScreen> {
   @override
   void initState() {
