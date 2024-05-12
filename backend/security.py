@@ -25,7 +25,7 @@ def create_jwt_token(user_id, expires_in_minutes=30):
             'user_id': user_id,
             'exp': datetime.datetime.now() + datetime.timedelta(minutes=expires_in_minutes)
         }
-        secret_key = os.environ.get('SECRET_KEY')
+        secret_key = 'Huy'
 
         if not secret_key:
             raise ValueError("Secret key not found in environment variables.")

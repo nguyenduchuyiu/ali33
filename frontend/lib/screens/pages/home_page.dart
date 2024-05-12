@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
 
   late Future<UserModel?> user;
-  String category = "";
+  int category = 1;
 
   getUser() {
     user = ApiService().getCurrentUser();
@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
             return buildErrorWidget(context, () => getUser());
           }
           if (snapshots.data == null) {
-            print('snapshot null');
+            print('home page snapshot null');
             return buildErrorWidget(
                 context, () => getUser(), "Items not Found! Try again");
           }
@@ -154,13 +154,13 @@ class _HomePageState extends State<HomePage> {
                               onTap: () {
                                 switch (index) {
                                   case 0:
-                                    category = "best_seller";
+                                    category = 1;
                                     break;
                                   case 1:
-                                    category = "popular_brand";
+                                    category = 2;
                                     break;
                                   case 2:
-                                    category = "free_delivery";
+                                    category = 3;
                                     break;
                                 }
                                 setState(() {
@@ -249,13 +249,13 @@ class _HomePageState extends State<HomePage> {
 
 class Products extends StatelessWidget {
   final Size size;
-  final String category;
+  final int category;
   const Products({required this.size, required this.category, super.key});
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<ProductModel>>(
-        future: ApiService().getAllProducts("0", 20, category),
+        future: ApiService().getAllProducts(1, 20, category),
         builder: (context, snapshots) {
           if (snapshots.connectionState == ConnectionState.waiting) {
             return loadingAnimation();
@@ -292,7 +292,7 @@ class Products extends StatelessWidget {
                   tag: index,
                   child: Card(
                       elevation: 10,
-                      shadowColor: const Color.fromARGB(255, 7, 1, 7).withOpacity(0.3),
+                      shadowColor: const Color.fromARGB(255, 7, 1, 7).withOpacity(0.9),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                       child: Padding(

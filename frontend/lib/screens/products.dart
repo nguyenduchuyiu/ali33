@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductsScreen extends StatefulWidget {
-  final String categoryKey;
+  final int categoryKey;
   final String categoryName;
   const ProductsScreen(
       {Key? key, required this.categoryName, required this.categoryKey})

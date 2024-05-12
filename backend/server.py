@@ -9,9 +9,12 @@ load_dotenv('backend\key.env')
 app = Flask(__name__)
 CORS(app)
 
-''' 
-Check if a user exists in database.
-'''
+
+@app.route('/users/address')
+def get_address():
+    return jsonify({'result': ['Ha Noi', 'Bac Giang']})
+
+
 @app.route('/users/check_user', methods=['POST'])
 def check_register():
     data = request.get_json()
@@ -76,20 +79,15 @@ def get_user_info():
     # user_info = dm.get_user_info()
     return jsonify({
         'result': {
-                    "_key": "ex_key",
+                    "_key": 1,
                     "cartItems": [
                         {
-                        "productKey": "ex_productKey",
+                        "productKey": 1,
                         "noOfItems":1,
                         "variationQuantity":1
                         },
                     ],
-                    "deliveryAddress": [
-                        {
-                        "address": "ex_address",
-                        "point": "ex_point"
-                        }
-                    ],
+                    "deliveryAddress": "Ha Noi",
                     "deviceToken": "ex_deviceToken",
                     "dob": 1678886400000,
                     "emailId": "huy@gmail.com",
@@ -155,12 +153,21 @@ def search_product():
     if not search_term:
         return jsonify({"error": "Search term parameter is required"}), 400
     
-    product_data_list = dm.search_products_by_name(search_term)  # Adapt to fetch by category
+    product_data_list = dm.search_products_by_name(search_term) 
     
     if product_data_list:
         return jsonify({'result':product_data_list}), 200
     else:
         return jsonify({"error": "Product not found"}), 404
+
+
+@app.route('/users/cart' ,methods=['GET'])
+def getCart():
+    userKey = request.get_json()['userKey']
+    pass
+    
+
+    
 
 
 # @app.route('/images/<string:product_name>')
