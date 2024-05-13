@@ -408,11 +408,11 @@ class ApiService {
     return [];
   }
 
-  Future<bool> addToCart(CartItem cartItem, userKey) async {
+  Future<bool> addToCart(CartItem cartItems, userKey) async {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
-      Map<String, dynamic> data = {'cartItem': cartItem.toJson(),
+      Map<String, dynamic> data = {'cartItems': cartItems.toJson(),
                                     'userKey': userKey};
       Response<Map<String, dynamic>> response = await _dio.post(userBaseUrl + "/add-to-cart", data: data);
       return true;
@@ -456,21 +456,20 @@ class ApiService {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
-      Response<Map<String, dynamic>> response =
-          await _dio.delete(userBaseUrl + "/cart", data: {"cartItems": items});
+      Response<Map<String, dynamic>> response = await _dio.delete(
+                                                userBaseUrl + "/remove-from-cart", 
+                                                data: {"cartItems": items});
       print("res ${response.data!['result']}");
-
-      // CartItem it = CartItem.fromJson(response.data!['result']);
       return true;
     } on DioException catch (e) {
-      // print("dio error occured: ${e.response}");
+      print("dio error occured in removeFromCart: ${e.response}");
       if (e.error is SocketException) {
-        // internetToastMessage();
+        internetToastMessage();
       } else {
         // toastMessage("Something went wrong! Try again");
       }
     } catch (e) {
-      // print("Exception Occured at addtocart : $e");
+      print("Exception Occured at removeFromCart : $e");
       // throw Error;
       // toastMessage("Something went wrong! Try again");
     }
@@ -481,21 +480,20 @@ class ApiService {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
-      Response<Map<String, dynamic>> response =
-          await _dio.put(userBaseUrl + "/cart", data: item);
+      Response<Map<String, dynamic>> response = await _dio.put(
+                                                userBaseUrl + "/change-no-of-product-in-cart", 
+                                                data: item);
       print("res ${response.data!['result']}");
-
-      // CartItem it = CartItem.fromJson(response.data!['result']);
       return true;
     } on DioException catch (e) {
-      // print("dio error occured: ${e.response}");
+      print("dio error occured at changeNoOfProd: ${e.response}");
       if (e.error is SocketException) {
-        // internetToastMessage();
+        internetToastMessage();
       } else {
         // toastMessage("Something went wrong! Try again");
       }
     } catch (e) {
-      // print("Exception Occured at addtocart : $e");
+      print("Exception Occured at changeNoOfProd : $e");
       // throw Error;
       // toastMessage("Something went wrong! Try again");
     }

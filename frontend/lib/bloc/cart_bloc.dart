@@ -82,7 +82,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         CartCombinedModel? prods = await _apiService.getCartItems(event.userKey);
         emit(CartProductsFetched(products: prods!));
       } catch (e) {
-        emit(CartError(error: e as Error)); // Handle errors properly
+        emit(CartError(error: e as Error)); 
       }
     });
 

@@ -322,38 +322,121 @@ def get_product_from_key(key):
     return results
 
 
-def add_to_cart(cartItem, userKey):
+def add_to_cart(cartItems, userKey):
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
     try:
+        # Check if the item already exists in the cart
         cursor.execute('''
-            INSERT INTO cart_items (userKey, productKey, noOfItems, variationQuantity)
-            VALUES (?, ?, ?, ?)
-            ''', (userKey, cartItem['productKey'], cartItem['noOfItems'], cartItem['variationQuantity'])) 
+            SELECT 1 
+            FROM cart_items 
+            WHERE userKey = ? AND productKey = ? AND variationQuantity = ?
+        ''', (userKey, cartItems['productKey'], cartItems['variationQuantity']))
+
+        item_exists = cursor.fetchone()
+
+        if item_exists:
+            # If item exists, increment noOfItems
+            cursor.execute('''
+                UPDATE cart_items 
+                SET noOfItems = noOfItems + ? 
+                WHERE userKey = ? AND productKey = ? AND variationQuantity = ?
+            ''', (cartItems['noOfItems'], userKey, cartItems['productKey'], cartItems['variationQuantity']))
+        else:
+            # If item doesn't exist, insert a new row
+            cursor.execute('''
+                INSERT INTO cart_items (userKey, productKey, noOfItems, variationQuantity)
+                VALUES (?, ?, ?, ?)
+            ''', (userKey, cartItems['productKey'], cartItems['noOfItems'], cartItems['variationQuantity']))
 
         conn.commit()
         return True
 
     except sqlite3.Error as e:
-        print(f"An error occurred: {e}") 
+        print(f"An error occurred: {e}")
         conn.rollback()
-        return False   
-    
-    
-def get_cart_items(userKey):
+        return False 
+  
+  
+def remove_from_cart(cartItems:list[dict], userKey:int) -> bool:
     conn = get_db_connection()
     cursor = conn.cursor()
 
     try:
-        cursor.execute('''
-            SELECT * FROM cart_items WHERE userKey = ?
-        ''', (userKey,)) 
+        # Directly decrease the quantity 
+        for cartItem in cartItems:
+            cursor.execute('''
+                UPDATE cart_items 
+                SET noOfItems = noOfItems - ? 
+                WHERE userKey = ? AND productKey = ? AND variationQuantity = ?
+            ''', (cartItem['noOfItems'], userKey, cartItem['productKey'], cartItem['variationQuantity']))
 
-        cart_items = cursor.fetchall()
-        return cart_items
+            # If the quantity becomes zero or negative, delete the item
+            cursor.execute('''
+                DELETE FROM cart_items 
+                WHERE userKey = ? AND productKey = ? AND variationQuantity = ? AND noOfItems <= 0
+            ''', (userKey, cartItem['productKey'], cartItem['variationQuantity']))
+
+        conn.commit()
+        return True
 
     except sqlite3.Error as e:
         print(f"An error occurred: {e}")
-        return None  # Or handle the error appropriately 
+        conn.rollback()
+        return False
+  
+ 
+def change_no_of_product_in_cart(data:dict, userKey:int) -> bool:
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    try:
+        old_product_key = data['old']['productKey']
+        old_variation_quantity = data['old']['variationQuantity']
+
+        new_product_key = data['new']['productKey']
+        new_variation_quantity = data['new']['variationQuantity']
+        new_no_of_items = data['new']['noOfItems']
+
+        # First, try to update the existing item with the new values
+        cursor.execute('''
+            UPDATE cart_items 
+            SET productKey = ?, variationQuantity = ?, noOfItems = ?
+            WHERE userKey = ? AND productKey = ? AND variationQuantity = ?
+        ''', (new_product_key, new_variation_quantity, new_no_of_items, 
+              userKey, old_product_key, old_variation_quantity))
+
+        # If no rows were updated, it means the old item doesn't exist, so insert the new one
+        if cursor.rowcount == 0:
+            cursor.execute('''
+                INSERT INTO cart_items (userKey, productKey, noOfItems, variationQuantity)
+                VALUES (?, ?, ?, ?)
+            ''', (userKey, new_product_key, new_no_of_items, new_variation_quantity))
+
+        conn.commit()
+        return True
+
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+        conn.rollback()
+        return False
+ 
+    
+    
+# def get_cart_items(userKey:int) -> list[dict]:
+#     conn = get_db_connection()
+#     cursor = conn.cursor()
+
+#     try:
+#         cursor.execute('''
+#             SELECT * FROM cart_items WHERE userKey = ?
+#         ''', (userKey,)) 
+
+#         cart_items = cursor.fetchall()
+#         return cart_items
+
+#     except sqlite3.Error as e:
+#         print(f"An error occurred: {e}")
+#         return None 
     

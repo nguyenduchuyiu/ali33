@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               .copyWith(fontWeight: FontWeight.w500,fontSize: 15)),
                     ],
                   ),
-                  Spacer(),
+                  const Spacer(),
                   InkWell(
                     onTap: () {
                       // Handle the tap
@@ -94,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         MaterialPageRoute(builder: (context) => const ProfilePage()),
                       );
                     },
-                    child: CircleAvatar(
+                    child: const CircleAvatar(
                       radius: 30,
                       backgroundImage: AssetImage("images/user.jpeg"),
                     ),
@@ -109,50 +109,6 @@ class _HomeScreenState extends State<HomeScreen> {
           children: dummyPages,
         ),
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   elevation: 0,
-      //   showSelectedLabels: false,
-      //   showUnselectedLabels: false,
-      //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      //   type: BottomNavigationBarType.fixed,
-      //   currentIndex: _selectedPage,
-      //   onTap: (int page) {
-      //     setState(() {
-      //       if(page == 0){
-      //       dummyPages[page] = _pages[page];
-      //       }else if(page == 1){
-      //       dummyPages[page] = _pages[page];
-      //       }else if(page ==2){
-      //         dummyPages[page] = _pages[page];
-      //       }else if(page ==3 ){
-      //         dummyPages[page] = _pages[page];
-      //       }
-      //       _selectedPage = page;
-      //     });
-      //   },
-      //   selectedIconTheme:
-      //       IconThemeData(color: Theme.of(context).primaryColor, size: 30),
-      //   unselectedIconTheme: IconThemeData(
-      //       color: Theme.of(context).textTheme.bodyLarge!.color, size: 22),
-      //   items: const [
-      //     BottomNavigationBarItem(
-      //       label: "",
-      //       icon: ImageIcon(AssetImage("images/home_icon.png")),
-      //     ),
-      //     BottomNavigationBarItem(
-      //       label: "",
-      //       icon: ImageIcon(AssetImage("images/products_icon.png")),
-      //     ),
-      //     BottomNavigationBarItem(
-      //       label: "",
-      //       icon: ImageIcon(AssetImage("images/search_icon.png")),
-      //     ),
-      //     BottomNavigationBarItem(
-      //       label: "",
-      //       icon: ImageIcon(AssetImage("images/profile_icon.png")),
-      //     ),
-      //   ],
-      // ),
     );
   }
 }

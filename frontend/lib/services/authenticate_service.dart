@@ -1,5 +1,6 @@
 import 'package:ali33/screens/login.dart';
 import 'package:ali33/services/api_service.dart';
+import 'package:ali33/widgets/basic.dart';
 import 'package:flutter/material.dart';
 
 import 'package:ali33/models/user_model.dart'; // Import your UserModel class
@@ -13,6 +14,7 @@ class UserService {
     if (user != null) {
       return user; 
     } else {
+      toastMessage("Session Expired!");
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const LoginScreen(isEditing: false,)),

@@ -302,25 +302,25 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 });
                 UserModel? user = await UserService.authenticateUser(context);
                 if (user != null) {
-                  OrderModel orderModel = OrderModel(
-                            orderedDate: DateTime.now().toUtc(),
-                            userId: user.key!,
-                            productDetails: 
-                              ProductOrderingDetails(
-                                productKey: widget.productModel.productDetails.key,
-                                noOfItems: noOfProdAdded,
-                                variationQuantity: widget
-                                .productModel
-                                .productDetails
-                                .variations[selectedIndex]
-                                .quantity,
-                              ),
-                            paidPrice: widget.productModel.productDetails
-                                .variations[selectedIndex].offerPrice,
-                            paymentStatus: 0, // Haven't paid yet
-                            deliveryStages: ["Pending Order"],
-                            deliveryAddress: "",                          
-                        );
+                  // OrderModel orderModel = OrderModel(
+                  //           orderedDate: DateTime.now().toUtc(),
+                  //           userId: user.key!,
+                  //           productDetails: 
+                  //             ProductOrderingDetails(
+                  //               productKey: widget.productModel.productDetails.key,
+                  //               noOfItems: noOfProdAdded,
+                  //               variationQuantity: widget
+                  //               .productModel
+                  //               .productDetails
+                  //               .variations[selectedIndex]
+                  //               .quantity,
+                  //             ),
+                  //           paidPrice: widget.productModel.productDetails
+                  //               .variations[selectedIndex].offerPrice,
+                  //           paymentStatus: 0, // Haven't paid yet
+                  //           deliveryStages: ["Pending Order"],
+                  //           deliveryAddress: "",                          
+                  //       );
                   bool addedToCart =  await ApiService().addToCart(
                     CartItem(
                       productKey: widget.productModel.productDetails.key, 
