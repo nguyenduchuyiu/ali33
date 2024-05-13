@@ -268,6 +268,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () => Navigator.pop(context, false),
             icon: const Icon(
               Icons.arrow_back_ios_new_outlined,
+              color: Colors.blueGrey,
             ),
           ),
           // titleTextStyle: Theme.of(context).appBarTheme.titleTextStyle,
@@ -275,7 +276,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             IconButton(
               icon: const Icon(
                 Icons.done,
-                // color: Colors.white,
+                color: Colors.blueGrey,
               ),
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
