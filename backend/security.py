@@ -5,7 +5,7 @@ import bcrypt
 import jwt
 SECRET_KEY = 'Huy'
 
-def decode_jwt_token(token, secret_key=SECRET_KEY):
+def decode_jwt_token(token, secret_key=SECRET_KEY) -> bool:
     """
     Decodes a JWT token and checks if it's expired.
 

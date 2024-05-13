@@ -448,7 +448,6 @@ class _CartScreenState extends State<CartScreen> {
                           cartItems: cartItems,
                           subTotal: calculatedValues[0],
                         )));
-                    print(res);
                     if (res) {
                       setState(() {
                         context.read<CartBloc>().add(FetchCartItems(userKey: widget.userKey));
