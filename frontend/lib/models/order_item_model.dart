@@ -13,7 +13,7 @@ class OrderCombinedModel {
 
   factory OrderCombinedModel.fromJson(Map<String, dynamic> json) =>
       OrderCombinedModel(
-        orderDetails: OrderModel.fromJson(json["order"]),
-        productDetails: ProductDetails.fromJson(json["product"]),
+        orderDetails: OrderModel.fromJson(json["orderModel"]),
+        productDetails: ProductDetails.fromJson(json["productDetails"]),
       );
 }

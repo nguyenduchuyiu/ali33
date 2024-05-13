@@ -22,12 +22,12 @@ class _SearchPageState extends State<SearchPage> {
   late SharedPreferences _prefs;
   List<String> topCat = ["Apple", "Mango", "Basmati Rice", "Guva"];
 
-  void loadRecentSearches() async {
-    _prefs = await SharedPreferences.getInstance();
-    List<String> temp = _prefs.getStringList("searches")!.toList();
-    searches = temp.reversed.toList();
-    setState(() {});
-  }
+void loadRecentSearches() async {
+  _prefs = await SharedPreferences.getInstance();
+  List<String>? temp = _prefs.getStringList("searches"); 
+  searches = temp != null ? temp.reversed.toList() : []; 
+  setState(() {});
+}
 
   @override
   void initState() {

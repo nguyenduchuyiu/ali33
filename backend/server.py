@@ -220,6 +220,50 @@ def placeOrder():
     return jsonify({"result": placeOrder["message"]}), 400
     
    
+@app.route('/users/get-all-orders', methods=['GET'])
+def getAllOrders():
+    auth_header = request.headers.get('Authorization')
+    if not auth_header:
+        return jsonify({"error": "Authorization header missing"}), 401
+    userKey = sc.decode_jwt_token(token=auth_header)
+    if userKey is None:
+        return jsonify({"error": "Session expired"}), 404
+    
+    orders = dm.get_orders_of_user(userKey)
+    cartModels = []
+    orderCombinedModel = []
+    
+    for order in orders:
+        product = dm.get_product_from_key(
+            {
+                "key": order["productKey"], 
+                "type": "product"
+            }
+        )
+        
+        orderCombinedModel.append(
+            {
+            "orderModel": 
+                {
+                    "_key": order["_key"],
+                    "orderedDate": order["orderedDate"], 
+                    "userId": userKey,
+                    "productDetails": 
+                        {
+                        "productKey": order["productKey"],
+                        "noOfItems": order["noOfItems"],
+                        "variationQuantity": order["variationQuantity"]
+                        },
+                    "paidPrice": order["paidPrice"],
+                    "paymentStatus": order["paymentStatus"], 
+                    "deliveryStages": order["deliveryStages"],
+                    "deliveryAddress": order["deliveryAddress"]
+                },
+            "productDetails": product[0]["productDetails"]
+            })
+        
+    return jsonify({"result": orderCombinedModel}), 200
+
 
 # @app.route('/images/<string:product_name>')
 # def get_image(product_name):

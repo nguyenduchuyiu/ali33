@@ -241,11 +241,12 @@ class ApiService {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
-      Response<Map<String, dynamic>> response =
-          await _dio.get(userBaseUrl + "/orders");
-      print(response.data!["result"][0]["product"]);
-      List<OrderCombinedModel> orders =
-          orderItemsFromJson(response.data!["result"]);
+      Response<Map<String, dynamic>> response = await _dio.get(userBaseUrl + "/get-all-orders");
+
+      // print("list order: ${response.data!["result"][0]}");
+      // print("list order below: ${response.data!["result"][0]["productDetails"]}");
+
+      List<OrderCombinedModel> orders = orderItemsFromJson(response.data!["result"]);
       return orders;
     } on DioException catch (e) {
       print("dio error occured: ${e.response}");
