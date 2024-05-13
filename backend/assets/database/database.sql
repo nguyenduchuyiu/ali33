@@ -53,7 +53,7 @@ CREATE TABLE product_categories (
 
 CREATE TABLE variations (
     _key INTEGER PRIMARY KEY AUTOINCREMENT,
-    productKey TEXT NOT NULL,
+    productKey INTEGER NOT NULL,
     quantity INTEGER NOT NULL,
     sellingPrice REAL NOT NULL,
     discountPrice REAL NOT NULL,
@@ -65,9 +65,9 @@ CREATE TABLE variations (
 
 CREATE TABLE reviews (
     _key INTEGER PRIMARY KEY AUTOINCREMENT,
-    productKey TEXT NOT NULL, 
+    productKey INTEGER NOT NULL, 
     userKey INTEGER NOT NULL, 
-    comment TEXT NOT NULL,
+    comment TEXT,
     FOREIGN KEY (productKey) REFERENCES products(_key),
     FOREIGN KEY (userKey) REFERENCES users(_key)
 );
@@ -76,15 +76,16 @@ CREATE TABLE reviews (
 CREATE TABLE orders (
     _key INTEGER PRIMARY KEY AUTOINCREMENT,
     userKey INTEGER NOT NULL,
-    cartKey INTEGER NOT NULL,
-    orderedDate DATETIME NOT NULL, 
-    paidPrice INTEGER NOT NULL,
-    paymentStatus INTEGER NOT NULL,
-    stageOne TEXT NOT NULL,
-    stageTwo TEXT NOT NULL,
-    stageThree TEXT NOT NULL,
-    stageFour TEXT NOT NULL,
-    FOREIGN KEY (userKey) REFERENCES users(_key)
+    productKey INTEGER NOT NULL,
+    orderedDate DATETIME , 
+    paidPrice INTEGER ,
+    paymentStatus INTEGER ,
+    deliveryStages TEXT,
+    deliveryAddress TEXT,
+    noOfItems INTEGER NOT NULL,
+    variationQuantity INTEGER NOT NULL,
+    FOREIGN KEY (userKey) REFERENCES users(_key),
+    FOREIGN KEY (productKey) REFERENCES products(_key)
 );
 
 

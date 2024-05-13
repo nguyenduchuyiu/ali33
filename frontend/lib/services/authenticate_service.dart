@@ -1,3 +1,4 @@
+import 'package:ali33/constants/route_animation.dart';
 import 'package:ali33/screens/login.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
@@ -15,10 +16,12 @@ class UserService {
       return user; 
     } else {
       toastMessage("Session Expired!");
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginScreen(isEditing: false,)),
-      );
+      apiService.logout();
+      Navigator.pushAndRemoveUntil(
+          context,
+          SlideRightRoute(
+              widget: const LoginScreen(isEditing: false)),
+          (route) => false);
       return null; // Return null since there's no user
     }
   } 

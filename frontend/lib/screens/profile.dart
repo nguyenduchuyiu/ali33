@@ -299,7 +299,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   widget.userModel.profilePic = url;
                   bool res = false;
                   if (widget.isFirstTime) {
-                    res = await ApiService().register(widget.userModel);
+                    // res = await ApiService().register(widget.userModel);
                   } else {
                     res = await ApiService().updateProfile(widget.userModel);
                   }
