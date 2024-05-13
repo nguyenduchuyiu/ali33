@@ -129,20 +129,53 @@ def search_product():
 @app.route('/users/add-to-cart', methods=['POST'])
 def addToCart():
     data = request.get_json()
-    cartItem = data['cartItem']
+    cartItems = data['cartItems']
     auth_header = request.headers.get('Authorization')
     if not auth_header:
         return jsonify({"error": "Authorization header missing"}), 401
     userKey = sc.decode_jwt_token(token=auth_header)
     if userKey is None:
         return jsonify({"error": "Session expired"}), 404
-    user = dm.get_user_by_key(userKey)
     
-    if dm.add_to_cart(cartItem, user['_key']):
+    if dm.add_to_cart(cartItems, userKey):
         return jsonify({"result": "Succesfully add to your cart"}), 200
     return jsonify({"error":"Failure adding to your cart"}), 400
    
+   
     
+@app.route('/users/remove-from-cart', methods=['DELETE'])
+def removeFromCart():
+    data = request.get_json()
+    cartItems:list = data['cartItems']
+    auth_header = request.headers.get('Authorization')
+    if not auth_header:
+        return jsonify({"error": "Authorization header missing"}), 401
+    userKey = sc.decode_jwt_token(token=auth_header)
+    if userKey is None:
+        return jsonify({"error": "Session expired"}), 404
+    
+    if dm.remove_from_cart(cartItems, userKey):
+        return jsonify({"result": "Succesfully remove from your cart"}), 200
+    return jsonify({"error":"Failure removing from your cart"}), 400
+
+
+
+@app.route('/users//change-no-of-product-in-cart', methods=['PUT'])
+def changeNoOfProductInCart():
+    data = request.get_json()
+    auth_header = request.headers.get('Authorization')
+    if not auth_header:
+        return jsonify({"error": "Authorization header missing"}), 401
+    userKey = sc.decode_jwt_token(token=auth_header)
+    if userKey is None:
+        return jsonify({"error": "Session expired"}), 404
+    
+    if dm.change_no_of_product_in_cart(data, userKey):
+        return jsonify({"result": "Succesfully change number of product in your cart"}), 200
+    return jsonify({"error":"Failure changing number of product in your cart"}), 400
+
+
+
 @app.route('/users/get-cart-items', methods=['POST'])
 def getCartItems():
     auth_header = request.headers.get('Authorization')
@@ -151,6 +184,7 @@ def getCartItems():
     userKey = sc.decode_jwt_token(token=auth_header)
     if userKey is None:
         return jsonify({"error": "Session expired"}), 404
+    
     user = dm.get_user_by_key(userKey)
     cartModels = []
     for item in user['cartItems']:
