@@ -471,6 +471,41 @@ def place_order(orders: list, user_key: int) -> dict:
         cursor.close()
         conn.close() 
     
+
+def get_orders_of_user(userKey) -> dict[str, any]:
+    conn = get_db_connection()  
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT 
+            _key, productKey, orderedDate, paidPrice, paymentStatus, 
+            deliveryStages, deliveryAddress, noOfItems, variationQuantity
+        FROM orders 
+        WHERE userKey = ?
+    """, (userKey,))
+
+    orders = []
+    for row in cursor.fetchall():
+        order = {
+            '_key': row[0],
+            'productKey': row[1],
+            'orderedDate': row[2],
+            'paidPrice': row[3],
+            'paymentStatus': row[4],
+            'deliveryStages': row[5].split(","), 
+            'deliveryAddress': row[6],
+            'noOfItems': row[7],
+            'variationQuantity': row[8],
+        }
+        orders.append(order)
+
+    return orders
+
+    # finally:
+    #     cursor.close()
+    #     conn.close()
+        
+        
 # def get_cart_items(userKey:int) -> list[dict]:
 #     conn = get_db_connection()
 #     cursor = conn.cursor()
