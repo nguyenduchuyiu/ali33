@@ -14,15 +14,15 @@ import 'package:dio/dio.dart';
 class ApiService {
   final Dio _dio = Dio();
   
-  // final String baseUrl = "https://nguyenduchuy.pythonanywhere.com/";
-  // final String userBaseUrl = "https://nguyenduchuy.pythonanywhere.com/users";
-  // final String productBaseUrl = "https://nguyenduchuy.pythonanywhere.com/products";
-  // final String orderBaseUrl = "https://nguyenduchuy.pythonanywhere.com/orders";
+  final String baseUrl = "https://nguyenduchuy.pythonanywhere.com/";
+  final String userBaseUrl = "https://nguyenduchuy.pythonanywhere.com/users";
+  final String productBaseUrl = "https://nguyenduchuy.pythonanywhere.com/products";
+  final String orderBaseUrl = "https://nguyenduchuy.pythonanywhere.com/orders";
 
-  final String baseUrl = "http://127.0.0.1:5000";
-  final String userBaseUrl = "http://127.0.0.1:5000/users";
-  final String productBaseUrl = "http://127.0.0.1:5000/products";
-  final String orderBaseUrl = "http://127.0.0.1:5000/orders";
+  // final String baseUrl = "http://127.0.0.1:5000";
+  // final String userBaseUrl = "http://127.0.0.1:5000/users";
+  // final String productBaseUrl = "http://127.0.0.1:5000/products";
+  // final String orderBaseUrl = "http://127.0.0.1:5000/orders";
 
   // final String baseUrl = "http://192.168.0.101:8080";
   // final String userBaseUrl = "http://192.168.0.101:8080/users";
