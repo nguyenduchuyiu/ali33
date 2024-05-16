@@ -8,7 +8,8 @@ import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
 import 'package:ali33/widgets/build_photo.dart';
 import 'package:flutter/material.dart';
-
+import 'package:ali33/screens/search_results_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/error_builder.dart';
 
 class HomePage extends StatefulWidget {
@@ -44,6 +45,18 @@ class _HomePageState extends State<HomePage> {
   bool isExpanded = true;
   int currentIndex = 0;
 
+  List<String> searches = <String>[];
+  int selectedCartIndex = 0;
+  late SharedPreferences _prefs;
+  List<String> topCat = ["Apple", "Mango", "Basmati Rice", "Guva"];
+
+  void loadRecentSearches() async {
+    _prefs = await SharedPreferences.getInstance();
+    List<String> temp = _prefs.getStringList("searches")!.toList();
+    searches = temp.reversed.toList();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -64,28 +77,25 @@ class _HomePageState extends State<HomePage> {
             children: [
               //This is the Search Box 
               SizedBox(height: size.height * 0.02),
-              Container(
-                padding: EdgeInsets.fromLTRB(size.width*0.0213333333, 0, size.width*0.0213333333, 0),
-                height: 46,
-                width: size.width-60,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey),
-                ),
-                // padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.search_rounded),
-                        const SizedBox(width: 10),
-                        Text("Search",style: Theme.of(context).textTheme.displaySmall,),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+            
+
+
+
+
+
+              
+              SearchBar(),
+              
+
+
+
+
+
+
+
+
+
+
               SizedBox(height: size.height * 0.02),
               Container(
                 padding: EdgeInsets.fromLTRB(size.width*0.0213333333, 10, size.width*0.0213333333, 0),
@@ -317,5 +327,226 @@ class Products extends StatelessWidget {
             },
           );
         });
+  }
+}
+
+// class SearchBar extends StatefulWidget {
+//   const SearchBar({Key? key}) : super(key: key);
+
+//   @override
+//   _SearchBarState createState() => _SearchBarState();
+// }
+
+// class _SearchBarState extends State<SearchBar> {
+//   final TextEditingController _controller = TextEditingController();
+//   List<String> _suggestions = [];
+//   bool _isTyping = false;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _controller.addListener(_onSearchChanged);
+//   }
+
+//   @override
+//   void dispose() {
+//     _controller.dispose();
+//     super.dispose();
+//   }
+
+//   void _onSearchChanged() {
+//     final searchQuery = _controller.text;
+//     if (searchQuery.isNotEmpty) {
+//       // Gọi API để lấy gợi ý, sau đó cập nhật UI
+//       _fetchSearchSuggestions(searchQuery);
+//     } else {
+//       setState(() {
+//         _isTyping = false;
+//         _suggestions = [];
+//       });
+//     }
+//   }
+
+//   Future<void> _fetchSearchSuggestions(String query) async {
+//     try {
+//       // Gọi API và chờ kết quả
+//       final List<ProductModel> results = await ApiService().searchProduct(query);
+//       // Cập nhật danh sách gợi ý sau khi nhận dữ liệu
+//       setState(() {
+//         _isTyping = true;
+//         _suggestions = results.map((result) => result.productDetails.productName).toList();
+//       });
+//     } catch (e) {
+
+//       // Xử lý lỗi nếu có
+//       setState(() {
+//         // _isTyping = false;
+//         // _suggestions = [];
+//         // print('Error fetching search suggestions: $e');
+//       });
+//     }
+//   }
+
+//   Future<void> _handleSearch(String value) async {
+//     if (value.trim().isEmpty) return;
+//     final List<ProductModel> results = await ApiService().searchProduct(value);
+//     // Điều hướng đến trang kết quả tìm kiếm với từ khóa đã nhập
+//     Navigator.of(context).push(MaterialPageRoute(
+//       builder: (context) => SearchResultsScreen(results: results, searchTerm: value),
+//     ));
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       mainAxisSize: MainAxisSize.min,
+//       children: [
+//         TextField(
+//           controller: _controller,
+//           decoration: InputDecoration(
+//             prefixIcon: const Icon(Icons.search),
+//             hintText: 'Search for products',
+//             border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+//           ),
+//           onSubmitted: _handleSearch,
+//         ),
+//         // Hiển thị danh sách gợi ý dưới TextField nếu đang nhập
+//         if (_isTyping && _suggestions.isNotEmpty)
+//           Stack(
+//             children: [ 
+//               Positioned(
+//               top: 0, // Đặt vị trí bắt đầu từ ngay dưới TextField
+//               left: 0,
+//               right: 0,
+//               child: Container(
+//               child:  ListView.builder(
+//               itemCount: _suggestions.length,
+//               itemBuilder: (context, index) {
+//                 return ListTile(
+//                   title: Text(_suggestions[index]),
+//                   onTap: () {
+//                     _handleSearch(_suggestions[index]);
+//                   },
+//                 );
+//               },
+//             ),))]
+//           ),
+//       ],
+//     );
+//   }
+// }
+
+class SearchBar extends StatefulWidget {
+  const SearchBar({Key? key}) : super(key: key);
+
+  @override
+  _SearchBarState createState() => _SearchBarState();
+}
+
+class _SearchBarState extends State<SearchBar> {
+  final TextEditingController _controller = TextEditingController();
+  OverlayEntry? _overlayEntry;
+  List<String> _suggestions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_mayShowSuggestions);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _removeOverlay();
+    super.dispose();
+  }
+
+  void _mayShowSuggestions() {
+    final query = _controller.text;
+    if (query.isNotEmpty && _overlayEntry == null) {
+      _fetchSuggestions(query).then((suggestions) {
+        _suggestions = suggestions;
+        _overlayEntry = _createOverlayEntry();
+        Overlay.of(context)?.insert(_overlayEntry!);
+      });
+    } else if (query.isEmpty && _overlayEntry != null) {
+      _removeOverlay();
+    }
+  }
+
+  Future<List<String>> _fetchSuggestions(String query) async {
+    try {
+      final List<ProductModel> products = await ApiService().searchProduct(query);
+      return products.map((result) => result.productDetails.productName).toList();
+    } catch (e) {
+      print('Error fetching suggestions: $e');
+      return [];
+    }
+  }
+
+  OverlayEntry _createOverlayEntry() {
+  RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+  if (renderBox != null && renderBox.hasSize) {
+    var size = renderBox.size;
+    var offset = renderBox.localToGlobal(Offset.zero);
+
+    return OverlayEntry(
+      builder: (context) => Positioned(
+        left: offset.dx,
+        top: offset.dy + size.height,
+        width: size.width,
+        child: Material(
+          elevation: 4.0,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            children: _suggestions.map((suggestion) => ListTile(
+              title: Text(suggestion),
+              onTap: () {
+                _controller.text = suggestion;
+                _handleSearch(suggestion);
+                _removeOverlay();
+              },
+            )).toList(),
+          ),
+        ),
+      ),
+    );
+  } else {
+    // Return an empty OverlayEntry if renderBox is not ready
+    return OverlayEntry(builder: (context) => SizedBox.shrink());
+  }
+}
+
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+  Future<void> _handleSearch(String value) async {
+    if (value.trim().isEmpty) return;
+    // Implement your search handling logic here
+    // For example, navigating to a new screen with the search results
+    final List<ProductModel> results = await ApiService().searchProduct(value.trim());
+    Navigator.of(context).push(MaterialPageRoute(
+       builder: (context) => SearchResultsScreen(results: results, searchTerm: value),
+     ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        TextField(
+          controller: _controller,
+          decoration: InputDecoration(
+            prefixIcon: Icon(Icons.search),
+            hintText: 'Search...',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+          ),
+          onSubmitted: _handleSearch,
+        ),
+      ],
+    );
   }
 }

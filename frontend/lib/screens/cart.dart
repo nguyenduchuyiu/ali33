@@ -89,7 +89,10 @@ class _CartScreenState extends State<CartScreen> {
                         ],
                       ),
                       const Spacer(),
-                      const Icon(Icons.arrow_forward_ios),
+                      const Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.blueGrey,
+                       ),
                     ],
                   ),
                 ),
