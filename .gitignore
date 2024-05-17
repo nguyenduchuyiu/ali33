@@ -1,7 +1,5 @@
-# Ignore database files
 backend\assets\database\database.db
 
-# Ignore Python bytecode cache
 backend\__pycache__
 
-clone_model
+backend\assets\content\data
