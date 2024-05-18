@@ -78,18 +78,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       );
                     },
                     child: Hero(
-                      // flightShuttleBuilder:
-                      //     (context, anim, direction, fromContext, toContext) {
-                      //   final Widget toHero = toContext.widget;
-                      //   if (direction == HeroFlightDirection.push) {
-                      //     return FadeTransition(
-                      //       opacity: AlwaysStoppedAnimation(0),
-                      //       child: toHero,
-                      //     );
-                      //   } else {
-                      //     return toHero;
-                      //   }
-                      // },
                       tag: index,
                       child: Card(
                           elevation: 5,

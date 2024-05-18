@@ -8,7 +8,8 @@ import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
 import 'package:ali33/widgets/build_photo.dart';
 import 'package:flutter/material.dart';
-
+import 'package:ali33/screens/search_results_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/error_builder.dart';
 
 class HomePage extends StatefulWidget {
@@ -44,6 +45,18 @@ class _HomePageState extends State<HomePage> {
   bool isExpanded = true;
   int currentIndex = 0;
 
+  List<String> searches = <String>[];
+  int selectedCartIndex = 0;
+  late SharedPreferences _prefs;
+  List<String> topCat = ["Apple", "Mango", "Basmati Rice", "Guva"];
+
+  void loadRecentSearches() async {
+    _prefs = await SharedPreferences.getInstance();
+    List<String> temp = _prefs.getStringList("searches")!.toList();
+    searches = temp.reversed.toList();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -60,57 +73,15 @@ class _HomePageState extends State<HomePage> {
             return buildErrorWidget(
                 context, () => getUser(), "Items not Found! Try again");
           }
-          return ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            shrinkWrap: true,
+          return ListView( 
             children: [
-              SizedBox(height: size.height * 0.01),
-              Row(
-                children: [
-                  Image.asset("images/logo.png", height: 46),
-                  const SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Hi ${snapshots.data!.proprietorName}",
-                          style: Theme.of(context)
-                              .textTheme
-                              .displayMedium!
-                              .copyWith(fontWeight: FontWeight.w700)),
-                      Text("Welcome to ALI33",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium!
-                              .copyWith(fontWeight: FontWeight.w500)),
-                    ],
-                  )
-                ],
-              ),
-              // This is the Search Box 88-110
-              // SizedBox(height: size.height * 0.02),
-              // Container(
-              //   height: 46,
-              //   decoration: BoxDecoration(
-              //     borderRadius: BorderRadius.circular(10),
-              //     border: Border.all(color: Colors.grey),
-              //   ),
-              //   padding: const EdgeInsets.symmetric(horizontal: 16),
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //     children: [
-              //       Row(
-              //         children: [
-              //           const Icon(Icons.search_rounded),
-              //           const SizedBox(width: 10),
-              //           Text("Search",style: Theme.of(context).textTheme.displaySmall,),
-              //         ],
-              //       ),
-              //       const Icon(Icons.menu),
-              //     ],
-              //   ),
-              // ),
+              //This is the Search Box 
               SizedBox(height: size.height * 0.02),
-              SizedBox(
+              const SearchBar(),
+              SizedBox(height: size.height * 0.02),
+              Container(
+                padding: EdgeInsets.fromLTRB(size.width*0.0213333333, 10, size.width*0.0213333333, 0),
+                child: Column(children: <Widget> [SizedBox(
                 height: size.height * 0.25,
                 child: ListView.builder(
                   itemCount: bannerImages.length,
@@ -223,6 +194,9 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: size.height * 0.01),
               Products(size: size, category: category)
+              ],
+              ),
+              )  
             ],
           );
         });
@@ -241,7 +215,7 @@ class _HomePageState extends State<HomePage> {
     },
     {
       "img": "/images/temp/free_delivery.png",
-      "title": "Free Delivery",
+      "title": "Product you might like",
       "color": 0xff00FFEF
     }
   ];
@@ -254,8 +228,12 @@ class Products extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Future<List<ProductModel>> productFuture =
+        category == 3 //Recommend Products
+        ? ApiService().getRelatedProducts('Minions') 
+        : ApiService().getAllProducts(1, 20, category);
     return FutureBuilder<List<ProductModel>>(
-        future: ApiService().getAllProducts(1, 20, category),
+        future: productFuture,
         builder: (context, snapshots) {
           if (snapshots.connectionState == ConnectionState.waiting) {
             return loadingAnimation();
@@ -271,7 +249,7 @@ class Products extends StatelessWidget {
             primary: false,
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
-            physics: const NeverScrollableScrollPhysics(),
+            // physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4,
               crossAxisSpacing: 5,
@@ -335,5 +313,122 @@ class Products extends StatelessWidget {
             },
           );
         });
+  }
+}
+
+class SearchBar extends StatefulWidget {
+  const SearchBar({Key? key}) : super(key: key);
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _SearchBarState createState() => _SearchBarState();
+}
+
+class _SearchBarState extends State<SearchBar> {
+  final TextEditingController _controller = TextEditingController();
+  OverlayEntry? _overlayEntry;
+  List<String> _suggestions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_mayShowSuggestions);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _removeOverlay();
+    super.dispose();
+  }
+
+  void _mayShowSuggestions() {
+    final query = _controller.text;
+    if (query.isNotEmpty && _overlayEntry == null) {
+      _fetchSuggestions(query).then((suggestions) {
+        _suggestions = suggestions;
+        _overlayEntry = _createOverlayEntry();
+        Overlay.of(context)?.insert(_overlayEntry!);
+      });
+    } else if (query.isEmpty && _overlayEntry != null) {
+      _removeOverlay();
+    }
+  }
+
+  Future<List<String>> _fetchSuggestions(String query) async {
+    try {
+      final List<ProductModel> products = await ApiService().searchProduct(query);
+      return products.map((result) => result.productDetails.productName).toList();
+    } catch (e) {
+      print('Error fetching suggestions: $e');
+      return [];
+    }
+  }
+
+  OverlayEntry _createOverlayEntry() {
+  RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+  if (renderBox != null && renderBox.hasSize) {
+    var size = renderBox.size;
+    var offset = renderBox.localToGlobal(Offset.zero);
+
+    return OverlayEntry(
+      builder: (context) => Positioned(
+        left: offset.dx,
+        top: offset.dy + size.height,
+        width: size.width,
+        child: Material(
+          elevation: 4.0,
+          child: ListView(
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            children: _suggestions.map((suggestion) => ListTile(
+              title: Text(suggestion),
+              onTap: () {
+                _controller.text = suggestion;
+                _handleSearch(suggestion);
+                _removeOverlay();
+              },
+            )).toList(),
+          ),
+        ),
+      ),
+    );
+  } else {
+    // Return an empty OverlayEntry if renderBox is not ready
+    return OverlayEntry(builder: (context) => const SizedBox.shrink());
+  }
+}
+
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+  Future<void> _handleSearch(String value) async {
+    if (value.trim().isEmpty) return;
+    // Implement your search handling logic here
+    // For example, navigating to a new screen with the search results
+    final List<ProductModel> results = await ApiService().searchProduct(value.trim());
+    // ignore: use_build_context_synchronously
+    Navigator.of(context).push(MaterialPageRoute(
+       builder: (context) => SearchResultsScreen(results: results, searchTerm: value),
+     ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        TextField(
+          controller: _controller,
+          decoration: InputDecoration(
+            prefixIcon: const Icon(Icons.search),
+            hintText: 'Search...',
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+          ),
+          onSubmitted: _handleSearch,
+        ),
+      ],
+    );
   }
 }

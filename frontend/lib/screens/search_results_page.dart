@@ -1,11 +1,10 @@
-import 'package:ali33/constants/route_animation.dart';
+
 import 'package:ali33/models/product_model.dart';
 import 'package:ali33/screens/home.dart';
-import 'package:ali33/screens/pages/home_page.dart';
-import 'package:ali33/screens/pages/search_page.dart';
 import 'package:ali33/screens/product_details.dart';
 import 'package:ali33/widgets/build_photo.dart';
 import 'package:flutter/material.dart';
+import 'package:ali33/screens/pages/profile_page.dart';
 
 class SearchResultsScreen extends StatefulWidget {
   final List<ProductModel> results;
@@ -28,14 +27,15 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+      
       appBar: AppBar(
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black,),
+            icon: Icon(Icons.arrow_back, color: Colors.blueGrey,),
             onPressed: () => 
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const HomeScreen(selectedPage: 2,),
+                builder: (context) => const HomeScreen(selectedPage: 0),
               ),
             ),
           ),

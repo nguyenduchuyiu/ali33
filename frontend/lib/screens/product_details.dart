@@ -55,7 +55,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         leading: IconButton(
             onPressed: () => Navigator.pop(context),
             icon: const Icon(
-              Icons.arrow_back, color: Colors.black,
+              Icons.arrow_back, color: Colors.blueGrey,
             )),
       ),
       body: SafeArea(
@@ -202,6 +202,145 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   style: Theme.of(context).textTheme.headlineMedium!,
                 ),
                 const SizedBox(height: 30),
+                
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: size.width * 0.4,
+                      height: 46,
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(30)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (noOfProdAdded > 1) noOfProdAdded--;
+                              });
+                            },
+                            child: const Text(
+                              "-",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 26,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Text(noOfProdAdded.toString(),
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold)),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (noOfProdAdded <= 100) noOfProdAdded++;
+                              });
+                            },
+                            child: const Text("+",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ],
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () async {
+                        
+                        setState(() {
+                          isLoading = true;
+                        });
+                        UserModel? user = await UserService.authenticateUser(context);
+                        if (user != null) {
+                          // OrderModel orderModel = OrderModel(
+                          //           orderedDate: DateTime.now().toUtc(),
+                          //           userId: user.key!,
+                          //           productDetails: 
+                          //             ProductOrderingDetails(
+                          //               productKey: widget.productModel.productDetails.key,
+                          //               noOfItems: noOfProdAdded,
+                          //               variationQuantity: widget
+                          //               .productModel
+                          //               .productDetails
+                          //               .variations[selectedIndex]
+                          //               .quantity,
+                          //             ),
+                          //           paidPrice: widget.productModel.productDetails
+                          //               .variations[selectedIndex].offerPrice,
+                          //           paymentStatus: 0, // Haven't paid yet
+                          //           deliveryStages: ["Pending Order"],
+                          //           deliveryAddress: "",                          
+                          //       );
+                          bool addedToCart =  await ApiService().addToCart(
+                            CartItem(
+                              productKey: widget.productModel.productDetails.key, 
+                              noOfItems: noOfProdAdded, 
+                              variationQuantity: widget.productModel.productDetails.variations[selectedIndex].quantity),
+                            user.key!
+                            );
+                          setState(() {
+                          isLoading = false;
+                        });
+                          if(addedToCart){
+                          bool? res = await Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              transitionDuration: const Duration(milliseconds: 500),
+                              reverseTransitionDuration: const Duration(milliseconds: 500),
+                              opaque: false,
+                              barrierDismissible: false,
+                              barrierColor: null,
+                              fullscreenDialog: true,
+                              pageBuilder: (BuildContext context, a, b) {
+                                return AddtoCartWidget(
+                                  tag: widget.tag,
+                                  productModel: widget.productModel,
+                                  selectedIndex: selectedIndex,
+                                  noOfItems: noOfProdAdded,
+                                  );
+                              },
+                            ),
+                          );
+                          if (res != null && res) {
+                            Navigator.push(
+                                context, SlideLeftRoute(widget: BlocProvider<CartBloc>(
+                                          create: (context) => CartBloc(),
+                                          child: CartScreen(userKey: user.key!),
+                                        )),);
+                          }
+                        }
+                        }
+                        setState(() {
+                          isLoading = false;
+                        });
+                      },
+                      child: Container(
+                        width: size.width * 0.4,
+                        height: 46,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            borderRadius: BorderRadius.circular(30)),
+                        child: Text(
+                          "Add to Cart",
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayMedium!
+                              .copyWith(color: Colors.white),
+                        ),
+                      ),
+                    )
+
+                  ]
+                ),
+                
+                
                 Text("Reviews & Ratings",style: Theme.of(context).textTheme.displayMedium),
                 const SizedBox(height: 10),
                 ListView.builder(
@@ -235,181 +374,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        height: 80,
-        // alignment: Alignment.center,
-        // margin: EdgeInsets.symmetric(vertical: 16),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        decoration: BoxDecoration(
-            boxShadow: const [
-              BoxShadow(color: Colors.black38, blurRadius: 25),
-            ],
-            color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16), topRight: Radius.circular(30))),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              width: size.width * 0.4,
-              height: 46,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.circular(30)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (noOfProdAdded > 1) noOfProdAdded--;
-                      });
-                    },
-                    child: const Text(
-                      "-",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Text(noOfProdAdded.toString(),
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold)),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (noOfProdAdded <= 100) noOfProdAdded++;
-                      });
-                    },
-                    child: const Text("+",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
-            ),
-            GestureDetector(
-              onTap: () async {
-                
-                setState(() {
-                  isLoading = true;
-                });
-                UserModel? user = await UserService.authenticateUser(context);
-                if (user != null) {
-                  OrderModel orderModel = OrderModel(
-                            orderedDate: DateTime.now().toUtc(),
-                            userId: user.key!,
-                            productDetails: 
-                              ProductOrderingDetails(
-                                productKey: widget.productModel.productDetails.key,
-                                noOfItems: noOfProdAdded,
-                                variationQuantity: widget
-                                .productModel
-                                .productDetails
-                                .variations[selectedIndex]
-                                .quantity,
-                              ),
-                            paidPrice: widget.productModel.productDetails
-                                .variations[selectedIndex].offerPrice,
-                            paymentStatus: 0, // Haven't paid yet
-                            deliveryStages: ["Pending Order"],
-                            deliveryAddress: "",                          
-                        );
-                  bool addedToCart =  await ApiService().addToCart(
-                    CartItem(
-                      productKey: widget.productModel.productDetails.key, 
-                      noOfItems: noOfProdAdded, 
-                      variationQuantity: widget.productModel.productDetails.variations[selectedIndex].quantity),
-                    user.key!
-                    );
-                   setState(() {
-                  isLoading = false;
-                });
-                  if(addedToCart){
-                  bool? res = await Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      transitionDuration: const Duration(milliseconds: 500),
-                      reverseTransitionDuration: const Duration(milliseconds: 500),
-                      opaque: false,
-                      barrierDismissible: false,
-                      barrierColor: null,
-                      fullscreenDialog: true,
-                      pageBuilder: (BuildContext context, a, b) {
-                        return AddtoCartWidget(
-                          tag: widget.tag,
-                          productModel: widget.productModel,
-                          selectedIndex: selectedIndex,
-                          noOfItems: noOfProdAdded,
-                          );
-                      },
-                    ),
-                  );
-                  if (res != null && res) {
-                    Navigator.push(
-                        context, SlideLeftRoute(widget: BlocProvider<CartBloc>(
-                                  create: (context) => CartBloc(),
-                                  child: CartScreen(userKey: user.key!),
-                                )),);
-                  }
-                }
-                }
-                setState(() {
-                  isLoading = false;
-                });
-              },
-              child: Container(
-                width: size.width * 0.4,
-                height: 46,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(30)),
-                child: Text(
-                  "Add to Cart",
-                  style: Theme.of(context)
-                      .textTheme
-                      .displayMedium!
-                      .copyWith(color: Colors.white),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-      // CustomScrollView(
-      //   slivers: [
-      //     SliverAppBar(
-      //       leading: BackButton(onPressed: () => Navigator.pop(context)),
-      //       expandedHeight: size.height * 0.3,
-      //       pinned: true,
-      //       flexibleSpace: FlexibleSpaceBar(
-      //         title: Text("Carrots"),
-      //         // titlePadding: EdgeInsets.all(10),
-      //         background: Image.asset(
-      //           "images/temp/banner1.png",
-      //           fit: BoxFit.cover,
-      //         ),
-      //       ),
-      //     ),
-      //     SliverToBoxAdapter(
-      //       child: Container(
-      //         height: double.maxFinite,
-      //         decoration: BoxDecoration(
-      //           // color: Colors.red,
-      //             borderRadius: BorderRadius.only(
-      //                 topLeft: Radius.circular(16),
-      //                 topRight: Radius.circular(16))),
-      //       ),
-      //     )
-      //   ],
-      // ),
     );
   }
 }

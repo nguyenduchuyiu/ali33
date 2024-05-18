@@ -38,7 +38,8 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return BlocBuilder<CartBloc, CartState>(
+    return Scaffold( 
+      body: BlocBuilder<CartBloc, CartState>(
       builder: (context, state) {
         if (state is CartInitialState || state is CartProductsLoading) {
           return Scaffold(
@@ -88,7 +89,10 @@ class _CartScreenState extends State<CartScreen> {
                         ],
                       ),
                       const Spacer(),
-                      const Icon(Icons.arrow_forward_ios),
+                      const Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.blueGrey,
+                       ),
                     ],
                   ),
                 ),
@@ -447,7 +451,6 @@ class _CartScreenState extends State<CartScreen> {
                           cartItems: cartItems,
                           subTotal: calculatedValues[0],
                         )));
-                    print(res);
                     if (res) {
                       setState(() {
                         context.read<CartBloc>().add(FetchCartItems(userKey: widget.userKey));
@@ -465,7 +468,7 @@ class _CartScreenState extends State<CartScreen> {
               context, () => context.read<CartBloc>().add(FetchCartItems(userKey: widget.userKey))),
         );
       },
-    );
+    ));
   }
 
   List<OrderModel> generateOrderList(List<CartModel> cartList, UserModel user) {
