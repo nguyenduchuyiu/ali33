@@ -1,0 +1,5 @@
+backend\assets\database\database.db
+
+backend\__pycache__
+
+backend\assets\content\data

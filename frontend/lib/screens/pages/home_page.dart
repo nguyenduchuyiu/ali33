@@ -77,25 +77,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               //This is the Search Box 
               SizedBox(height: size.height * 0.02),
-            
-
-
-
-
-
-              
-              SearchBar(),
-              
-
-
-
-
-
-
-
-
-
-
+              const SearchBar(),
               SizedBox(height: size.height * 0.02),
               Container(
                 padding: EdgeInsets.fromLTRB(size.width*0.0213333333, 10, size.width*0.0213333333, 0),
@@ -233,7 +215,7 @@ class _HomePageState extends State<HomePage> {
     },
     {
       "img": "/images/temp/free_delivery.png",
-      "title": "Free Delivery",
+      "title": "Product you might like",
       "color": 0xff00FFEF
     }
   ];
@@ -246,8 +228,12 @@ class Products extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Future<List<ProductModel>> productFuture =
+        category == 3 //Recommend Products
+        ? ApiService().getRelatedProducts('Minions') 
+        : ApiService().getAllProducts(1, 20, category);
     return FutureBuilder<List<ProductModel>>(
-        future: ApiService().getAllProducts(1, 20, category),
+        future: productFuture,
         builder: (context, snapshots) {
           if (snapshots.connectionState == ConnectionState.waiting) {
             return loadingAnimation();
@@ -263,7 +249,7 @@ class Products extends StatelessWidget {
             primary: false,
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
-            physics: const NeverScrollableScrollPhysics(),
+            // physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4,
               crossAxisSpacing: 5,
@@ -330,116 +316,11 @@ class Products extends StatelessWidget {
   }
 }
 
-// class SearchBar extends StatefulWidget {
-//   const SearchBar({Key? key}) : super(key: key);
-
-//   @override
-//   _SearchBarState createState() => _SearchBarState();
-// }
-
-// class _SearchBarState extends State<SearchBar> {
-//   final TextEditingController _controller = TextEditingController();
-//   List<String> _suggestions = [];
-//   bool _isTyping = false;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _controller.addListener(_onSearchChanged);
-//   }
-
-//   @override
-//   void dispose() {
-//     _controller.dispose();
-//     super.dispose();
-//   }
-
-//   void _onSearchChanged() {
-//     final searchQuery = _controller.text;
-//     if (searchQuery.isNotEmpty) {
-//       // Gọi API để lấy gợi ý, sau đó cập nhật UI
-//       _fetchSearchSuggestions(searchQuery);
-//     } else {
-//       setState(() {
-//         _isTyping = false;
-//         _suggestions = [];
-//       });
-//     }
-//   }
-
-//   Future<void> _fetchSearchSuggestions(String query) async {
-//     try {
-//       // Gọi API và chờ kết quả
-//       final List<ProductModel> results = await ApiService().searchProduct(query);
-//       // Cập nhật danh sách gợi ý sau khi nhận dữ liệu
-//       setState(() {
-//         _isTyping = true;
-//         _suggestions = results.map((result) => result.productDetails.productName).toList();
-//       });
-//     } catch (e) {
-
-//       // Xử lý lỗi nếu có
-//       setState(() {
-//         // _isTyping = false;
-//         // _suggestions = [];
-//         // print('Error fetching search suggestions: $e');
-//       });
-//     }
-//   }
-
-//   Future<void> _handleSearch(String value) async {
-//     if (value.trim().isEmpty) return;
-//     final List<ProductModel> results = await ApiService().searchProduct(value);
-//     // Điều hướng đến trang kết quả tìm kiếm với từ khóa đã nhập
-//     Navigator.of(context).push(MaterialPageRoute(
-//       builder: (context) => SearchResultsScreen(results: results, searchTerm: value),
-//     ));
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       mainAxisSize: MainAxisSize.min,
-//       children: [
-//         TextField(
-//           controller: _controller,
-//           decoration: InputDecoration(
-//             prefixIcon: const Icon(Icons.search),
-//             hintText: 'Search for products',
-//             border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-//           ),
-//           onSubmitted: _handleSearch,
-//         ),
-//         // Hiển thị danh sách gợi ý dưới TextField nếu đang nhập
-//         if (_isTyping && _suggestions.isNotEmpty)
-//           Stack(
-//             children: [ 
-//               Positioned(
-//               top: 0, // Đặt vị trí bắt đầu từ ngay dưới TextField
-//               left: 0,
-//               right: 0,
-//               child: Container(
-//               child:  ListView.builder(
-//               itemCount: _suggestions.length,
-//               itemBuilder: (context, index) {
-//                 return ListTile(
-//                   title: Text(_suggestions[index]),
-//                   onTap: () {
-//                     _handleSearch(_suggestions[index]);
-//                   },
-//                 );
-//               },
-//             ),))]
-//           ),
-//       ],
-//     );
-//   }
-// }
-
 class SearchBar extends StatefulWidget {
   const SearchBar({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _SearchBarState createState() => _SearchBarState();
 }
 
@@ -514,7 +395,7 @@ class _SearchBarState extends State<SearchBar> {
     );
   } else {
     // Return an empty OverlayEntry if renderBox is not ready
-    return OverlayEntry(builder: (context) => SizedBox.shrink());
+    return OverlayEntry(builder: (context) => const SizedBox.shrink());
   }
 }
 
@@ -528,6 +409,7 @@ class _SearchBarState extends State<SearchBar> {
     // Implement your search handling logic here
     // For example, navigating to a new screen with the search results
     final List<ProductModel> results = await ApiService().searchProduct(value.trim());
+    // ignore: use_build_context_synchronously
     Navigator.of(context).push(MaterialPageRoute(
        builder: (context) => SearchResultsScreen(results: results, searchTerm: value),
      ));
@@ -540,7 +422,7 @@ class _SearchBarState extends State<SearchBar> {
         TextField(
           controller: _controller,
           decoration: InputDecoration(
-            prefixIcon: Icon(Icons.search),
+            prefixIcon: const Icon(Icons.search),
             hintText: 'Search...',
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
           ),

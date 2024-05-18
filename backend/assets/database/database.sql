@@ -24,8 +24,6 @@ CREATE TABLE users (
   gst TEXT
 );
 
-INSERT INTO users (_key, hashed_password, deliveryAddress, deviceToken, dob, emailId, shopName, phoneNo, profilePic, userType, proprietorName, gst)
-VALUES (1, 'hashed_password123', '123 Main Street, Anytown, CA 54321', 'somedevicetoken123', '2000-01-01', 'user1@example.com', 'User1 Shop', '555-123-4567', 'https://example.com/profilepic1.jpg', 'buyer', 'John Doe', '1234567890');
 
 CREATE TABLE categories (
     _key INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -67,7 +65,7 @@ CREATE TABLE reviews (
     _key INTEGER PRIMARY KEY AUTOINCREMENT,
     productKey INTEGER NOT NULL, 
     userKey INTEGER NOT NULL, 
-    comment TEXT,
+    rating TEXT,
     FOREIGN KEY (productKey) REFERENCES products(_key),
     FOREIGN KEY (userKey) REFERENCES users(_key)
 );
