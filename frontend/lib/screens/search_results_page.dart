@@ -30,7 +30,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       
       appBar: AppBar(
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.blueGrey,),
+            icon: const Icon(Icons.arrow_back, color: Colors.blueGrey,),
             onPressed: () => 
             Navigator.push(
               context,

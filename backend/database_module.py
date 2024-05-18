@@ -261,12 +261,21 @@ def get_product_from_key(key):
         key_name = 'c'
 
     # Query to get category details (use JOIN for efficiency)
-    query = """
-        SELECT p._key, p.productName, p.productDescription, p.productPicture
-        FROM categories c
-        INNER JOIN product_categories pc ON c._key = pc.categoryKey
-        INNER JOIN products p ON pc.productKey = p._key
-        WHERE {key_name}._key = ? """.format(key_name=key_name)
+    if key_name == 'c':
+        query = """
+            SELECT p._key, p.productName, p.productDescription, p.productPicture, p.productRating
+            FROM product_categories pc
+            INNER JOIN products p ON pc.productKey = p._key
+            WHERE pc.categoryKey = ? 
+        """
+    else:
+        query = """
+            SELECT p._key, p.productName, p.productDescription, p.productPicture, p.productRating
+            FROM categories c
+            INNER JOIN product_categories pc ON c._key = pc.categoryKey
+            INNER JOIN products p ON pc.productKey = p._key
+            WHERE {key_name}._key = ? 
+        """.format(key_name=key_name)
 
     cursor.execute(query, (key['key'],))
 
@@ -278,6 +287,7 @@ def get_product_from_key(key):
             "productName": row[1],
             "productDescription": row[2],
             "productPicture": row[3],
+            "productRating": row[4],
             "reviews": [],
             "variations": []
         }
