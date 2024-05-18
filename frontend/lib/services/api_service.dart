@@ -14,15 +14,15 @@ import 'package:dio/dio.dart';
 class ApiService {
   final Dio _dio = Dio();
   
-  final String baseUrl = "https://nguyenduchuy.pythonanywhere.com/";
-  final String userBaseUrl = "https://nguyenduchuy.pythonanywhere.com/users";
-  final String productBaseUrl = "https://nguyenduchuy.pythonanywhere.com/products";
-  final String orderBaseUrl = "https://nguyenduchuy.pythonanywhere.com/orders";
+  // final String baseUrl = "https://nguyenduchuy.pythonanywhere.com/";
+  // final String userBaseUrl = "https://nguyenduchuy.pythonanywhere.com/users";
+  // final String productBaseUrl = "https://nguyenduchuy.pythonanywhere.com/products";
+  // final String orderBaseUrl = "https://nguyenduchuy.pythonanywhere.com/orders";
 
-  // final String baseUrl = "http://127.0.0.1:5000";
-  // final String userBaseUrl = "http://127.0.0.1:5000/users";
-  // final String productBaseUrl = "http://127.0.0.1:5000/products";
-  // final String orderBaseUrl = "http://127.0.0.1:5000/orders";
+  final String baseUrl = "http://127.0.0.1:5000";
+  final String userBaseUrl = "http://127.0.0.1:5000/users";
+  final String productBaseUrl = "http://127.0.0.1:5000/products";
+  final String orderBaseUrl = "http://127.0.0.1:5000/orders";
 
   // final String baseUrl = "http://192.168.0.101:8080";
   // final String userBaseUrl = "http://192.168.0.101:8080/users";
@@ -385,6 +385,7 @@ class ApiService {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
+      print(searchTerm);
       Response<Map<String, dynamic>> response = await _dio.get(
           "$productBaseUrl/search-product",
           queryParameters: {"searchTerm": searchTerm});
@@ -534,6 +535,29 @@ class ApiService {
       }
     } catch (e) {
       print("Exception Occured at addtocart : $e");
+      // toastMessage("Something went wrong! Try again");
+    }
+    return [];
+  }
+
+  Future<List<ProductModel>> getRelatedProducts(String productName) async {
+    String? token = await UserDataStorageService().getToken();
+    _dio.options.headers["Authorization"] = token!;
+    try {
+      Response<Map<String, dynamic>> response = await _dio.get('$productBaseUrl/get-related-products',
+                                                                queryParameters: {"productName": productName});
+      // print("respones : ${response.data!['result']}");
+      List<ProductModel> relatedProducts = productsFromJson(response.data!['result']);
+      return relatedProducts;
+    } on DioException catch (e) {
+      print("dio error occured on get rcm: ${e.response}");
+      if (e.error is SocketException) {
+        internetToastMessage();
+      } else {
+        // toastMessage("Something went wrong! Try again");
+      }
+    } catch (e) {
+      print("Exception Occured at rcm : $e");
       // toastMessage("Something went wrong! Try again");
     }
     return [];

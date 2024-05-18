@@ -3,6 +3,9 @@ from flask_cors import CORS
 import security as sc
 import database_module as dm 
 from dotenv import load_dotenv
+import rcm_model as rcm
+
+
 load_dotenv('backend\key.env')
 
 app = Flask(__name__)
@@ -230,7 +233,6 @@ def getAllOrders():
         return jsonify({"error": "Session expired"}), 404
     
     orders = dm.get_orders_of_user(userKey)
-    cartModels = []
     orderCombinedModel = []
     
     for order in orders:
@@ -263,6 +265,21 @@ def getAllOrders():
             })
         
     return jsonify({"result": orderCombinedModel}), 200
+
+
+
+@app.route('/products/get-related-products', methods=['GET'])
+def getRelatedProducts():
+    data:str = request.get_data()
+    productNames = [data]
+    relatedProductNames:list = rcm.get_related_products(productNames)
+    relatedProducts = []
+    
+    for name in relatedProductNames:
+        relatedProduct = dm.search_products_by_name(name)
+        relatedProducts.append(relatedProduct)
+    
+    return jsonify({"result": relatedProducts}), 200
 
 
 # @app.route('/images/<string:product_name>')

@@ -1,7 +1,0 @@
-# Ignore database files
-assets/database.db
-
-# Ignore Python bytecode cache
-__pycache__/
-
-clone_model
