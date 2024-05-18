@@ -1,5 +1,7 @@
 backend\assets\database\database.db
-
 backend\__pycache__
-
-backend\assets\content\data
+backend\assets\content\data/*.json
+backend\assets\content\data/*.csv
+backend\db_creator 
+backend\db_creator\film_info.csv
+backend\.env

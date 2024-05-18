@@ -2,7 +2,7 @@
 //
 //     final product = productsFromJson(listOfJson);
 
-import 'dart:convert';
+import 'dart:convert'; 
 
 List<ProductModel> productsFromJson(List<dynamic> json) =>
     List<ProductModel>.from(json.map((x)  => ProductModel.fromJson(x)));
@@ -64,6 +64,7 @@ class ProductDetails {
     required this.productDescription,
     required this.productName,
     required this.productPicture,
+    required this.productRating,
     required this.reviews,
     required this.variations,
   });
@@ -72,6 +73,7 @@ class ProductDetails {
   String productDescription;
   String productName;
   String productPicture;
+  double productRating;
   List<Review> reviews;
   List<Variation> variations;
 
@@ -80,6 +82,7 @@ class ProductDetails {
         productDescription: json["productDescription"],
         productName: json["productName"],
         productPicture: json["productPicture"],
+        productRating: json['productRating'],
         reviews:
             List<Review>.from(json["reviews"].map((x) => Review.fromJson(x))),
         variations: 
@@ -91,6 +94,7 @@ class ProductDetails {
         "productDescription": productDescription,
         "productName": productName,
         "productPicture": productPicture,
+        "productRating": productRating,
         "reviews": List<dynamic>.from(reviews.map((x) => x.toJson())),
         "variations": List<dynamic>.from(variations.map((x) => x.toJson())),
       };
@@ -103,7 +107,7 @@ class Review {
   });
 
   String comment;
-  String userId;
+  int userId;
 
   factory Review.fromJson(Map<String, dynamic> json) => Review(
         comment: json["comment"],

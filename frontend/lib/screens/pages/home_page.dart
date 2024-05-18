@@ -348,7 +348,7 @@ class _SearchBarState extends State<SearchBar> {
       _fetchSuggestions(query).then((suggestions) {
         _suggestions = suggestions;
         _overlayEntry = _createOverlayEntry();
-        Overlay.of(context)?.insert(_overlayEntry!);
+        Overlay.of(context).insert(_overlayEntry!);
       });
     } else if (query.isEmpty && _overlayEntry != null) {
       _removeOverlay();
@@ -419,14 +419,19 @@ class _SearchBarState extends State<SearchBar> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        TextField(
-          controller: _controller,
-          decoration: InputDecoration(
-            prefixIcon: const Icon(Icons.search),
-            hintText: 'Search...',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+        SizedBox(
+          height: 60, // Set the desired height
+          width: 1420,
+          child: TextField(
+            controller: _controller,
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.search),
+              hintText: 'Search...',
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+            ),
+            onSubmitted: _handleSearch,
+            maxLines: 1, // Allow only one line
           ),
-          onSubmitted: _handleSearch,
         ),
       ],
     );
