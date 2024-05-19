@@ -44,7 +44,6 @@ CREATE TABLE products (
 CREATE TABLE product_categories (
     productKey INTEGER NOT NULL ,
     categoryKey INTEGER NOT NULL ,
-    PRIMARY KEY (productKey, categoryKey),
     FOREIGN KEY (productKey) REFERENCES products (_key),
     FOREIGN KEY (categoryKey) REFERENCES categories (_key)
 );

@@ -2,18 +2,35 @@ import datetime
 import sqlite3
 from flask import jsonify
 import threading
-import json
-
+import mysql.connector
 import security as sc
+import configparser
 
 
-# Thread-local storage for database connections
+# initiate
+config = configparser.ConfigParser()
+config.read('backend/config.ini')
+
 thread_local = threading.local()
 
-def get_db_connection(path='E:/ali33/backend/assets/database/database.db'):
+def get_db_connection():
+    """Connects to the specified AWS database using environment variables."""
     if not hasattr(thread_local, 'db_conn'):
-        thread_local.db_conn = sqlite3.connect(path)
+        thread_local.db_conn = mysql.connector.connect(
+            host=config.get('database', 'host'),
+            user=config.get('database', 'user'),
+            password=config.get('database', 'password'),
+            database=config.get('database', 'database')
+        )
     return thread_local.db_conn
+
+
+
+# def get_db_connection(path='E:/ali33/backend/assets/database/database.db'):
+#     if not hasattr(thread_local, 'db_conn'):
+#         thread_local.db_conn = sqlite3.connect(path)
+#     return thread_local.db_conn
+
 
 
 def get_user_by_key(userKey):
@@ -34,7 +51,7 @@ def get_user_by_key(userKey):
                     users.userType,
                     users.gst
             FROM users
-            WHERE users._key = ?
+            WHERE users._key = %s
         """, (userKey,))
         user_data = cursor.fetchone()
 
@@ -57,7 +74,7 @@ def get_user_by_key(userKey):
             cursor.execute("""
                 SELECT _key 
                 FROM orders
-                WHERE userKey = ?
+                WHERE userKey = %s
             """, (userKey,))
             orders_data = cursor.fetchall()
             for order in orders_data:
@@ -66,7 +83,7 @@ def get_user_by_key(userKey):
             cursor.execute("""
                 SELECT productKey, noOfItems, variationQuantity
                 FROM cart_items
-                WHERE userKey = ?
+                WHERE userKey = %s
             """, (userKey,))
             cart_items_data = cursor.fetchall()
             for cart_item in cart_items_data:
@@ -94,7 +111,7 @@ def is_registered(contact_info):
         if not contact_info:
             return jsonify({'error': 'Missing contact_info'}), 400
 
-        query = "SELECT _key FROM users WHERE emailId = ?"
+        query = "SELECT _key FROM users WHERE emailId = %s"
         cur.execute(query, (contact_info,))
 
         user_exists = cur.fetchone() is not None
@@ -116,7 +133,7 @@ def get_user_for_login(contact_info) -> dict:
                 u._key,
                 u.hashed_password
             FROM users u
-            WHERE u.emailId = ?
+            WHERE u.emailId = %s
         """
         cur.execute(query, (contact_info,))
         user_data = cur.fetchone()
@@ -157,7 +174,7 @@ def create_user(username, contact_info, password):
                 userType,
                 proprietorName,
                 gst 
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """,
             (hashed_password, " ", " ", cur_time, contact_info, " ", " ", " ", " ", username, " ")
         )
@@ -204,42 +221,42 @@ def search_products_by_name(search_term):
     cursor = connection.cursor()
 
     try:
-        search_term = search_term.replace(" ", "").lower()
-        # 1. Basic Keyword Matching (Case-Insensitive)
-        query = """
-            SELECT * FROM products
-            WHERE productName LIKE ?
-        """
-        cursor.execute(query, ('%' + search_term + '%',))
-        basic_results = cursor.fetchall()
-
-        # 2. Full-Text Search (FTS) - If available
+        # 1. Full-Text Search (FTS) - If available
         fts_results = []
         try:
             query = """
-                SELECT * FROM products
-                WHERE products MATCH ?
+            SELECT * FROM products
+            WHERE MATCH(product_name, description) AGAINST (%s IN NATURAL LANGUAGE MODE)
+            LIMIT 10
             """
             cursor.execute(query, (search_term,))
             fts_results = cursor.fetchall()
-        except sqlite3.OperationalError:
-            # FTS might not be enabled; handle gracefully
+        except mysql.connector.errors.ProgrammingError:
+            # FTS might not be enabled or table doesn't have FTS index; handle gracefully
             pass
 
-        # 3. Combine and Rank Results (Simple Example)
-        keys = []
-        seen = set()  # To avoid duplicates
-        for key in fts_results + basic_results:
-            if key[0] not in seen:  # Assuming product ID is the first column
-                keys.append(key[0])
-                seen.add(key[0])
+        # 2. Basic Keyword Matching (Case-Insensitive)
+        search_term_like = '%' + search_term.lower() + '%'
+        query = """
+            SELECT * FROM products
+            WHERE lower(productName) LIKE %s
+            LIMIT 10
+        """
+        cursor.execute(query, (search_term_like,))
+        basic_results = cursor.fetchall()
 
+        # 3. Combine and De-duplicate Results
+        all_results = fts_results + basic_results
+        unique_results = list(set(all_results))
+
+        # 4. Fetch Product Details 
         matched_product_list = []
-        for key in keys:
-            matched_product = get_product_from_key({'type': 'product',
-                                                  'key': key})
-            matched_product_list += matched_product
-        return matched_product_list 
+        for result in unique_results:
+            product_id = result[0]
+            matched_product = get_product_from_key({'type': 'product', 'key': product_id})
+            matched_product_list.extend(matched_product)  # Use extend to add items from a list
+
+        return matched_product_list
 
     finally:
         cursor.close()
@@ -266,7 +283,7 @@ def get_product_from_key(key):
             SELECT p._key, p.productName, p.productDescription, p.productPicture, p.productRating
             FROM product_categories pc
             INNER JOIN products p ON pc.productKey = p._key
-            WHERE pc.categoryKey = ? 
+            WHERE pc.categoryKey = %s 
         """
     else:
         query = """
@@ -274,7 +291,7 @@ def get_product_from_key(key):
             FROM categories c
             INNER JOIN product_categories pc ON c._key = pc.categoryKey
             INNER JOIN products p ON pc.productKey = p._key
-            WHERE {key_name}._key = ? 
+            WHERE {key_name}._key = %s 
         """.format(key_name=key_name)
 
     cursor.execute(query, (key['key'],))
@@ -297,7 +314,7 @@ def get_product_from_key(key):
             SELECT c._key, c.categoryName, c.categoryPicture
             FROM product_categories pc
             INNER JOIN categories c ON pc.categoryKey = c._key
-            WHERE pc.productKey = ?
+            WHERE pc.productKey = %s
         """
         cursor.execute(query, (product_data['_key'],))
         category_data = [
@@ -310,7 +327,7 @@ def get_product_from_key(key):
         ]
 
         # Query to get reviews (using product_data["_key"] directly)
-        cursor.execute("SELECT userKey, comment FROM Reviews WHERE productKey=?", (product_data["_key"],))
+        cursor.execute("SELECT userKey, comment FROM reviews WHERE productKey=%s", (product_data["_key"],))
         for review in cursor.fetchall():
             product_data["reviews"].append({
                 "userId": review[0],
@@ -318,7 +335,7 @@ def get_product_from_key(key):
             })
 
         # Query to get variations (using product_data["_key"] directly)
-        cursor.execute("SELECT availabilityQuantity, discountPrice, offerPrice, quantity, sellingPrice FROM Variations WHERE productKey=?",
+        cursor.execute("SELECT availabilityQuantity, discountPrice, offerPrice, quantity, sellingPrice FROM variations WHERE productKey=%s",
                         (product_data["_key"],))
         for variation in cursor.fetchall():
             product_data["variations"].append({
@@ -346,7 +363,7 @@ def add_to_cart(cartItems, userKey):
         cursor.execute('''
             SELECT 1 
             FROM cart_items 
-            WHERE userKey = ? AND productKey = ? AND variationQuantity = ?
+            WHERE userKey = %s AND productKey = %s AND variationQuantity = %s
         ''', (userKey, cartItems['productKey'], cartItems['variationQuantity']))
 
         item_exists = cursor.fetchone()
@@ -355,14 +372,14 @@ def add_to_cart(cartItems, userKey):
             # If item exists, increment noOfItems
             cursor.execute('''
                 UPDATE cart_items 
-                SET noOfItems = noOfItems + ? 
-                WHERE userKey = ? AND productKey = ? AND variationQuantity = ?
+                SET noOfItems = noOfItems + %s 
+                WHERE userKey = %s AND productKey = %s AND variationQuantity = %s
             ''', (cartItems['noOfItems'], userKey, cartItems['productKey'], cartItems['variationQuantity']))
         else:
             # If item doesn't exist, insert a new row
             cursor.execute('''
                 INSERT INTO cart_items (userKey, productKey, noOfItems, variationQuantity)
-                VALUES (?, ?, ?, ?)
+                VALUES (%s, %s, %s, %s)
             ''', (userKey, cartItems['productKey'], cartItems['noOfItems'], cartItems['variationQuantity']))
 
         conn.commit()  # Commit changes within the try block
@@ -386,14 +403,14 @@ def remove_from_cart(cartItems: list[dict], userKey: int) -> bool:
         for cartItem in cartItems:
             cursor.execute('''
                 UPDATE cart_items 
-                SET noOfItems = noOfItems - ? 
-                WHERE userKey = ? AND productKey = ? AND variationQuantity = ?
+                SET noOfItems = noOfItems - %s 
+                WHERE userKey = %s AND productKey = %s AND variationQuantity = %s
             ''', (cartItem['noOfItems'], userKey, cartItem['productKey'], cartItem['variationQuantity']))
 
             # If the quantity becomes zero or negative, delete the item
             cursor.execute('''
                 DELETE FROM cart_items 
-                WHERE userKey = ? AND productKey = ? AND variationQuantity = ? AND noOfItems <= 0
+                WHERE userKey = %s AND productKey = %s AND variationQuantity = %s AND noOfItems <= 0
             ''', (userKey, cartItem['productKey'], cartItem['variationQuantity']))
 
         conn.commit() # Commit changes within the try block
@@ -423,8 +440,8 @@ def change_no_of_product_in_cart(data: dict, userKey: int) -> bool:
         # First, try to update the existing item with the new values
         cursor.execute('''
             UPDATE cart_items 
-            SET productKey = ?, variationQuantity = ?, noOfItems = ?
-            WHERE userKey = ? AND productKey = ? AND variationQuantity = ?
+            SET productKey = %s, variationQuantity = %s, noOfItems = %s
+            WHERE userKey = %s AND productKey = %s AND variationQuantity = %s
         ''', (new_product_key, new_variation_quantity, new_no_of_items,
               userKey, old_product_key, old_variation_quantity))
 
@@ -432,7 +449,7 @@ def change_no_of_product_in_cart(data: dict, userKey: int) -> bool:
         if cursor.rowcount == 0:
             cursor.execute('''
                 INSERT INTO cart_items (userKey, productKey, noOfItems, variationQuantity)
-                VALUES (?, ?, ?, ?)
+                VALUES (%s, %s, %s, %s)
             ''', (userKey, new_product_key, new_no_of_items, new_variation_quantity))
 
         conn.commit()  # Commit changes
@@ -465,7 +482,7 @@ def place_order(orders: list, user_key: int) -> dict:
                 INSERT INTO orders (userKey, deliveryAddress, deliveryStages, orderedDate, 
                                    paidPrice, paymentStatus, productKey, noOfItems, 
                                    variationQuantity)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             """, (user_key, delivery_address, delivery_stages, ordered_date, paid_price,
                   payment_status, product_key, no_of_items, variation_quantity))
         conn.commit()  # Commit changes
@@ -491,7 +508,7 @@ def get_orders_of_user(userKey) -> dict[str, any]:
             _key, productKey, orderedDate, paidPrice, paymentStatus, 
             deliveryStages, deliveryAddress, noOfItems, variationQuantity
         FROM orders 
-        WHERE userKey = ?
+        WHERE userKey = %s
     """, (userKey,))
 
     orders = []
@@ -522,7 +539,7 @@ def get_orders_of_user(userKey) -> dict[str, any]:
 
 #     try:
 #         cursor.execute('''
-#             SELECT * FROM cart_items WHERE userKey = ?
+#             SELECT * FROM cart_items WHERE userKey = %s
 #         ''', (userKey,)) 
 
 #         cart_items = cursor.fetchall()

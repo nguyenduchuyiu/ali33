@@ -1,9 +1,16 @@
 import datetime
-import os
-
 import bcrypt
 import jwt
-SECRET_KEY = 'Huy'
+import configparser
+
+
+# initiate
+config = configparser.ConfigParser()
+config.read('backend/config.ini')
+SECRET_KEY = config.get('key', 'key')
+
+
+
 
 def decode_jwt_token(token, secret_key=SECRET_KEY) -> bool:
     """
@@ -71,7 +78,7 @@ def check_password(user, password):
     Returns:
         bool: Password is correct or not.
     """
-    if not user or not bcrypt.checkpw(password.encode('utf-8'), user['hashed_password']):
+    if not user or not bcrypt.checkpw(password.encode('utf-8'), bytes(user['hashed_password'])):
         return False
     return True
 
