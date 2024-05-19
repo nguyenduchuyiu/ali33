@@ -10,7 +10,7 @@ import security as sc
 # Thread-local storage for database connections
 thread_local = threading.local()
 
-def get_db_connection(path='E:/ali33/backend/assets/database/database.db'):
+def get_db_connection(path='D:/ali33/backend/assets/database/database.db'):
     if not hasattr(thread_local, 'db_conn'):
         thread_local.db_conn = sqlite3.connect(path)
     return thread_local.db_conn

@@ -50,15 +50,65 @@ class _ProfilePageState extends State<ProfilePage> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context, false),
-            icon: const Icon(
-              Icons.arrow_back_ios_new_outlined,
-              color: Colors.blueGrey,
-            ),
-          ),
+        toolbarHeight: 80,
+        flexibleSpace: 
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                // shrinkWrap: true, 
+                height: 80,
+                width: size.width-16*2,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xff8a2387), // Start color
+                      Color(0xffe94057),
+                      Color(0xfff27121) // End color
+                    ]
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // IconButton(
+                  //   onPressed: () => Navigator.pop(context, false),
+                  //   icon: const Icon(
+                  //     Icons.arrow_back_ios_new_outlined,
+                  //     color: Colors.blueGrey,
+                  //   ),
+                  // ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => const HomeScreen(selectedPage: 0)), // Giả sử HomePage là trang đầu tiên trong HomeScreen
+                        (Route<dynamic> route) => false,
+                      );
+                    },
+                    child: Image.asset("images/logo.png", height: 50,),
+                  ),
+                  SizedBox(width: 10,),
+                  Column(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 18,),
+                      Text("More Quality",
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayMedium!
+                              .copyWith(fontWeight: FontWeight.w700,fontSize: 17)),
+                      Text("for Less Quantity",
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium!
+                              .copyWith(fontWeight: FontWeight.w500,fontSize: 15)),
+                    ],
+                  ),
+                  ]
+           
           // titleTextStyle: Theme.of(context).appBarTheme.titleTextStyle,
-        ),
+        ),),),
       body:FutureBuilder(
         future: user,
         builder: (context, AsyncSnapshot<UserModel?> snapshots) {
@@ -75,19 +125,34 @@ class _ProfilePageState extends State<ProfilePage> {
 
           return SingleChildScrollView(
             child: Container(
-              // height: size.height,
-              // width: size.width,
+              height: size.height,
+              width: size.width,
+              decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xff8a2387), // Start color
+                      Color(0xffe94057),
+                      Color(0xfff27121) // End color
+                    ]
+                  ),
+                ),
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   snapshots.data!.profilePic != ""
                       ? buildCircularProfilePhoto(snapshots.data!.profilePic,
                           appThemeNotifier.darkTheme, size.height * 0.2)
                       : buildPlaceholderPhoto(
                           appThemeNotifier.darkTheme, size.height * 0.2),
-                  SizedBox(height: size.height * 0.02),
-                  GestureDetector(
+                  SizedBox(height: size.height * 0.01),
+                  Container(
+                    height: 140,
+                    width: 360,
+                    child: GestureDetector(
                     onTap: () async {
                       bool res = await Navigator.push(
                         context,
@@ -170,81 +235,87 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: size.height * 0.05),
-                  ListView(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      buildItem(
-                          "Cart Items",
-                          () => Navigator.push(
-                              context,
-                              SlideLeftRoute(
-                                widget: BlocProvider<CartBloc>(
-                                  create: (context) => CartBloc(),
-                                  child: CartScreen(userKey: snapshots.data!.key!,),
-                                ),
-                              ))),
-                      buildItem(
-                          "Orders",
-                          () => Navigator.push(
-                              context, SlideLeftRoute(widget: const OrdersScreen()))),
-                      buildItem(
-                          "My Address",
-                          () => Navigator.push(context, SlideLeftRoute(widget: HomePage()))),// Huy test
-                              // SlideLeftRoute(widget: const DeliveryAddressScreen()))),
-                      buildItem(
-                          "Theme Mode",
-                          () => {
-                                appThemeNotifier.darkTheme =
-                                    !appThemeNotifier.darkTheme
-                              }),
-                      // buildItem("Contact Us", () => null),
-                    ],
                   ),
-                  SizedBox(height: size.height * 0.02),
-                  InkWell(
-                    onTap: () async {
-                      bool res = await ApiService().logout();
-                      if (res) {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            SlideRightRoute(
-                                widget: const LoginScreen(isEditing: false)),
-                            (route) => false);
-                      }
-                    },
-                    child: Container(
-                      width: 150,
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            "Logout",
-                            style:
-                                Theme.of(context).textTheme.displayLarge!.copyWith(
-                                      color: Colors.white,
-                                    ),
-                          ),
-                          const SizedBox(width: 10),
-                          const Icon(
-                            Icons.logout_outlined,
-                            color: Colors.white,
-                          )
-                        ],
-                      ),
+
+                  SizedBox(height: size.height * 0.05),
+                  Container(
+                    
+                    width: 400,
+                    height: 400,
+                    padding: EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color:Colors.white,
+                      borderRadius: BorderRadius.circular(20)
                     ),
-                  )
+                    child: Column(
+                      children: [
+                        Expanded( 
+                        child : ListView.separated(
+
+                          itemCount: 4, // Số lượng item, cần điều chỉnh cho phù hợp
+                          itemBuilder: (context, index) {
+                            switch(index) {
+                              case 0: return buildItem("Cart Items", () => Navigator.push(context, SlideLeftRoute(widget: BlocProvider<CartBloc>(create: (context) => CartBloc(), child: CartScreen(userKey: snapshots.data!.key!,),),)));
+                              case 1: return buildItem("Orders", () => Navigator.push(context, SlideLeftRoute(widget: const OrdersScreen())));
+                              case 2: return buildItem("My Address", () => Navigator.push(context, SlideLeftRoute(widget: HomePage())));
+                              case 3: return buildItem("Theme Mode", () => {appThemeNotifier.darkTheme = !appThemeNotifier.darkTheme});
+                              default: return Container();
+                            }
+                          },
+                          separatorBuilder: (context, index) => SizedBox(height: 20),  // Khoảng cách giữa các item
+                        ),),
+                        SizedBox(height: 20),
+                        InkWell(
+                          onTap: () async {
+                            bool res = await ApiService().logout();
+                            if (res) {
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  SlideRightRoute(
+                                      widget: const LoginScreen(isEditing: false)),
+                                  (route) => false);
+                            }
+                          },
+                          child: Container(
+                            height: 50,
+                            width: 150,
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Logout",
+                                  style:
+                                      Theme.of(context).textTheme.displayLarge!.copyWith(
+                                            color: Colors.white,
+                                          ),
+                                ),
+                                const SizedBox(width: 10),
+                                const Icon(
+                                  Icons.logout_outlined,
+                                  color: Colors.white,
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: size.height/8,)
+                  
+                  
+                  
                 ],
               ),
             ),
           );
-        }));
+        }
+        ));
   }
 
   Widget buildItem(String title, Function() onPress) {

@@ -9,7 +9,7 @@ import 'package:ali33/widgets/basic.dart';
 import 'package:ali33/widgets/build_photo.dart';
 import 'package:flutter/material.dart';
 import 'package:ali33/screens/search_results_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../widgets/error_builder.dart';
 
 class HomePage extends StatefulWidget {
@@ -45,17 +45,6 @@ class _HomePageState extends State<HomePage> {
   bool isExpanded = true;
   int currentIndex = 0;
 
-  List<String> searches = <String>[];
-  int selectedCartIndex = 0;
-  late SharedPreferences _prefs;
-  List<String> topCat = ["Apple", "Mango", "Basmati Rice", "Guva"];
-
-  void loadRecentSearches() async {
-    _prefs = await SharedPreferences.getInstance();
-    List<String> temp = _prefs.getStringList("searches")!.toList();
-    searches = temp.reversed.toList();
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,11 +62,25 @@ class _HomePageState extends State<HomePage> {
             return buildErrorWidget(
                 context, () => getUser(), "Items not Found! Try again");
           }
-          return ListView( 
+          return Container(
+            decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xff8a2387), // Start color
+                      Color(0xffe94057),
+                      Color(0xfff27121) // End color
+                    ]
+                  ),
+                ),
+          child:ListView( 
             children: [
               //This is the Search Box 
               SizedBox(height: size.height * 0.02),
+
               const SearchBar(),
+
               SizedBox(height: size.height * 0.02),
               Container(
                 padding: EdgeInsets.fromLTRB(size.width*0.0213333333, 10, size.width*0.0213333333, 0),
@@ -198,7 +201,7 @@ class _HomePageState extends State<HomePage> {
               ),
               )  
             ],
-          );
+          ));
         });
   }
 
@@ -410,6 +413,7 @@ class _SearchBarState extends State<SearchBar> {
     // For example, navigating to a new screen with the search results
     final List<ProductModel> results = await ApiService().searchProduct(value.trim());
     // ignore: use_build_context_synchronously
+    _removeOverlay();
     Navigator.of(context).push(MaterialPageRoute(
        builder: (context) => SearchResultsScreen(results: results, searchTerm: value),
      ));
@@ -428,6 +432,8 @@ class _SearchBarState extends State<SearchBar> {
               prefixIcon: const Icon(Icons.search),
               hintText: 'Search...',
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+              fillColor: Colors.grey, // Set the desired fill color
+              filled: true,
             ),
             onSubmitted: _handleSearch,
             maxLines: 1, // Allow only one line

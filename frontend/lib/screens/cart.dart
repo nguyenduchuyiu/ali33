@@ -43,16 +43,66 @@ class _CartScreenState extends State<CartScreen> {
       builder: (context, state) {
         if (state is CartInitialState || state is CartProductsLoading) {
           return Scaffold(
-              appBar: AppBar(title: const Text("Cart Preview")),
+              appBar: AppBar(
+                title: const Text("Cart Preview",selectionColor: Colors.white,),
+                toolbarHeight: 80,
+                flexibleSpace:
+                Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                // shrinkWrap: true, 
+                height: 80,
+                width: size.width-16*2,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xff8a2387), // Start color
+                      Color(0xffe94057),
+                      Color(0xfff27121) // End color
+                    ]
+                  ),
+                ),),
+              ),
               body: loadingAnimation());
         } else if (state is CartProductsFetched) {
           if (state.products.cartModels.isEmpty) {
             return Scaffold(
-              appBar: AppBar(title: const Text("Cart Preview")),
-              body: Container(
+              appBar: AppBar(
+                title: const Text("Cart Preview",selectionColor: Colors.white,),
+                toolbarHeight: 80,
+                flexibleSpace:
+                Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                // shrinkWrap: true, 
+                height: 80,
+                width: size.width-16*2,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xff8a2387), // Start color
+                      Color(0xffe94057),
+                      Color(0xfff27121) // End color
+                    ]
+                  ),
+                ),),
+              ),
+              body: Container(decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xff8a2387), // Start color
+                      Color(0xffe94057),
+                      Color(0xfff27121) // End color
+                    ]
+                  ),
+                ),
                 alignment: Alignment.center,
                 child: Text("Look's like no Products in Cart. Add some!",
-                    style: Theme.of(context).textTheme.headlineMedium),
+                    style: Theme.of(context).textTheme.headlineMedium,selectionColor: Colors.white,),
               ),
             );
           }
@@ -60,11 +110,24 @@ class _CartScreenState extends State<CartScreen> {
 
           return Scaffold(
             appBar: AppBar(title: const Text("Cart Preview")),
-            body: ListView(
+            body:Container(
+              decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xff8a2387), // Start color
+                      Color(0xffe94057),
+                      Color(0xfff27121) // End color
+                    ]
+                  ),
+                ),
+            child:  ListView(
               primary: true,
               children: [
                 SizedBox(height: size.height * 0.01),
                 Container(
+
                   // height: size.height * 0.1,
                   color: Colors.amberAccent,
                   padding:
@@ -348,7 +411,7 @@ class _CartScreenState extends State<CartScreen> {
                 ),
                 SizedBox(height: size.height * 0.05),
               ],
-            ),
+            )),
             bottomNavigationBar: Container(
               // height: size.height * 0.28,
               width: size.width,

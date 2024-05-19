@@ -3,7 +3,31 @@ import 'package:ali33/screens/pages/more_products_page.dart';
 import 'package:ali33/screens/pages/profile_page.dart';
 import 'package:ali33/screens/pages/search_page.dart';
 import 'package:flutter/material.dart';
-
+import 'package:ali33/services/api_service.dart';
+import 'package:ali33/models/user_model.dart';
+import 'package:ali33/services/authenticate_service.dart';
+import 'package:ali33/screens/cart.dart';
+import 'package:ali33/bloc/cart_bloc.dart';
+import 'package:ali33/services/theme_provider_service.dart';
+import 'package:ali33/bloc/cart_bloc.dart';
+import 'package:ali33/constants/route_animation.dart';
+import 'package:ali33/models/user_model.dart';
+import 'package:ali33/screens/cart.dart';
+import 'package:ali33/screens/delivery_address.dart';
+import 'package:ali33/screens/login.dart';
+import 'package:ali33/screens/orders.dart';
+import 'package:ali33/screens/pages/home_page.dart';
+import 'package:ali33/screens/profile.dart';
+import 'package:ali33/services/api_service.dart';
+import 'package:ali33/services/authenticate_service.dart';
+import 'package:ali33/services/theme_provider_service.dart';
+import 'package:ali33/widgets/basic.dart';
+import 'package:ali33/widgets/build_photo.dart';
+import 'package:ali33/widgets/error_builder.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
+import 'package:ali33/screens/home.dart';
 
 class HomeScreen extends StatefulWidget {
   final int selectedPage;
@@ -35,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Future<UserModel?>? user = UserService.authenticateUser(context);
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar : AppBar(
@@ -87,6 +112,45 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   const Spacer(),
+                  FutureBuilder(
+                      future: user, // Gọi hàm lấy dữ liệu người dùng hiện tại
+                      builder: (BuildContext context, AsyncSnapshot<UserModel?> snapshot) {
+                        // Kiểm tra trạng thái của Future và xây dựng UI tương ứng
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          // Nếu Future đang chờ, hiển thị loading indicator
+                          return CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          // Nếu xảy ra lỗi, hiển thị thông báo lỗi
+                          return Text('Error: ${snapshot.error}');
+                        } else if (snapshot.hasData) {
+                          // Khi có dữ liệu, sử dụng dữ liệu để xây dựng UI
+                          UserModel? user = snapshot.data;
+                          return InkWell(
+                            onTap: () {
+                              if (user != null && user.key != null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => BlocProvider<CartBloc>(
+                                      create: (context) => CartBloc(),
+                                      child: CartScreen(userKey: user.key!),
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                // Xử lý trường hợp user hoặc key của user là null
+                                print('User key is not available.');
+                              }
+                            },
+                            child: Icon(Icons.shopping_cart,color: Colors.white,size: 30,),
+                          );
+                        } else {
+                          // Trường hợp không có dữ liệu
+                          return Text('No user found');
+                        }
+                      },
+                    ),
+                    SizedBox(width: 15,),
                   InkWell(
                     onTap: () {
                       // Handle the tap
@@ -94,9 +158,30 @@ class _HomeScreenState extends State<HomeScreen> {
                         MaterialPageRoute(builder: (context) => const ProfilePage()),
                       );
                     },
-                    child: const CircleAvatar(
-                      radius: 30,
-                      backgroundImage: AssetImage("images/user.jpeg"),
+                    child: FutureBuilder(
+                      future: user, // Giả sử getUser() là một Future trả về UserModel
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          // Hiển thị placeholder hoặc loading indicator
+                          return CircleAvatar(
+                            radius: 30,
+                            backgroundColor: Colors.grey, // Màu nền khi đang tải
+                            child: CircularProgressIndicator(), // Loading indicator
+                          );
+                        } else if (snapshot.hasData && snapshot.data!.profilePic.isNotEmpty) {
+                          // Nếu dữ liệu có sẵn và có ảnh đại diện
+                          return CircleAvatar(
+                            radius: 30,
+                            backgroundImage: NetworkImage(snapshot.data!.profilePic),
+                          );
+                        } else {
+                          // Nếu không có ảnh đại diện, hiển thị placeholder
+                          return CircleAvatar(
+                            radius: 30,
+                            backgroundImage: AssetImage("images/user.jpeg"), // Ảnh mặc định
+                          );
+                        }
+                      },
                     ),
                   )
                 ],
@@ -109,49 +194,49 @@ class _HomeScreenState extends State<HomeScreen> {
           children: dummyPages,
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        elevation: 0,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedPage,
-        onTap: (int page) {
-          setState(() {
-            if(page == 1){
-            dummyPages[page] = _pages[page];
-            }
-            else if(page ==2){
-              dummyPages[page] = _pages[page];
-            }else if(page ==3 ){
-              dummyPages[page] = _pages[page];
-            }
-            _selectedPage = page;
-          });
-        },
-        selectedIconTheme:
-            IconThemeData(color: Theme.of(context).primaryColor, size: 30),
-        unselectedIconTheme: IconThemeData(
-            color: Theme.of(context).textTheme.bodyLarge!.color, size: 22),
-        items: const [
-          BottomNavigationBarItem(
-            label: "",
-            icon: ImageIcon(AssetImage("images/home_icon.png")),
-          ),
-          BottomNavigationBarItem(
-            label: "",
-            icon: ImageIcon(AssetImage("images/products_icon.png")),
-          ),
-          BottomNavigationBarItem(
-            label: "",
-            icon: ImageIcon(AssetImage("images/search_icon.png")),
-          ),
-          BottomNavigationBarItem(
-            label: "",
-            icon: ImageIcon(AssetImage("images/profile_icon.png")),
-          ),
-        ],
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   elevation: 0,
+      //   showSelectedLabels: false,
+      //   showUnselectedLabels: false,
+      //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      //   type: BottomNavigationBarType.fixed,
+      //   currentIndex: _selectedPage,
+      //   onTap: (int page) {
+      //     setState(() {
+      //       if(page == 1){
+      //       dummyPages[page] = _pages[page];
+      //       }
+      //       else if(page ==2){
+      //         dummyPages[page] = _pages[page];
+      //       }else if(page ==3 ){
+      //         dummyPages[page] = _pages[page];
+      //       }
+      //       _selectedPage = page;
+      //     });
+      //   },
+      //   selectedIconTheme:
+      //       IconThemeData(color: Theme.of(context).primaryColor, size: 30),
+      //   unselectedIconTheme: IconThemeData(
+      //       color: Theme.of(context).textTheme.bodyLarge!.color, size: 22),
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //       label: "",
+      //       icon: ImageIcon(AssetImage("images/home_icon.png")),
+      //     ),
+      //     BottomNavigationBarItem(
+      //       label: "",
+      //       icon: ImageIcon(AssetImage("images/products_icon.png")),
+      //     ),
+      //     BottomNavigationBarItem(
+      //       label: "",
+      //       icon: ImageIcon(AssetImage("images/search_icon.png")),
+      //     ),
+      //     BottomNavigationBarItem(
+      //       label: "",
+      //       icon: ImageIcon(AssetImage("images/profile_icon.png")),
+      //     ),
+      //   ],
+      // ),
     );
   }
 }
