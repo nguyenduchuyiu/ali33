@@ -34,23 +34,29 @@ class ProductDetailsScreen extends StatefulWidget {
 }
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
+  Future<List<ProductModel>>? _relatedProductsFuture; 
   bool isLoading = false;
   bool showMessage = false;
   int selectedIndex = 0;
   int offPercentage = 0;
   int noOfProdAdded = 1;
+  int productKey = 0;
+
 
   String calculateOffPercentage() {
-    int sPrice = widget
+    double sPrice = widget
         .productModel.productDetails.variations[selectedIndex].sellingPrice;
-    int offPrice = widget
+    double offPrice = widget
         .productModel.productDetails.variations[selectedIndex].offerPrice;
     return (((sPrice - offPrice) / sPrice) * 100).round().toString();
   }
 
   @override
   void initState() {
+    productKey = widget.productModel.productDetails.key;
     super.initState();
+    _relatedProductsFuture = ApiService().getRelatedProducts(
+      widget.productModel.productDetails.key); 
     // Create a timer to hide the message after 2 seconds
     _timer = Timer(const Duration(seconds: 2), () {
       setState(() {
@@ -71,8 +77,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return FutureBuilder<List<ProductModel>>(
-        future: ApiService().getRelatedProducts(
-            widget.productModel.productDetails.productName),
+        future: _relatedProductsFuture,
         builder: (context, snapshots) {
           return Scaffold(
             appBar: AppBar(
@@ -130,11 +135,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           style: Theme.of(context).textTheme.displayLarge,
                         ),
                         const SizedBox(height: 5),
-                        Text(
-                          "${widget.productModel.productDetails.variations[selectedIndex].quantity} KG",
-                          style: Theme.of(context).textTheme.displaySmall,
-                        ),
-                        const SizedBox(height: 5),
                         Row(
                           children: [
                             Text(
@@ -157,8 +157,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   .textTheme
                                   .bodyLarge!
                                   .copyWith(
-                                      color: const Color.fromARGB(
-                                          255, 167, 190, 52),
+                                      color: const Color.fromARGB(255, 65, 66, 63),
                                       decoration: TextDecoration.lineThrough),
                             ),
                             const SizedBox(width: 10),
@@ -197,15 +196,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         shape: BoxShape.circle,
                                         // borderRadius: BorderRadius.circular(16),
                                         color: Color(0xffFAC06E)),
-                                    child: Text(
-                                      "${widget.productModel.productDetails.variations[index].quantity} KG",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .displayMedium!
-                                          .copyWith(
-                                              color: const Color.fromARGB(
-                                                  255, 51, 175, 144)),
-                                    ),
                                   ),
                                   Container(
                                     height: 80,
@@ -233,8 +223,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         ),
                         const SizedBox(height: 20),
                         Text(
-                          // widget.productModel.productDetails.productDescription,
-                          "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
+                          widget.productModel.productDetails.productDescription,
                           style: Theme.of(context).textTheme.headlineMedium!,
                         ),
                         Container(
@@ -369,7 +358,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         const SizedBox(height: 10),
                         ListView.builder(
                           primary: false,
-                          // physics: const NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           itemCount: 5,
                           itemBuilder: (context, index) {
@@ -388,8 +377,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         "Products you might like :",
                         style: Theme.of(context).textTheme.displayMedium,
                       ),
-                      SizedBox(height: size.height ),
-                      Products(size: size, category: 3)
+                      // SizedBox(height: size.height*0.5),
+                      const SizedBox(height: 30)
                       ],
                     ),
                   if (isLoading) loadingAnimation(),
@@ -432,6 +421,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                           ),
                         )
+                    ),
+                  Products(
+                    size: size, 
+                    category: 3, 
+                    productKey: productKey
                     ),
                 ],
               ),

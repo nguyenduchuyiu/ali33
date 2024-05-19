@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:ali33/screens/search_results_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/error_builder.dart';
+import 'dart:async';
+import 'package:flutter/src/widgets/framework.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -81,31 +83,33 @@ class _HomePageState extends State<HomePage> {
               SizedBox(height: size.height * 0.02),
               Container(
                 padding: EdgeInsets.fromLTRB(size.width*0.0213333333, 10, size.width*0.0213333333, 0),
-                child: Column(children: <Widget> [SizedBox(
-                height: size.height * 0.25,
-                child: ListView.builder(
-                  itemCount: bannerImages.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      elevation: 5,
-                      color: Colors.red,
-                      margin: const EdgeInsets.symmetric(horizontal: 8),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Container(
-                        width: size.width * 0.31,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          image: DecorationImage(
-                              image: AssetImage(bannerImages[index]),
-                              fit: BoxFit.cover),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
+                child: Column(
+                  children: <Widget> [
+                  SizedBox(
+                    height: size.height * 0.25,
+                    child: ListView.builder(
+                      itemCount: bannerImages.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          elevation: 5,
+                          color: Colors.red,
+                          margin: const EdgeInsets.symmetric(horizontal: 8),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Container(
+                            width: size.width * 0.31,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              image: DecorationImage(
+                                  image: AssetImage(bannerImages[index]),
+                                  fit: BoxFit.cover),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
               // SizedBox(height: size.height * 0.02),
               SizedBox(
                 // color: Colors.blue,
@@ -193,7 +197,7 @@ class _HomePageState extends State<HomePage> {
                     }),
               ),
               SizedBox(height: size.height * 0.01),
-              Products(size: size, category: category)
+              Products(size: size, category: category, productKey: 12,)
               ],
               ),
               )  
@@ -224,13 +228,14 @@ class _HomePageState extends State<HomePage> {
 class Products extends StatelessWidget {
   final Size size;
   final int category;
-  const Products({required this.size, required this.category, super.key});
+  final int productKey;
+  const Products({required this.size, required this.category, super.key, required this.productKey});
 
   @override
   Widget build(BuildContext context) {
     final Future<List<ProductModel>> productFuture =
         category == 3 //Recommend Products
-        ? ApiService().getRelatedProducts('Minions') 
+        ? ApiService().getRelatedProducts(productKey) 
         : ApiService().getAllProducts(1, 20, category);
     return FutureBuilder<List<ProductModel>>(
         future: productFuture,
@@ -249,7 +254,7 @@ class Products extends StatelessWidget {
             primary: false,
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
-            // physics: const NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4,
               crossAxisSpacing: 5,
@@ -294,11 +299,6 @@ class Products extends StatelessWidget {
                               style: Theme.of(context).textTheme.displayLarge,
                             ),
                             Text(
-                              "${snapshots.data![index].productDetails
-                                      .variations[0].quantity} Kg",
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                            Text(
                               dollarSymbol +
                                   snapshots.data![index].productDetails
                                       .variations[0].offerPrice
@@ -328,18 +328,27 @@ class _SearchBarState extends State<SearchBar> {
   final TextEditingController _controller = TextEditingController();
   OverlayEntry? _overlayEntry;
   List<String> _suggestions = [];
+  Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
-    _controller.addListener(_mayShowSuggestions);
+    _controller.addListener(_onSearchChanged); 
   }
 
   @override
   void dispose() {
     _controller.dispose();
     _removeOverlay();
+    _debounce?.cancel();
     super.dispose();
+  }
+
+  void _onSearchChanged() {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 400), () {
+      _mayShowSuggestions();
+    });
   }
 
   void _mayShowSuggestions() {
@@ -350,7 +359,7 @@ class _SearchBarState extends State<SearchBar> {
         _overlayEntry = _createOverlayEntry();
         Overlay.of(context).insert(_overlayEntry!);
       });
-    } else if (query.isEmpty && _overlayEntry != null) {
+    } else if (query.isEmpty && _overlayEntry == null) {
       _removeOverlay();
     }
   }
@@ -366,38 +375,37 @@ class _SearchBarState extends State<SearchBar> {
   }
 
   OverlayEntry _createOverlayEntry() {
-  RenderBox? renderBox = context.findRenderObject() as RenderBox?;
-  if (renderBox != null && renderBox.hasSize) {
-    var size = renderBox.size;
-    var offset = renderBox.localToGlobal(Offset.zero);
+    RenderBox? renderBox = context.findRenderObject() as RenderBox?;
+    if (renderBox != null && renderBox.hasSize) {
+      var size = renderBox.size;
+      var offset = renderBox.localToGlobal(Offset.zero);
 
-    return OverlayEntry(
-      builder: (context) => Positioned(
-        left: offset.dx,
-        top: offset.dy + size.height,
-        width: size.width,
-        child: Material(
-          elevation: 4.0,
-          child: ListView(
-            padding: EdgeInsets.zero,
-            shrinkWrap: true,
-            children: _suggestions.map((suggestion) => ListTile(
-              title: Text(suggestion),
-              onTap: () {
-                _controller.text = suggestion;
-                _handleSearch(suggestion);
-                _removeOverlay();
-              },
-            )).toList(),
+      return OverlayEntry(
+        builder: (context) => Positioned(
+          left: offset.dx,
+          top: offset.dy + size.height,
+          width: size.width,
+          child: Material(
+            elevation: 4.0,
+            child: ListView(
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              children: _suggestions.map((suggestion) => ListTile(
+                title: Text(suggestion),
+                onTap: () {
+                  _controller.text = suggestion;
+                  _handleSearch(suggestion);
+                },
+              )).toList(),
+            ),
           ),
         ),
-      ),
-    );
-  } else {
-    // Return an empty OverlayEntry if renderBox is not ready
-    return OverlayEntry(builder: (context) => const SizedBox.shrink());
+      );
+    } else {
+      // Return an empty OverlayEntry if renderBox is not ready
+      return OverlayEntry(builder: (context) => const SizedBox.shrink());
+    }
   }
-}
 
   void _removeOverlay() {
     _overlayEntry?.remove();
@@ -406,13 +414,13 @@ class _SearchBarState extends State<SearchBar> {
 
   Future<void> _handleSearch(String value) async {
     if (value.trim().isEmpty) return;
-    // Implement your search handling logic here
-    // For example, navigating to a new screen with the search results
+    // Implement search handling logic here
+    _removeOverlay();
     final List<ProductModel> results = await ApiService().searchProduct(value.trim());
     // ignore: use_build_context_synchronously
     Navigator.of(context).push(MaterialPageRoute(
-       builder: (context) => SearchResultsScreen(results: results, searchTerm: value),
-     ));
+      builder: (context) => SearchResultsScreen(results: results, searchTerm: value),
+    ));
   }
 
   @override

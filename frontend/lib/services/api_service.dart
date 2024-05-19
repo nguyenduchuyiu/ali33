@@ -244,7 +244,7 @@ class ApiService {
     try {
       Response<Map<String, dynamic>> response = await _dio.get(userBaseUrl + "/get-all-orders");
 
-      // print("list order: ${response.data!["result"][0]}");
+      print("list order: ${response.data!["result"][0]}");
       // print("list order below: ${response.data!["result"][0]["productDetails"]}");
 
       List<OrderCombinedModel> orders = orderItemsFromJson(response.data!["result"]);
@@ -541,12 +541,12 @@ class ApiService {
     return [];
   }
 
-  Future<List<ProductModel>> getRelatedProducts(String productName) async {
+  Future<List<ProductModel>> getRelatedProducts(int productKey) async {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response = await _dio.get('$productBaseUrl/get-related-products',
-                                                                queryParameters: {"productName": productName});
+                                                                queryParameters: {'productKey': productKey});
       // print("respones : ${response.data!['result']}");
       List<ProductModel> relatedProducts = productsFromJson(response.data!['result']);
       return relatedProducts;

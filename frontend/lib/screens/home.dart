@@ -123,8 +123,6 @@ class _HomeScreenState extends State<HomeScreen> {
             }
             else if(page ==2){
               dummyPages[page] = _pages[page];
-            }else if(page ==3 ){
-              dummyPages[page] = _pages[page];
             }
             _selectedPage = page;
           });

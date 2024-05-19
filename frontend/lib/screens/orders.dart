@@ -100,11 +100,6 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                   style: Theme.of(context).textTheme.displayMedium),
                               const SizedBox(height: 5),
                               Text(
-                                  "${order.orderDetails.productDetails
-                                          .variationQuantity} KG",
-                                  style: Theme.of(context).textTheme.headlineMedium),
-                              const SizedBox(height: 5),
-                              Text(
                                   dollarSymbol +
                                       order.orderDetails.paidPrice.toString(),
                                   style: Theme.of(context).textTheme.displayLarge),

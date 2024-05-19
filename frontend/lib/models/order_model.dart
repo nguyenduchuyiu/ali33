@@ -23,7 +23,7 @@ class OrderModel {
   DateTime orderedDate;
   int userId;
   ProductOrderingDetails productDetails;
-  int paidPrice;
+  double paidPrice;
   int paymentStatus;
   List<String> deliveryStages;
   String deliveryAddress;

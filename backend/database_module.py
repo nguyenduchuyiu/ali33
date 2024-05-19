@@ -225,9 +225,9 @@ def search_products_by_name(search_term):
         fts_results = []
         try:
             query = """
-            SELECT * FROM products
+            SELECT _key FROM products
             WHERE MATCH(product_name, description) AGAINST (%s IN NATURAL LANGUAGE MODE)
-            LIMIT 10
+            LIMIT 5
             """
             cursor.execute(query, (search_term,))
             fts_results = cursor.fetchall()
@@ -238,9 +238,9 @@ def search_products_by_name(search_term):
         # 2. Basic Keyword Matching (Case-Insensitive)
         search_term_like = '%' + search_term.lower() + '%'
         query = """
-            SELECT * FROM products
+            SELECT _key FROM products
             WHERE lower(productName) LIKE %s
-            LIMIT 10
+            LIMIT 5
         """
         cursor.execute(query, (search_term_like,))
         basic_results = cursor.fetchall()
@@ -272,30 +272,24 @@ def get_product_from_key(key):
     connection = get_db_connection()
     cursor = connection.cursor()
 
-    # Set key to search
-    key_name = 'p'  # Default querying by product key
-    if key['type'] == 'category':
-        key_name = 'c'
-
     # Query to get category details (use JOIN for efficiency)
-    if key_name == 'c':
+    if key['type'] == 'category':
         query = """
             SELECT p._key, p.productName, p.productDescription, p.productPicture, p.productRating
             FROM product_categories pc
             INNER JOIN products p ON pc.productKey = p._key
             WHERE pc.categoryKey = %s 
+            LIMIT 8
         """
-    else:
+    else: # if key['type'] == 'product'
         query = """
             SELECT p._key, p.productName, p.productDescription, p.productPicture, p.productRating
-            FROM categories c
-            INNER JOIN product_categories pc ON c._key = pc.categoryKey
-            INNER JOIN products p ON pc.productKey = p._key
-            WHERE {key_name}._key = %s 
-        """.format(key_name=key_name)
+            FROM products p
+            WHERE p._key = %s 
+        """
 
     cursor.execute(query, (key['key'],))
-
+    
     results = []
     for row in cursor.fetchall():
 

@@ -95,10 +95,6 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                           model.productDetails.productName,
                           style: Theme.of(context).textTheme.displayLarge,
                         ),
-                        Text(
-                          "${model.productDetails.variations[0].quantity} kg",
-                          style: Theme.of(context).textTheme.bodyMedium ,
-                        ),
                         const SizedBox(height: 5),
                         Text(
                           "\$${model.productDetails.variations[0].offerPrice}",

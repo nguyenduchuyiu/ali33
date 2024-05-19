@@ -43,24 +43,86 @@ class _CartScreenState extends State<CartScreen> {
       builder: (context, state) {
         if (state is CartInitialState || state is CartProductsLoading) {
           return Scaffold(
-              appBar: AppBar(title: const Text("Cart Preview")),
+              appBar: AppBar(
+                title: const Text("Cart Preview",selectionColor: Colors.white,),
+                toolbarHeight: 80,
+                flexibleSpace:
+                Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                // shrinkWrap: true, 
+                height: 80,
+                width: size.width-16*2,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xff8a2387), // Start color
+                      Color(0xffe94057),
+                      Color(0xfff27121) // End color
+                    ]
+                  ),
+                ),),
+              ),
               body: loadingAnimation());
         } else if (state is CartProductsFetched) {
           if (state.products.cartModels.isEmpty) {
             return Scaffold(
-              appBar: AppBar(title: const Text("Cart Preview")),
-              body: Container(
+              appBar: AppBar(
+                title: const Text("Cart Preview",selectionColor: Colors.white,),
+                toolbarHeight: 80,
+                flexibleSpace:
+                Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                // shrinkWrap: true, 
+                height: 80,
+                width: size.width-16*2,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xff8a2387), // Start color
+                      Color(0xffe94057),
+                      Color(0xfff27121) // End color
+                    ]
+                  ),
+                ),),
+              ),
+              body: Container(decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xff8a2387), // Start color
+                      Color(0xffe94057),
+                      Color(0xfff27121) // End color
+                    ]
+                  ),
+                ),
                 alignment: Alignment.center,
                 child: Text("Look's like no Products in Cart. Add some!",
-                    style: Theme.of(context).textTheme.headlineMedium),
+                    style: Theme.of(context).textTheme.headlineMedium,selectionColor: Colors.white,),              
               ),
             );
           }
-          List<int> calculatedValues = calculateTotal(state.products.cartModels);
+          List<double> calculatedValues = calculateTotal(state.products.cartModels);
 
           return Scaffold(
             appBar: AppBar(title: const Text("Cart Preview")),
-            body: ListView(
+            body:Container(
+              decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xff8a2387), // Start color
+                      Color(0xffe94057),
+                      Color(0xfff27121) // End color
+                    ]
+                  ),
+                ),
+            child:  ListView(
               primary: true,
               children: [
                 SizedBox(height: size.height * 0.01),
@@ -169,13 +231,6 @@ class _CartScreenState extends State<CartScreen> {
                                       style: Theme.of(context)
                                           .textTheme
                                           .displayMedium),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    "${item.productDetails
-                                            .variations[variationIndex].quantity} KG",
-                                    style:
-                                        Theme.of(context).textTheme.headlineMedium,
-                                  ),
                                   const SizedBox(height: 5),
                                   Row(
                                     children: [
@@ -348,7 +403,7 @@ class _CartScreenState extends State<CartScreen> {
                 ),
                 SizedBox(height: size.height * 0.05),
               ],
-            ),
+            )),
             bottomNavigationBar: Container(
               // height: size.height * 0.28,
               width: size.width,
@@ -496,10 +551,10 @@ class _CartScreenState extends State<CartScreen> {
     }).toList());
   }
 
-  List<int> calculateTotal(List<CartModel> cartlist) {
-    int totalAmount = 0;
-    int savedAmount = 0;
-    int originalAmount = 0;
+  List<double> calculateTotal(List<CartModel> cartlist) {
+    double totalAmount = 0;
+    double savedAmount = 0;
+    double originalAmount = 0;
     for (var item in cartlist) {
       int variationIndex = item.productDetails.variations.indexOf(
           item.productDetails.variations.firstWhere((element) =>

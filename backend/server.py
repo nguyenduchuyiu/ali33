@@ -2,11 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import security as sc
 import database_module as dm 
-from dotenv import load_dotenv
 import rcm_model as rcm
-
-
-load_dotenv('backend\key.env')
 
 app = Flask(__name__)
 CORS(app)
@@ -270,15 +266,14 @@ def getAllOrders():
 
 @app.route('/products/get-related-products', methods=['GET'])
 def getRelatedProducts():
-    data:str = request.get_data()
-    productNames = [data]
-    relatedProductNames:list = rcm.get_related_products(productNames)
+    productKey:int = int(request.args.get('productKey'))
+    relatedProductKeys:list = rcm.get_recommendations(productKey)
+    print(relatedProductKeys)
+    
     relatedProducts = []
-    
-    for name in relatedProductNames:
-        relatedProduct = dm.search_products_by_name(name)
-        relatedProducts.append(relatedProduct)
-    
+    for key in relatedProductKeys:
+        relatedProduct = dm.get_product_from_key({"key": key, "type": "product"})
+        relatedProducts.extend(relatedProduct)
     return jsonify({"result": relatedProducts}), 200
 
 

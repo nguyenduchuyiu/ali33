@@ -130,10 +130,10 @@ class Variation {
   });
 
   int availabilityQuantity;
-  int discountPrice;
-  int offerPrice;
+  double discountPrice;
+  double offerPrice;
   int quantity;
-  int sellingPrice;
+  double sellingPrice;
 
   factory Variation.fromJson(Map<String, dynamic> json) => Variation(
         availabilityQuantity: json["availabilityQuantity"],

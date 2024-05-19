@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 class PlaceOrderScreen extends StatefulWidget {
   List<OrderModel> ordersList;
   List<CartItem> cartItems;
-  final int subTotal;
+  final double subTotal;
   PlaceOrderScreen(
       {Key? key,
       required this.ordersList,
