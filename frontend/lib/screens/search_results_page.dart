@@ -1,9 +1,9 @@
 
 import 'package:ali33/models/product_model.dart';
 import 'package:ali33/screens/home.dart';
-import 'package:ali33/screens/navigation_bar.dart';
+import 'package:ali33/widgets/navigation_bar.dart';
 import 'package:ali33/screens/product_details.dart';
-import 'package:ali33/screens/search_bar.dart';
+import 'package:ali33/widgets/search_bar.dart';
 import 'package:ali33/widgets/build_photo.dart';
 import 'package:flutter/material.dart';
 import 'package:ali33/screens/pages/profile_page.dart';

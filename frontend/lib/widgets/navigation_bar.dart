@@ -4,6 +4,7 @@ import 'package:ali33/screens/cart.dart';
 import 'package:ali33/screens/home.dart';
 import 'package:ali33/screens/pages/profile_page.dart';
 import 'package:ali33/services/authenticate_service.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

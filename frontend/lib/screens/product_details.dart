@@ -16,6 +16,7 @@ import 'package:ali33/screens/products.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
 import 'package:ali33/widgets/build_photo.dart';
+import 'package:ali33/widgets/rating.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -194,7 +195,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     margin: const EdgeInsets.only(right: 8),
                                     decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
-                                        // borderRadius: BorderRadius.circular(16),
                                         color: Color(0xffFAC06E)),
                                   ),
                                   Container(
@@ -221,26 +221,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        Text(
+                      const SizedBox(height: 20),
+                      Text(
                           widget.productModel.productDetails.productDescription,
                           style: Theme.of(context).textTheme.headlineMedium!,
                         ),
-                        // Container(
-                        //   height: 80,
-                        //   // alignment: Alignment.center,
-                        //   // margin: EdgeInsets.symmetric(vertical: 16),
-                        //   padding: const EdgeInsets.symmetric(horizontal: 16),
-                        //   decoration: BoxDecoration(
-                        //       boxShadow: const [
-                        //         BoxShadow(color: Colors.black38, blurRadius: 25),
-                        //       ],
-                        //       color: Theme.of(context).scaffoldBackgroundColor,
-                        //       borderRadius: const BorderRadius.only(
-                        //           topLeft: Radius.circular(16),
-                        //           topRight: Radius.circular(30))),
-                        //   child: 
-                        Row(
+                      Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
@@ -350,87 +336,79 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               )
                             ],
                           ),
-                        const SizedBox(height: 30),
-                        Text(
-                          "Ratings",
+                      const SizedBox(height: 30),
+                      Rating(rating: widget.productModel.productDetails.productRating),
+                      Text(
+                          "Ratings Overall : ${widget.productModel.productDetails.productRating}",
                           style: Theme.of(context).textTheme.displayMedium,
                         ),
-                        const SizedBox(height: 10),
-                        ListView.builder(
-                          primary: false,
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: 5,
-                          itemBuilder: (context, index) {
-                            return const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // ...
-                                ],
-                              ),
-                            );
-                          },
-                        ),
+                      const SizedBox(height: 10),
                       Text(
                         "Products you might like :",
                         style: Theme.of(context).textTheme.displayMedium,
                       ),
-                      // SizedBox(height: size.height*0.5),
-                      const SizedBox(height: 30)
+                      const SizedBox(height: 30),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Products(
+                          size: size, 
+                          category: 3, 
+                          productKey: productKey
+                          ),
+                        ]
+                      )
                       ],
                     ),
                   if (isLoading) loadingAnimation(),
-                  if (showMessage) 
-                    Align(
-                      alignment: Alignment.center,
-                      child: 
-                        Container(
-                          padding: const EdgeInsets.all(32), // Add padding to create space
-                          decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.8), 
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: const SizedBox( // Wrap the Stack in a SizedBox to control its size
-                            height: 160, // Set a larger height
-                            width: 160, // Set a larger width
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                  left: 50,
-                                  top: 20,
-                                  child: Icon(
-                                    Icons.check_circle,
-                                    size: 60,
-                                    color: Colors.green,
-                                  ),
-                                ),
-                                Positioned(
-                                  left: 10, 
-                                  top: 100,
-                                  child: Text(
-                                    'Added to cart!',
-                                    style: TextStyle(
-                                      color: Color.fromARGB(255, 255, 255, 255),
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                    ),
-                  Products(
-                    size: size, 
-                    category: 3, 
-                    productKey: productKey
-                    ),
+                  if (showMessage)
+                    addedNotification()
                 ],
               ),
             ),
           );
         });
+  }
+
+  Widget addedNotification() {
+  return Align(
+        alignment: Alignment.center,
+        child: 
+          Container(
+            padding: const EdgeInsets.all(32), // Add padding to create space
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.8), 
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const SizedBox( // Wrap the Stack in a SizedBox to control its size
+              height: 160, // Set a larger height
+              width: 160, // Set a larger width
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 50,
+                    top: 20,
+                    child: Icon(
+                      Icons.check_circle,
+                      size: 60,
+                      color: Colors.green,
+                    ),
+                  ),
+                  Positioned(
+                    left: 10, 
+                    top: 100,
+                    child: Text(
+                      'Added to cart!',
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 255, 255, 255),
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+      );
   }
 }

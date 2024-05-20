@@ -7,12 +7,13 @@ import 'package:ali33/screens/product_details.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
 import 'package:ali33/widgets/build_photo.dart';
+import 'package:ali33/widgets/slider.dart';
 import 'package:flutter/material.dart';
 import 'package:ali33/screens/search_results_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/error_builder.dart';
 import 'dart:async';
-import 'package:ali33/screens/search_bar.dart';
+import 'package:ali33/widgets/search_bar.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -94,40 +95,8 @@ class _HomePageState extends State<HomePage> {
               SizedBox(height: size.height * 0.02),
 
               const AliSearchBar(),
-
-              SizedBox(height: size.height * 0.02),
-              Container(
-                padding: EdgeInsets.fromLTRB(size.width*0.0213333333, 10, size.width*0.0213333333, 0),
-                child: Column(
-                  children: <Widget> [
-                  SizedBox(
-                    height: size.height * 0.25,
-                    child: ListView.builder(
-                      itemCount: bannerImages.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        return Card(
-                          elevation: 5,
-                          color: Colors.red,
-                          margin: const EdgeInsets.symmetric(horizontal: 8),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Container(
-                            width: size.width * 0.31,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              image: DecorationImage(
-                                  image: AssetImage(bannerImages[index]),
-                                  fit: BoxFit.cover),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-              // SizedBox(height: size.height * 0.02),
+              const AliSlider(),
               SizedBox(
-                // color: Colors.blue,
                 height: size.height * 0.3,
                 width: size.width,
                 child: ListView.builder(
@@ -213,14 +182,13 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: size.height * 0.01),
               Products(size: size, category: category, productKey: 12,)
-              ],
-              ),
-              )  
             ],
-          )
-          );
-        });
+          ),
+        ); 
+      } 
+    );
   }
+
 
   List<Map<String, dynamic>> data = [
     { 

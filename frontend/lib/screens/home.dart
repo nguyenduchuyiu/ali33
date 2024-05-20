@@ -1,4 +1,4 @@
-import 'package:ali33/screens/navigation_bar.dart';
+import 'package:ali33/widgets/navigation_bar.dart';
 import 'package:ali33/screens/pages/profile_page.dart';
 import 'package:ali33/screens/pages/search_page.dart';
 import 'package:flutter/material.dart';
