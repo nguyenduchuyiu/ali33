@@ -226,20 +226,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           widget.productModel.productDetails.productDescription,
                           style: Theme.of(context).textTheme.headlineMedium!,
                         ),
-                        Container(
-                          height: 80,
-                          // alignment: Alignment.center,
-                          // margin: EdgeInsets.symmetric(vertical: 16),
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          decoration: BoxDecoration(
-                              boxShadow: const [
-                                BoxShadow(color: Colors.black38, blurRadius: 25),
-                              ],
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(16),
-                                  topRight: Radius.circular(30))),
-                          child: Row(
+                        // Container(
+                        //   height: 80,
+                        //   // alignment: Alignment.center,
+                        //   // margin: EdgeInsets.symmetric(vertical: 16),
+                        //   padding: const EdgeInsets.symmetric(horizontal: 16),
+                        //   decoration: BoxDecoration(
+                        //       boxShadow: const [
+                        //         BoxShadow(color: Colors.black38, blurRadius: 25),
+                        //       ],
+                        //       color: Theme.of(context).scaffoldBackgroundColor,
+                        //       borderRadius: const BorderRadius.only(
+                        //           topLeft: Radius.circular(16),
+                        //           topRight: Radius.circular(30))),
+                        //   child: 
+                        Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
@@ -349,7 +350,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               )
                             ],
                           ),
-                        ),
                         const SizedBox(height: 30),
                         Text(
                           "Ratings",

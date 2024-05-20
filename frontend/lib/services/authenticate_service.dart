@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:ali33/models/user_model.dart'; // Import your UserModel class
 
 class UserService {
-  late int userKey;
 
   static Future<UserModel?> authenticateUser(BuildContext context) async {
     ApiService apiService = ApiService();

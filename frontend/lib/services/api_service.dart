@@ -425,7 +425,7 @@ class ApiService {
     return false;
   }
 
-  Future<CartCombinedModel?> getCartItems(int userKey) async {
+  Future<CartCombinedModel?> getCartItems() async {
     String? token = await UserDataStorageService().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {

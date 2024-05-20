@@ -15,18 +15,12 @@ abstract class CartEvent extends Equatable {
 }
 
 class FetchCartItems extends CartEvent {
-  final int userKey;
-
-  FetchCartItems({required this.userKey});
-
-  @override
-  List<Object> get props => [userKey];
+  FetchCartItems();
 }
 
 class RemoveItemFromCart extends CartEvent {
-  final int userKey;
   final CartItem item;
-  RemoveItemFromCart({required this.userKey, required this.item});
+  RemoveItemFromCart({required this.item});
 
   @override
   String toString() {
@@ -35,10 +29,9 @@ class RemoveItemFromCart extends CartEvent {
 }
 
 class ChangeNoOfProducts extends CartEvent {
-  final int userKey;
   final Map<String, dynamic> item;
 
-  ChangeNoOfProducts({required this.userKey, required this.item});
+  ChangeNoOfProducts({required this.item});
 }
 
 class CartState extends Equatable {
@@ -50,6 +43,7 @@ class CartInitialState extends CartState {}
 
 class CartProductsLoading extends CartState {}
 
+// ignore: duplicate_ignore
 // ignore: must_be_immutable
 class CartProductsFetched extends CartState {
   CartCombinedModel products;
@@ -79,7 +73,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     on<FetchCartItems>((event, emit) async {
       emit(CartProductsLoading());
       try {
-        CartCombinedModel? prods = await _apiService.getCartItems(event.userKey);
+        CartCombinedModel? prods = await _apiService.getCartItems();
         emit(CartProductsFetched(products: prods!));
       } catch (e) {
         emit(CartError(error: e as Error)); 
@@ -91,7 +85,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       try {
         bool res = await _apiService.removeFromCart([event.item]);
         print("result $res");
-        CartCombinedModel? prods = await _apiService.getCartItems(event.userKey);
+        CartCombinedModel? prods = await _apiService.getCartItems();
         emit(CartProductsFetched(products: prods!)); 
       } catch (e) {
         emit(CartError(error: e as Error)); 
@@ -102,7 +96,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       emit(CartProductsLoading());
       try {
         bool res = await _apiService.changeNoOfProdCart(event.item);
-        CartCombinedModel? prods = await _apiService.getCartItems(event.userKey);
+        CartCombinedModel? prods = await _apiService.getCartItems();
         emit(CartProductsFetched(products: prods!)); 
       } catch (e) {
         emit(CartError(error: e as Error)); 
