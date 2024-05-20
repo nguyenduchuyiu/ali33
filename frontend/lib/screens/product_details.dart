@@ -2,25 +2,16 @@
 
 import 'dart:async';
 
-import 'package:ali33/bloc/cart_bloc.dart';
-import 'package:ali33/bloc/products_bloc.dart';
 import 'package:ali33/constants/constant_values.dart';
-import 'package:ali33/constants/route_animation.dart';
 import 'package:ali33/models/cart_item_model.dart';
-import 'package:ali33/models/order_model.dart';
 import 'package:ali33/models/product_model.dart';
 import 'package:ali33/models/user_model.dart';
-import 'package:ali33/screens/cart.dart';
 import 'package:ali33/screens/pages/home_page.dart';
-import 'package:ali33/screens/products.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
 import 'package:ali33/widgets/build_photo.dart';
 import 'package:ali33/widgets/rating.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ali33/services/authenticate_service.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
@@ -35,7 +26,6 @@ class ProductDetailsScreen extends StatefulWidget {
 }
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
-  Future<List<ProductModel>>? _relatedProductsFuture; 
   bool isLoading = false;
   bool showMessage = false;
   int selectedIndex = 0;
@@ -55,9 +45,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   @override
   void initState() {
     productKey = widget.productModel.productDetails.key;
-    super.initState();
-    _relatedProductsFuture = ApiService().getRelatedProducts(
-      widget.productModel.productDetails.key); 
+    super.initState(); 
     // Create a timer to hide the message after 2 seconds
     _timer = Timer(const Duration(seconds: 2), () {
       setState(() {
@@ -78,7 +66,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return FutureBuilder<List<ProductModel>>(
-        future: _relatedProductsFuture,
+        future: ApiService().getRelatedProducts(widget.productModel.productDetails.key),
         builder: (context, snapshots) {
           return Scaffold(
             appBar: AppBar(
@@ -99,24 +87,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       primary: true,
                       children: [
-                        Hero(
-                          tag: widget.tag,
-                          placeholderBuilder: (context, size, child) {
-                            return Container(
-                              height: size.height,
-                              width: size.width,
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                  color: const Color.fromARGB(255, 166, 41, 126),
-                                  borderRadius: BorderRadius.circular(16)),
-                              child: buildPhoto(
-                                  widget.productModel.productDetails.productPicture,
-                                  size.height,
-                                  size.width,
-                                  BoxFit.contain),
-                            );
-                          },
-                          child: Container(
+                          Container(
                             height: size.height * 0.4,
                             width: size.width,
                             padding: const EdgeInsets.all(8),
@@ -129,7 +100,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 size.width,
                                 BoxFit.contain),
                           ),
-                        ),
                         SizedBox(height: size.height * 0.02),
                         Text(
                           widget.productModel.productDetails.productName,

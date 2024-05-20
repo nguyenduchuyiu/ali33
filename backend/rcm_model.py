@@ -19,7 +19,7 @@ def get_recommendations(movie_id:int):
         # Get similarity scores for the movie
         sim_scores = list(enumerate(similarity_matrix[adjusted_position]))  
         sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-        sim_scores = sim_scores[1:15]  # Get top 15 recommendations
+        sim_scores = sim_scores[1:10]  # Get top 15 recommendations
 
         # Get movie indices for recommendations
         movie_indices = [i[0] for i in sim_scores]

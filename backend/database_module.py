@@ -263,87 +263,92 @@ def search_products_by_name(search_term):
         connection.close()
         
         
-
-def get_product_from_key(key):
-    '''
-    Function to get all information of products by arbitrary key.
-    '''
+def get_product_of_category(category) -> list:
     # Connect to DB
     connection = get_db_connection()
     cursor = connection.cursor()
 
-    # Query to get category details (use JOIN for efficiency)
-    if key['type'] == 'category':
-        query = """
-            SELECT p._key, p.productName, p.productDescription, p.productPicture, p.productRating
-            FROM product_categories pc
-            INNER JOIN products p ON pc.productKey = p._key
-            WHERE pc.categoryKey = %s 
-            LIMIT 8
-        """
-    else: # if key['type'] == 'product'
+    query = """
+        SELECT pc.productKey
+        FROM product_categories pc
+        WHERE pc.categoryKey = %s 
+        LIMIT 8
+    """
+    cursor.execute(query, (category,))
+    productKeys = []
+    for row in cursor.fetchall():
+        productKeys.append(row[0])
+    cursor.close()
+    connection.close()
+    return productKeys
+
+
+def get_product_from_key(keys:list) -> list:
+    # Connect to DB
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    results = []
+    for key in keys:
         query = """
             SELECT p._key, p.productName, p.productDescription, p.productPicture, p.productRating
             FROM products p
             WHERE p._key = %s 
         """
+        cursor.execute(query, (key,))
+        
+        for row in cursor.fetchall(): # key is unique
 
-    cursor.execute(query, (key['key'],))
-    
-    results = []
-    for row in cursor.fetchall():
-
-        product_data = {
-            "_key": row[0],
-            "productName": row[1],
-            "productDescription": row[2],
-            "productPicture": row[3],
-            "productRating": row[4],
-            "reviews": [],
-            "variations": []
-        }
-
-        # Query to get list of category that product belongs to
-        query = """
-            SELECT c._key, c.categoryName, c.categoryPicture
-            FROM product_categories pc
-            INNER JOIN categories c ON pc.categoryKey = c._key
-            WHERE pc.productKey = %s
-        """
-        cursor.execute(query, (product_data['_key'],))
-        category_data = [
-            {
+            product_data = {
                 "_key": row[0],
-                "categoryName": row[1],
-                "categoryPicture": row[2],
+                "productName": row[1],
+                "productDescription": row[2],
+                "productPicture": row[3],
+                "productRating": row[4],
+                "reviews": [],
+                "variations": []
             }
-            for row in cursor.fetchall()
-        ]
 
-        # Query to get reviews (using product_data["_key"] directly)
-        cursor.execute("SELECT userKey, comment FROM reviews WHERE productKey=%s", (product_data["_key"],))
-        for review in cursor.fetchall():
-            product_data["reviews"].append({
-                "userId": review[0],
-                "comment": review[1]
+            # Query to get list of category that product belongs to
+            query = """
+                SELECT c._key, c.categoryName, c.categoryPicture
+                FROM product_categories pc
+                INNER JOIN categories c ON pc.categoryKey = c._key
+                WHERE pc.productKey = %s
+            """
+            cursor.execute(query, (product_data['_key'],))
+            category_data = [
+                {
+                    "_key": row[0],
+                    "categoryName": row[1],
+                    "categoryPicture": row[2],
+                }
+                for row in cursor.fetchall()
+            ]
+
+            # Query to get reviews (using product_data["_key"] directly)
+            cursor.execute("SELECT userKey, comment FROM reviews WHERE productKey=%s", (product_data["_key"],))
+            for review in cursor.fetchall():
+                product_data["reviews"].append({
+                    "userId": review[0],
+                    "comment": review[1]
+                })
+
+            # Query to get variations (using product_data["_key"] directly)
+            cursor.execute("SELECT availabilityQuantity, discountPrice, offerPrice, quantity, sellingPrice FROM variations WHERE productKey=%s",
+                            (product_data["_key"],))
+            for variation in cursor.fetchall():
+                product_data["variations"].append({
+                    "availabilityQuantity": variation[0],
+                    "discountPrice": variation[1],
+                    "offerPrice": variation[2],
+                    "quantity": variation[3],
+                    "sellingPrice": variation[4]
+                })
+
+            results.append({
+                "categoryDetails": category_data,
+                "productDetails": product_data
             })
-
-        # Query to get variations (using product_data["_key"] directly)
-        cursor.execute("SELECT availabilityQuantity, discountPrice, offerPrice, quantity, sellingPrice FROM variations WHERE productKey=%s",
-                        (product_data["_key"],))
-        for variation in cursor.fetchall():
-            product_data["variations"].append({
-                "availabilityQuantity": variation[0],
-                "discountPrice": variation[1],
-                "offerPrice": variation[2],
-                "quantity": variation[3],
-                "sellingPrice": variation[4]
-            })
-
-        results.append({
-            "categoryDetails": category_data,
-            "productDetails": product_data
-        })
 
     return results
 

@@ -181,7 +181,7 @@ class _HomePageState extends State<HomePage> {
                     }),
               ),
               SizedBox(height: size.height * 0.01),
-              Products(size: size, category: category, productKey: 12,)
+              Products(size: size, category: category, productKey: 11,)
             ],
           ),
         ); 

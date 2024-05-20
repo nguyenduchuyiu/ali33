@@ -85,19 +85,33 @@ def getCurrentUser():
     return jsonify({'error':'User not found'}), 404
 
 
+@app.route('/products/get-product-from-keys')
+def get_product_by_keys():
+    productKeys:list = [int(key) for key in request.args.get('key').split(',')]
+    print(productKeys)
+    
+    if not productKeys:
+        return jsonify({"error": "productKeys are required"}), 400
+    
+    products:list = dm.get_product_from_key(productKeys)  # Adapt to fetch by category
+    
+    if products:
+        return jsonify({'result':products}), 200
+    else:
+        return jsonify({"error": "No product was found!"}), 404
 
-@app.route('/products/get-all-products')
+
+@app.route('/products/get-products-from-category')
 def get_products_by_category():
     category = request.args.get('category')
     
     if not category:
         return jsonify({"error": "Category parameter is required"}), 400
     
-    product_data_list = dm.get_product_from_key({'type':'category',
-                                                      'key':category})  # Adapt to fetch by category
+    productKeys = dm.get_product_of_category(category)  # Adapt to fetch by category
     
-    if product_data_list:
-        return jsonify({'result':product_data_list}), 200
+    if productKeys:
+        return jsonify({'result':productKeys}), 200
     else:
         return jsonify({"error": "Products not found for the given category"}), 404
     
@@ -189,8 +203,7 @@ def getCartItems():
     user = dm.get_user_by_key(userKey)
     cartModels = []
     for item in user['cartItems']:
-        product = dm.get_product_from_key({"key": item["productKey"], 
-                                           "type": "product"})
+        product = dm.get_product_from_key([item["productKey"]])
         cartModels.append({"cartItemDetails": item,
                           "productDetails": product[0]["productDetails"]})
     if user:
@@ -232,12 +245,7 @@ def getAllOrders():
     orderCombinedModel = []
     
     for order in orders:
-        product = dm.get_product_from_key(
-            {
-                "key": order["productKey"], 
-                "type": "product"
-            }
-        )
+        product = dm.get_product_from_key([order["productKey"]])
         
         orderCombinedModel.append(
             {
@@ -268,11 +276,10 @@ def getAllOrders():
 def getRelatedProducts():
     productKey:int = int(request.args.get('productKey'))
     relatedProductKeys:list = rcm.get_recommendations(productKey)
-    print(relatedProductKeys)
     
     relatedProducts = []
     for key in relatedProductKeys:
-        relatedProduct = dm.get_product_from_key({"key": key, "type": "product"})
+        relatedProduct = dm.get_product_from_key([key])
         relatedProducts.extend(relatedProduct)
     return jsonify({"result": relatedProducts}), 200
 
@@ -283,4 +290,4 @@ def getRelatedProducts():
 #     return render_template('template.html', image_path=image_path)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='127.0.0.1', debug=True)
