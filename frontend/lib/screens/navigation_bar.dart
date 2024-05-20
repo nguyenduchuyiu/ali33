@@ -115,7 +115,7 @@ class AliNavigationBar extends StatelessWidget implements PreferredSizeWidget{
                       return const CircleAvatar(
                         backgroundColor: Colors.white,
                         radius: 30,
-                        backgroundImage: AssetImage("images/user.png"), // Ảnh mặc định
+                        backgroundImage: AssetImage("images/profile_icon.png"), // Ảnh mặc định
                       );
                   },
                 ),
