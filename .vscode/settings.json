@@ -1,6 +1,0 @@
-{
-    "python.analysis.extraPaths": [
-        "./backend"
-    ],
-    "cmake.sourceDirectory": "E:/ali33/frontend/linux"
-}
