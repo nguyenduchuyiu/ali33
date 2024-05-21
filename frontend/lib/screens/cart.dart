@@ -427,13 +427,13 @@ class _CartScreenState extends State<CartScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                            "$dollarSymbol${calculatedValues[1]} saved on this order",
+                            "$dollarSymbol${calculatedValues[1].toStringAsFixed(2)} saved on this order",
                             style: Theme.of(context)
                                 .textTheme
                                 .displaySmall!
                                 .copyWith(color: Colors.white)),
                         const Text(
-                          "Checkout now to get FREE instant delivery",
+                          "Checkout now!",
                           style: TextStyle(color: Colors.white),
                         ),
                       ],
@@ -477,21 +477,21 @@ class _CartScreenState extends State<CartScreen> {
                                 ],
                               ),
                             ),
-                            SizedBox(
-                              width: size.width * 0.8,
-                              child: Text(
-                                state.products.userDetails.deliveryAddress,
-                                softWrap: true,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                              ),
-                            )
+                            // SizedBox(
+                            //   width: size.width * 0.8,
+                            //   child: Text(
+                            //     state.products.userDetails.deliveryAddress,
+                            //     softWrap: true,
+                            //     overflow: TextOverflow.ellipsis,
+                            //     maxLines: 1,
+                            //   ),
+                            // )
                           ],
                         )
                       ],
                     ),
                   ),
-                  nextButton("Pay  $dollarSymbol${calculatedValues[0]}",
+                  nextButton("Pay  $dollarSymbol${calculatedValues[0].toStringAsFixed(2)}",
                       () async {
                     List<OrderModel> orders = generateOrderList(
                         state.products.cartModels, state.products.userDetails);

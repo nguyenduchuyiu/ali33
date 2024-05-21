@@ -1,4 +1,5 @@
 
+import 'package:ali33/constants/constant_values.dart';
 import 'package:ali33/models/product_model.dart';
 import 'package:ali33/screens/home.dart';
 import 'package:ali33/widgets/navigation_bar.dart';
@@ -124,15 +125,47 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                 model.productDetails.productName,
                                 style: Theme.of(context).textTheme.displayLarge,
                               ),
-                              Text(
-                                "${model.productDetails.variations[0].quantity} kg",
-                                style: Theme.of(context).textTheme.bodyMedium ,
-                              ),
                               const SizedBox(height: 5),
-                              Text(
-                                "\$${model.productDetails.variations[0].offerPrice}",
-                                style: Theme.of(context).textTheme.displaySmall,
-                              )
+                              Row(
+                                children: [
+                                  Text(
+                                    dollarSymbol +
+                                        model.productDetails
+                                            .variations[0].offerPrice
+                                            .toString(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displayMedium!
+                                        .copyWith(color: Colors.red),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    dollarSymbol +
+                                        model.productDetails
+                                            .variations[0].sellingPrice
+                                            .toString(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(
+                                            color: const Color.fromARGB(255, 65, 66, 63),
+                                            decoration: TextDecoration.lineThrough),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    "${calculateOffPercentage(
+                                            model.productDetails
+                                            .variations[0].offerPrice,
+                                            model.productDetails
+                                            .variations[0].sellingPrice
+                                            )}% Off",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium!
+                                        .copyWith(color: Colors.red),
+                                  )
+                                ],
+                              ),
                             ],
                           ),
                         )),

@@ -10,6 +10,7 @@ import 'package:ali33/screens/pages/home_page.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
 import 'package:ali33/widgets/build_photo.dart';
+import 'package:ali33/widgets/navigation_bar.dart';
 import 'package:ali33/widgets/rating.dart';
 import 'package:flutter/material.dart';
 import 'package:ali33/services/authenticate_service.dart';
@@ -69,17 +70,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         future: ApiService().getRelatedProducts(widget.productModel.productDetails.key),
         builder: (context, snapshots) {
           return Scaffold(
-            appBar: AppBar(
-              // elevation: 0,
-              // backgroundColor: Colors.transparent,
-              automaticallyImplyLeading: false,
-              leading: IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(
-                    Icons.arrow_back,
-                    color: Colors.blueGrey,
-                  )),
-            ),
+            appBar: AliNavigationBar(context),
+            // appBar: AppBar(
+            //   // elevation: 0,
+            //   // backgroundColor: Colors.transparent,
+            //   automaticallyImplyLeading: false,
+            //   leading: IconButton(
+            //       onPressed: () => Navigator.pop(context),
+            //       icon: const Icon(
+            //         Icons.arrow_back,
+            //         color: Colors.blueGrey,
+            //       )),
+            // ),
             body: SafeArea(
               child: Stack(
                 children: [

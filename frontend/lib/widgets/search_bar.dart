@@ -36,7 +36,7 @@ class _SearchBarState extends State<AliSearchBar> {
   void _onSearchChanged() {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 400), () {
-      _mayShowSuggestions();
+      // _mayShowSuggestions();
     });
   }
 

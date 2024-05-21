@@ -96,7 +96,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                  "${order.productDetails.productName} (${order.orderDetails.productDetails.noOfItems} items)",
+                                  "${order.productDetails.productName} (${order.orderDetails.productDetails.noOfItems} months)",
                                   style: Theme.of(context).textTheme.displayMedium),
                               const SizedBox(height: 5),
                               Text(
@@ -105,8 +105,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                   style: Theme.of(context).textTheme.displayLarge),
                               const SizedBox(height: 5),
                               Text(
-                                "I'm shipping!!!",
-                              //  order.orderDetails.deliveryStages.length == 4?  "Delivered on ${order.orderDetails.deliveryStages[3].toString().split(' ')[0]}": "Delivery on ${ order.orderDetails.deliveryStages.last.add(const Duration(days: 3)).toString().split(' ')[0] }",
+                                "Rented",
                                 style: Theme.of(context).textTheme.bodyLarge ),
                             ],
                           )

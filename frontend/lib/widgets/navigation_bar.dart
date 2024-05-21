@@ -60,18 +60,18 @@ class AliNavigationBar extends StatelessWidget implements PreferredSizeWidget{
                 children: [
                   // SizedBox(height: 18,),
                   Text(
-                    "More Quality",
+                    "Your Personal",
                     style: Theme.of(context)
                         .textTheme
                         .displayMedium!
                         .copyWith(fontWeight: FontWeight.w700, fontSize: 17),
                   ),
                   Text(
-                    "for Less Quantity",
+                    "Hollywood at Home",
                     style: Theme.of(context)
                         .textTheme
                         .headlineMedium!
-                        .copyWith(fontWeight: FontWeight.w500, fontSize: 15),
+                        .copyWith(fontWeight: FontWeight.w700, fontSize: 17),
                   ),
                 ],
               ),

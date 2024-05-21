@@ -247,16 +247,11 @@ def search_products_by_name(search_term):
 
         # 3. Combine and De-duplicate Results
         all_results = fts_results + basic_results
-        unique_results = list(set(all_results))
+        unique_results = list(set(item for sublist in all_results for item in sublist)) 
 
-        # 4. Fetch Product Details 
-        matched_product_list = []
-        for result in unique_results:
-            product_id = result[0]
-            matched_product = get_product_from_key({'type': 'product', 'key': product_id})
-            matched_product_list.extend(matched_product)  # Use extend to add items from a list
+        print("unique", unique_results)
 
-        return matched_product_list
+        return unique_results
 
     finally:
         cursor.close()

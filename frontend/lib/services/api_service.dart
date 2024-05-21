@@ -419,8 +419,32 @@ class ApiService {
       Response<Map<String, dynamic>> response = await _dio.get(
           "$productBaseUrl/search-product",
           queryParameters: {"searchTerm": searchTerm});
-      List<ProductModel> products = productsFromJson(response.data!["result"]);
-      return products;
+      List<int> productKeys = [];
+        for (var item in response.data!['result']) {
+          if (item is int) {
+            productKeys.add(item);
+          } 
+        }
+      // 2. Filter product keys based on view history
+      List<int> unviewedProductKeys = productCacheStorage.filterUnviewedProductKeys(productKeys);
+      List<int> viewedProductKeys = productCacheStorage.filterViewedProductKeys(productKeys);
+      //3. Fetch viewed products
+      List<ProductModel>? viewedProducts = productCacheStorage.getProducts(viewedProductKeys);
+      // 4. Fetch unviewed products
+      List<ProductModel> unviewedProducts = [];
+      if (unviewedProductKeys.isNotEmpty) {
+        response = await _dio.get(
+          "$productBaseUrl/get-product-from-keys",
+          queryParameters:{"key": unviewedProductKeys.join(',')},
+        );
+        unviewedProducts = productsFromJson(response.data!["result"]);
+      }
+      List<ProductModel> allProducts = viewedProducts! + unviewedProducts;
+      print('all ${allProducts.length}');
+      for(ProductModel i in unviewedProducts) {
+        productCacheStorage.addProduct(i.productDetails.key, i);
+      }
+      return allProducts;
     } on DioException catch (e) {
       print("dio error occured: ${e.response}");
       if (e.error is SocketException) {

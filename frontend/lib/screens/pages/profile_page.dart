@@ -86,12 +86,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(height: 18,),
-                      Text("More Quality",
+                      Text("Your Personal",
                           style: Theme.of(context)
                               .textTheme
                               .displayMedium!
                               .copyWith(fontWeight: FontWeight.w700,fontSize: 17)),
-                      Text("for Less Quantity",
+                      Text("Hollywood at Home",
                           style: Theme.of(context)
                               .textTheme
                               .headlineMedium!

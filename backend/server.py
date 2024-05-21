@@ -132,7 +132,7 @@ def search_product():
     if not search_term:
         return jsonify({"error": "Search term parameter is required"}), 400
     
-    product_data_list = dm.search_products_by_name(search_term) 
+    product_data_list:list = dm.search_products_by_name(search_term) 
     
     if product_data_list:
         return jsonify({'result':product_data_list}), 200
@@ -271,6 +271,7 @@ def getAllOrders():
     return jsonify({"result": orderCombinedModel}), 200
 
 
+# response = request.get(url = 'http://127.0.0.1:5000/products/get-related-products')
 
 @app.route('/products/get-related-products', methods=['GET'])
 def getRelatedProducts():

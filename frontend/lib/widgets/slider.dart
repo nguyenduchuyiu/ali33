@@ -16,6 +16,8 @@ class _AliSliderState extends State<AliSlider> {
   final urlImages = [
     'https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/1/image/1800x/71252117777b696995f01934522c402d/p/o/poster_payoff_godzilla_va_kong_3_1_.jpg',
     'https://m.media-amazon.com/images/M/MV5BYmQ4YWMxYjUtNjZmYi00MDQ1LWFjMjMtNjA5ZDdiYjdiODU5XkEyXkFqcGdeQXVyMTMzNDExODE5._V1_.jpg',
+    'https://m.media-amazon.com/images/M/MV5BNTkyNmYwMDMtMTQ2ZC00YTdiLTlkNmMtNTJhYzQ3YTcxMWMxXkEyXkFqcGdeQXVyMTE5NzI0NDM@._V1_.jpg',
+    'https://m.media-amazon.com/images/M/MV5BNmI3MTQ2NjEtMWI1ZC00NDExLWI5MmEtMjJkYjJhMWQxOTEzXkEyXkFqcGdeQXVyNzYzNjg0NDk@._V1_FMjpg_UX1000_.jpg'
   ];
 
   @override
