@@ -459,12 +459,11 @@ class ApiService {
     return [];
   }
 
-  Future<bool> addToCart(CartItem cartItems, userKey) async {
+  Future<bool> addToCart(CartItem cartItems) async {
     String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
-      Map<String, dynamic> data = {'cartItems': cartItems.toJson(),
-                                    'userKey': userKey};
+      Map<String, dynamic> data = {'cartItems': cartItems.toJson()};
       Response<Map<String, dynamic>> response = await _dio.post(userBaseUrl + "/add-to-cart", data: data);
       return true;
     } on DioException catch (e) {

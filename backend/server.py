@@ -271,7 +271,6 @@ def getAllOrders():
     return jsonify({"result": orderCombinedModel}), 200
 
 
-# response = request.get(url = 'http://127.0.0.1:5000/products/get-related-products')
 
 @app.route('/products/get-related-products', methods=['GET'])
 def getRelatedProducts():
@@ -289,6 +288,17 @@ def getRelatedProducts():
 # def get_image(product_name):
 #     image_path = f'/static/images/{product_name}.png'
 #     return render_template('template.html', image_path=image_path)
+
+
+# @app.route('/users/cancel/<request_id>', methods=['POST'])
+# def cancel_request(request_id):
+#     pen
+#     if request_id in pending_requests:
+#         del pending_requests[request_id]
+#         return jsonify({"status": "cancelled"})
+#     else:
+#         return jsonify({"status": "not found"})
+
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', debug=True)

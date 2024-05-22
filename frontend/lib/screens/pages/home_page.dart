@@ -47,12 +47,11 @@ class _HomePageState extends State<HomePage> {
   ];
 
   bool isExpanded = true;
-  int currentIndex = 0;
+  int currentIndex = -1;
 
   List<String> searches = <String>[];
   int selectedCartIndex = 0;
   late SharedPreferences _prefs;
-  List<String> topCat = ["Apple", "Mango", "Basmati Rice", "Guva"];
 
   void loadRecentSearches() async {
     _prefs = await SharedPreferences.getInstance();
@@ -83,9 +82,10 @@ class _HomePageState extends State<HomePage> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color(0xff8a2387), // Start color
-                      Color(0xffe94057),
-                      Color(0xfff27121) // End color
+Color(0xff404258), // Start color
+Color(0xff474E68),
+Color(0xff50577A),
+Color(0xff6B728E) // End color
                     ]
                   ),
                 ),
@@ -134,9 +134,8 @@ class _HomePageState extends State<HomePage> {
                               child: AnimatedSize(
                                 duration: const Duration(milliseconds: 100),
                                 child: Card(
-                                  color: Color(data[index]["color"])
-                                      .withOpacity(0.5),
-                                  elevation: 3,
+                                  color: Color(data[index]["color"]).withOpacity(0),
+                                  elevation: 30,
                                   shadowColor: Colors.black,
                                   child: Container(
                                     padding: const EdgeInsets.all(4),
@@ -147,29 +146,32 @@ class _HomePageState extends State<HomePage> {
                                     width: isExpanded && currentIndex == index
                                         ? size.width * 0.32
                                         : size.width * 0.31,
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Image.asset(
-                                          data[index]["img"].toString(),
+                                    child: Container(
+                                      height: isExpanded && currentIndex == index
+                                        ? size.height * 0.35
+                                        : size.height * 0.3,
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: AssetImage(data[index]["img"].toString()),
                                           fit: BoxFit.cover,
-                                          height: isExpanded &&
-                                                  currentIndex == index
-                                              ? size.height * 0.2
-                                              : size.height * 0.1,
+                                          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.darken),
+                                          ),
                                         ),
-                                        Text(
-                                          data[index]["title"].toString(),
-                                          style: isExpanded &&
-                                                  currentIndex == index
-                                              ? Theme.of(context)
-                                                  .textTheme
-                                                  .displayMedium
-                                              : Theme.of(context)
-                                                  .textTheme
-                                                  .displaySmall,
+                                      child: Align( // Use Align to position the text
+                                        alignment: Alignment.bottomCenter,
+                                        child: Padding( // Add padding for some spacing
+                                          padding: const EdgeInsets.all(16.0), // Adjust padding value as needed
+                                          child: Text(
+                                            data[index]["title"].toString(),
+                                            style: isExpanded && currentIndex == index
+                                                ? Theme.of(context).textTheme.displayMedium!
+                                                .copyWith(color: Colors.white)
+                                                : Theme.of(context).textTheme.displaySmall!
+                                                .copyWith(color: Colors.white),
+                                          ),
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -192,17 +194,17 @@ class _HomePageState extends State<HomePage> {
 
   List<Map<String, dynamic>> data = [
     { 
-      "img": "/images/temp/best_seller.png",
+      "img": "/images/best_seller.png",
       "title": "Best Seller",
       "color": 0xffFFA500,
     },
     {
-      "img": "/images/temp/popular_brands.png",
+      "img": "/images/popular_brands.png",
       "title": "Popular Brands",
       "color": 0xffFFC001,
     },
     {
-      "img": "/images/temp/free_delivery.png",
+      "img": "/images/recommend.png",
       "title": "Product you might like",
       "color": 0xff00FFEF
     }

@@ -62,9 +62,10 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Color(0xff8a2387), // Start color
-                        Color(0xffe94057),
-                        Color(0xfff27121) // End color
+Color(0xff404258), // Start color
+Color(0xff474E68),
+Color(0xff50577A),
+Color(0xff6B728E) // End color
                       ]
                     ),
                   ),

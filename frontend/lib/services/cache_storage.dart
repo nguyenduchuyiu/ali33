@@ -51,7 +51,6 @@ class ProductCacheStorage {
   void addProduct(int key, ProductModel product) {
     cachedProducts[key] = product;
     productViewHistory.add(key);
-    print("after add $cachedProducts");
   }
 
   // Get products by list of key

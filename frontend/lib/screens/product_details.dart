@@ -71,19 +71,23 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         builder: (context, snapshots) {
           return Scaffold(
             appBar: AliNavigationBar(context),
-            // appBar: AppBar(
-            //   // elevation: 0,
-            //   // backgroundColor: Colors.transparent,
-            //   automaticallyImplyLeading: false,
-            //   leading: IconButton(
-            //       onPressed: () => Navigator.pop(context),
-            //       icon: const Icon(
-            //         Icons.arrow_back,
-            //         color: Colors.blueGrey,
-            //       )),
-            // ),
             body: SafeArea(
-              child: Stack(
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                width : MediaQuery.of(context).size.width,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xff404258), // Start color
+                      Color(0xff474E68),
+                      Color(0xff50577A),
+                      Color(0xff6B728E) // End color
+                    ]
+                  ),
+                ),
+               child :Stack(
                 children: [
                     ListView(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -94,7 +98,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             width: size.width,
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 7, 175, 236),
+                                color: Color.fromARGB(255, 78, 96, 102),
                                 borderRadius: BorderRadius.circular(16)),
                             child: buildPhoto(
                                 widget.productModel.productDetails.productPicture,
@@ -144,69 +148,22 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ],
                         ),
                         const SizedBox(height: 20),
-                        SizedBox(
-                          height: 80,
-                          child: ListView.builder(
-                            itemCount: widget
-                                .productModel.productDetails.variations.length,
-                            scrollDirection: Axis.horizontal,
-                            primary: false,
-                            itemBuilder: (context, index) => GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  selectedIndex = index;
-                                });
-                              },
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Container(
-                                    height: 80,
-                                    width: 80,
-                                    alignment: Alignment.center,
-                                    margin: const EdgeInsets.only(right: 8),
-                                    decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Color(0xffFAC06E)),
-                                  ),
-                                  Container(
-                                    height: 80,
-                                    width: 80,
-                                    alignment: Alignment.center,
-                                    margin: const EdgeInsets.only(right: 8),
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: selectedIndex == index
-                                            ? Colors.black54
-                                            : null),
-                                    child: selectedIndex == index
-                                        ? const Icon(
-                                            Icons.done,
-                                            size: 40,
-                                            color: Color.fromARGB(
-                                                255, 9, 48, 202),
-                                          )
-                                        : null,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
                       const SizedBox(height: 20),
                       Text(
                           widget.productModel.productDetails.productDescription,
                           style: Theme.of(context).textTheme.headlineMedium!,
                         ),
+                      const SizedBox(height: 5),
                       Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              const SizedBox(height: 5,),
                               Container(
-                                width: size.width * 0.4,
+                                width: size.width * 0.2,
                                 height: 46,
                                 padding: const EdgeInsets.symmetric(horizontal: 20),
                                 decoration: BoxDecoration(
-                                    color: Theme.of(context).primaryColor,
+                                    color: Colors.black,
                                     borderRadius: BorderRadius.circular(30)),
                                 child: Row(
                                   mainAxisAlignment:
@@ -228,8 +185,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ),
-                                    Text(
-                                        noOfProdAdded.toString(),
+                                    Text("Rent for ${noOfProdAdded.toString()} months",
                                         style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 25,
@@ -260,9 +216,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     showMessage = false;
                                     _timer?.cancel();
                                   });
-                                  UserModel? user =
-                                      await UserService.authenticateUser(context);
-                                  if (user != null) {
+                                  // UserModel? user =
+                                  //     await UserService.authenticateUser(context);
+                                  if (true) {
                                     bool addedToCart = await ApiService()
                                         .addToCart(
                                       CartItem(
@@ -274,7 +230,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                             .variations[selectedIndex]
                                             .quantity,
                                       ),
-                                      user.key!,
+                                      
                                     );
                                     setState(() {
                                       isLoading = false;
@@ -291,11 +247,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   });
                                 },
                                 child: Container(
-                                  width: size.width * 0.4,
+                                  width: size.width * 0.2,
                                   height: 46,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
-                                      color: Theme.of(context).primaryColor,
+                                      color: Colors.black,
                                       borderRadius: BorderRadius.circular(30)),
                                   child: Text(
                                     "Add to Cart",
@@ -305,7 +261,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         .copyWith(color: Colors.white),
                                   ),
                                 ),
-                              )
+                                
+                              ),
+                             const SizedBox(height: 5,)
                             ],
                           ),
                       const SizedBox(height: 30),
@@ -330,19 +288,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ),
                         ]
                       )
-                      ],
+                    ],
                     ),
                   if (isLoading) loadingAnimation(),
                   if (showMessage)
-                    addedNotification()
+                    AliNotification("Added to cart!")
                 ],
               ),
+              )
             ),
           );
         });
   }
+}
 
-  Widget addedNotification() {
+  Widget AliNotification(String notiMessage) {
   return Align(
         alignment: Alignment.center,
         child: 
@@ -352,12 +312,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.8), 
               borderRadius: BorderRadius.circular(16),
             ),
-            child: const SizedBox( // Wrap the Stack in a SizedBox to control its size
+            child: SizedBox( // Wrap the Stack in a SizedBox to control its size
               height: 160, // Set a larger height
               width: 160, // Set a larger width
               child: Stack(
                 children: [
-                  Positioned(
+                  const Positioned(
                     left: 50,
                     top: 20,
                     child: Icon(
@@ -370,8 +330,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     left: 10, 
                     top: 100,
                     child: Text(
-                      'Added to cart!',
-                      style: TextStyle(
+                      notiMessage,
+                      style: const TextStyle(
                         color: Color.fromARGB(255, 255, 255, 255),
                         fontSize: 20,
                       ),
@@ -383,4 +343,3 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           )
       );
   }
-}

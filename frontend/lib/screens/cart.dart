@@ -8,7 +8,9 @@ import 'package:ali33/models/order_model.dart';
 import 'package:ali33/models/user_model.dart';
 import 'package:ali33/screens/delivery_address.dart';
 import 'package:ali33/screens/login.dart';
+import 'package:ali33/screens/orders.dart';
 import 'package:ali33/screens/place_order.dart';
+import 'package:ali33/screens/product_details.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/services/authenticate_service.dart';
 import 'package:ali33/widgets/basic.dart';
@@ -57,9 +59,10 @@ class _CartScreenState extends State<CartScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color(0xff8a2387), // Start color
-                      Color(0xffe94057),
-                      Color(0xfff27121) // End color
+Color(0xff404258), // Start color
+Color(0xff474E68),
+Color(0xff50577A),
+Color(0xff6B728E) // End color
                     ]
                   ),
                 ),),
@@ -82,9 +85,10 @@ class _CartScreenState extends State<CartScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color(0xff8a2387), // Start color
-                      Color(0xffe94057),
-                      Color(0xfff27121) // End color
+Color(0xff404258), // Start color
+Color(0xff474E68),
+Color(0xff50577A),
+Color(0xff6B728E) // End color
                     ]
                   ),
                 ),),
@@ -94,9 +98,10 @@ class _CartScreenState extends State<CartScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color(0xff8a2387), // Start color
-                      Color(0xffe94057),
-                      Color(0xfff27121) // End color
+Color(0xff404258), // Start color
+Color(0xff474E68),
+Color(0xff50577A),
+Color(0xff6B728E) // End color
                     ]
                   ),
                 ),
@@ -116,9 +121,10 @@ class _CartScreenState extends State<CartScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color(0xff8a2387), // Start color
-                      Color(0xffe94057),
-                      Color(0xfff27121) // End color
+Color(0xff404258), // Start color
+Color(0xff474E68),
+Color(0xff50577A),
+Color(0xff6B728E) // End color
                     ]
                   ),
                 ),
@@ -391,16 +397,16 @@ class _CartScreenState extends State<CartScreen> {
                   },
                 ),
                 SizedBox(height: size.height * 0.02),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text("Similar Products",
-                      style: Theme.of(context).textTheme.displayMedium),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 16),
+                //   child: Text("Similar Products",
+                //       style: Theme.of(context).textTheme.displayMedium),
+                // ),
                 SizedBox(height: size.height * 0.01),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: popularSearches(),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 16),
+                //   child: popularSearches(),
+                // ),
                 SizedBox(height: size.height * 0.05),
               ],
             )),
@@ -496,22 +502,21 @@ class _CartScreenState extends State<CartScreen> {
                     List<OrderModel> orders = generateOrderList(
                         state.products.cartModels, state.products.userDetails);
                     List<CartItem> cartItems = List<CartItem>.from(
-                            state.products.cartModels.map((e) => e.cartItem))
-                        .toList();
-                    bool res = await Navigator.push(
-                        context,
-                        SlideLeftRoute(
-                            widget: PlaceOrderScreen(
-                          ordersList: orders,
-                          cartItems: cartItems,
-                          subTotal: calculatedValues[0],
-                        )));
-                    if (res) {
-                      setState(() {
-                        context.read<CartBloc>().add(FetchCartItems());
-                      });
-                    }
-                  })
+                            state.products.cartModels.map((e) => e.cartItem)).toList();
+                    setState(() {
+                      isLoading = true;
+                    });
+
+                    await ApiService().placeOrder(orders);
+                    await ApiService().removeFromCart(cartItems);
+
+                    setState(() {
+                      isLoading = false;
+                      AliNotification("You're all set! Your film is ready to watch.");
+                      Navigator.push(context, SlideLeftRoute(widget: const OrdersScreen()));
+                    });
+                  }),
+                  if (isLoading) loadingAnimation()
                 ],
               ),
             ),
