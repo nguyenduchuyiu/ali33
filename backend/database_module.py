@@ -16,20 +16,14 @@ thread_local = threading.local()
 def get_db_connection():
     """Connects to the specified AWS database using environment variables."""
     if not hasattr(thread_local, 'db_conn'):
-        thread_local.db_conn = mysql.connector.connect(
+        thread_local.db_conn = mysql.connector.connect( 
             host=config.get('database', 'host'),
+            port=config.get('database', 'port'), 
             user=config.get('database', 'user'),
             password=config.get('database', 'password'),
             database=config.get('database', 'database')
         )
     return thread_local.db_conn
-
-
-
-# def get_db_connection(path='E:/ali33/backend/assets/database/database.db'):
-#     if not hasattr(thread_local, 'db_conn'):
-#         thread_local.db_conn = sqlite3.connect(path)
-#     return thread_local.db_conn
 
 
 
