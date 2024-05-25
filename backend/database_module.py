@@ -519,21 +519,4 @@ def get_orders_of_user(userKey) -> dict[str, any]:
     # finally:
     #     cursor.close()
     #     conn.close()
-        
-        
-# def get_cart_items(userKey:int) -> list[dict]:
-#     conn = get_db_connection()
-#     cursor = conn.cursor()
-
-#     try:
-#         cursor.execute('''
-#             SELECT * FROM cart_items WHERE userKey = %s
-#         ''', (userKey,)) 
-
-#         cart_items = cursor.fetchall()
-#         return cart_items
-
-#     except sqlite3.Error as e:
-#         print(f"An error occurred: {e}")
-#         return None 
     
