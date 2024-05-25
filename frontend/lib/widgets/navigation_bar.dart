@@ -4,6 +4,7 @@ import 'package:ali33/screens/cart.dart';
 import 'package:ali33/screens/home.dart';
 import 'package:ali33/screens/pages/profile_page.dart';
 import 'package:ali33/services/authenticate_service.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,7 +15,6 @@ class AliNavigationBar extends StatelessWidget implements PreferredSizeWidget{
 
   @override
   Widget build(BuildContext context) {
-    Future<UserModel?> user = UserService.authenticateUser(curContext);
     Size size = MediaQuery.of(curContext).size;
     return Scaffold(
       appBar: AppBar(
@@ -29,9 +29,10 @@ class AliNavigationBar extends StatelessWidget implements PreferredSizeWidget{
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Color(0xff8a2387), // Start color
-                Color(0xffe94057),
-                Color(0xfff27121) // End color
+Color(0xff404258), // Start color
+Color(0xff474E68),
+Color(0xff50577A),
+Color(0xff6B728E) // End color
               ],
             ),
           ),
@@ -59,28 +60,27 @@ class AliNavigationBar extends StatelessWidget implements PreferredSizeWidget{
                 children: [
                   // SizedBox(height: 18,),
                   Text(
-                    "More Quality",
+                    "Your Personal",
                     style: Theme.of(context)
                         .textTheme
                         .displayMedium!
                         .copyWith(fontWeight: FontWeight.w700, fontSize: 17),
                   ),
                   Text(
-                    "for Less Quantity",
+                    "Hollywood at Home",
                     style: Theme.of(context)
                         .textTheme
                         .headlineMedium!
-                        .copyWith(fontWeight: FontWeight.w500, fontSize: 15),
+                        .copyWith(fontWeight: FontWeight.w700, fontSize: 17),
                   ),
                 ],
               ),
               const Spacer(),
               FutureBuilder(
-                future: user,
+                future: null,
                 builder: (context, snapshot) {
                   return InkWell(
                     onTap: () {
-                      if (snapshot.hasData && snapshot.data!.key != null) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -90,13 +90,11 @@ class AliNavigationBar extends StatelessWidget implements PreferredSizeWidget{
                             ),
                           ),
                         );
-                      }
                     },
-                    child: const Icon(
-                      Icons.shopping_cart,
-                      color: Colors.white,
-                      size: 60,
-                    ),
+                    child: Container(
+                            alignment: Alignment.center,
+                            child: Image.asset("images/cart_icon.png")
+                          ),
                   );
                 },
               ),
@@ -108,16 +106,10 @@ class AliNavigationBar extends StatelessWidget implements PreferredSizeWidget{
                     MaterialPageRoute(builder: (context) => const ProfilePage()),
                   );
                 },
-                child: FutureBuilder(
-                  future: user,
-                  builder: (context, snapshot) {
-                      // Nếu không có ảnh đại diện, hiển thị placeholder
-                      return const CircleAvatar(
+                child: const CircleAvatar(
                         backgroundColor: Colors.white,
                         radius: 30,
                         backgroundImage: AssetImage("images/profile_icon.png"), // Ảnh mặc định
-                      );
-                  },
                 ),
               )
             ],

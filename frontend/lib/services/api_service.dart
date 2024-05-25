@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, prefer_interpolation_to_compose_strings
 
+import 'dart:convert';
 import 'dart:io';
 import 'dart:js_util';
 import 'package:ali33/models/cart_item_model.dart';
@@ -8,12 +9,13 @@ import 'package:ali33/models/order_model.dart';
 import 'package:ali33/models/place_model.dart';
 import 'package:ali33/models/product_model.dart';
 import 'package:ali33/models/user_model.dart';
-import 'package:ali33/services/user_data_storage_service.dart';
+import 'package:ali33/services/cache_storage.dart';
 import 'package:ali33/widgets/basic.dart';
 import 'package:dio/dio.dart';
 
 class ApiService {
   final Dio _dio = Dio();
+  final productCacheStorage = ProductCacheStorage();
   
   // final String baseUrl = "https://nguyenduchuy.pythonanywhere.com/";
   // final String userBaseUrl = "https://nguyenduchuy.pythonanywhere.com/users";
@@ -29,6 +31,36 @@ class ApiService {
   // final String userBaseUrl = "http://192.168.0.101:8080/users";
   // final String productBaseUrl = "http://192.168.0.101:8080/products";
   // final String orderBaseUrl = "http://192.168.0.101:8080/orders";
+
+  Future<Map<String, dynamic>> createPaymentIntentOnServer(Map<String, dynamic> paymentDetails) async {
+    try {
+      Map<String, dynamic> data = {"body": jsonEncode(paymentDetails)};
+      Response<Map<String, dynamic>> response = await _dio.post('$userBaseUrl/payment', 
+                                                      data:data);
+
+      if (response.statusCode == 200) {
+        return response.data!;
+      } else {
+        // Handle errors from your backend
+        print("Error creating Payment Intent: ${response.statusCode}");
+        print(response.data!);
+        throw Exception('Failed to create Payment Intent');
+      }
+    } on SocketException {
+      print('No internet connection');
+      throw Exception('No internet connection');
+    } on HttpException {
+      print("Couldn't find the server");
+      throw Exception("Couldn't find the server");
+    } on FormatException {
+      print("Bad response format");
+      throw Exception("Bad response format");
+    } catch (e) {
+      print('Error creating Payment Intent: $e');
+      throw Exception('Failed to create Payment Intent');
+    }
+  }
+
 
   Future<bool?> checkUser(Map<String, String> data) async {
     try {
@@ -55,7 +87,7 @@ class ApiService {
   //     Response<Map<String, dynamic>> response =
   //         await _dio.post("$userBaseUrl/user", data: userModel.toJson());
 
-  //     await UserDataStorageService().setToken(response.data!["authToken"]);
+  //     await TokenCacheStorage().setToken(response.data!["authToken"]);
   //     return true;
   //   } on DioException catch (e) {
   //     print("dio error occured: ${e.response}");
@@ -76,7 +108,7 @@ class ApiService {
     try {
       Response<Map<String, dynamic>> response = await _dio.post("$userBaseUrl/login", data: data);
       print(response);
-      await UserDataStorageService().setToken(response.data!["token"]);
+      await TokenCacheStorage().setToken(response.data!["token"]);
       return true;
     } on DioException catch (e) {
       if (e.error is SocketException) {
@@ -105,12 +137,12 @@ class ApiService {
   }
 
   Future<bool> logout() async {
-    await UserDataStorageService().deleteToken();
+    await TokenCacheStorage().deleteToken();
     return true;
   }
 
   Future<bool> updateProfile(UserModel userModel) async {
-    String? token = await UserDataStorageService().getToken();
+    String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response =
@@ -132,7 +164,7 @@ class ApiService {
   }
 
   Future<String> uploadProfilePhoto(File pic) async {
-    String? token = await UserDataStorageService().getToken();
+    String? token = await TokenCacheStorage().getToken();
     try {
       _dio.options.headers["Authorization"] = token!;
       FormData formData = FormData.fromMap({
@@ -157,7 +189,7 @@ class ApiService {
   }
 
   Future<UserModel?> getCurrentUser() async {
-    String? token = await UserDataStorageService().getToken();
+    String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response = await _dio.get("$userBaseUrl/get-current-user");
@@ -179,7 +211,7 @@ class ApiService {
   }
  
   Future<bool> addAddress(String address) async {
-    String? token = await UserDataStorageService().getToken();
+    String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response =
@@ -201,7 +233,7 @@ class ApiService {
   }
 
   Future<bool> deleteAddress(String address) async {
-    String? token = await UserDataStorageService().getToken();
+    String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response =
@@ -219,7 +251,7 @@ class ApiService {
   }
 
   Future<List<String>> getAllAddresses() async {
-    String? token = await UserDataStorageService().getToken();
+    String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response = await _dio.get(userBaseUrl + "/address");
@@ -239,7 +271,7 @@ class ApiService {
   }
 
   Future<List<OrderCombinedModel>> getAllOrders() async {
-    String? token = await UserDataStorageService().getToken();
+    String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response = await _dio.get(userBaseUrl + "/get-all-orders");
@@ -264,7 +296,7 @@ class ApiService {
   }
 
   Future<bool> setDefaultAddress(String address) async {
-    String? token = await UserDataStorageService().getToken();
+    String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response = await _dio
@@ -288,7 +320,7 @@ class ApiService {
   /// products related api calls
 
   Future<List<CategoryDetail>> getAllCategories() async {
-    String? token = await UserDataStorageService().getToken();
+    String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response =
@@ -311,7 +343,7 @@ class ApiService {
   }
 
   Future<CategoryDetail?> getCategory() async {
-    String? token = await UserDataStorageService().getToken();
+    String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response =
@@ -334,7 +366,7 @@ class ApiService {
   }
 
   Future<ProductModel?> getProduct(String key) async {
-    String? token = await UserDataStorageService().getToken();
+    String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response =
@@ -359,15 +391,42 @@ class ApiService {
                                             int limit, 
                                             int? category)
                                             async {
-    String? token = await UserDataStorageService().getToken();
+    String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
+      // 1. Get product keys from the category
       Response<Map<String, dynamic>> response = await _dio.get(
-                        "$productBaseUrl/get-all-products",
-                        queryParameters: {"category": category}
-                                                             );
-      List<ProductModel> products = productsFromJson(response.data!["result"]);
-      return products;
+        "$productBaseUrl/get-products-from-category",
+        queryParameters: {"category": category},
+      );
+      List<int> productKeys = [];
+        for (var item in response.data!['result']) {
+          if (item is int) {
+            productKeys.add(item);
+          } 
+        }
+      // 2. Filter product keys based on view history
+      List<int> unviewedProductKeys = productCacheStorage.filterUnviewedProductKeys(productKeys);
+      // print("unviewkey $unviewedProductKeys");
+      List<int> viewedProductKeys = productCacheStorage.viewedProductKeys;
+      // print("view $viewedProductKeys");
+      //3. Fetch viewed products
+      List<ProductModel>? viewedProducts = await productCacheStorage.getProducts(viewedProductKeys);
+      // print("view ${viewedProducts!.length}");
+      // 4. Fetch unviewed products
+      List<ProductModel> unviewedProducts = [];
+      if (unviewedProductKeys.isNotEmpty) {
+        response = await _dio.get(
+          "$productBaseUrl/get-product-from-keys",
+          queryParameters:{"key": unviewedProductKeys.join(',')},
+        );
+        unviewedProducts = productsFromJson(response.data!["result"]);
+      }
+      List<ProductModel> allProducts = viewedProducts! + unviewedProducts;
+      for(ProductModel i in unviewedProducts) {
+        productCacheStorage.addProduct(i);
+      }
+      return allProducts;
     } on DioException catch (e) {
       print("dio error occured: ${e.response}");
       if (e.error is SocketException) {
@@ -383,15 +442,41 @@ class ApiService {
   }
 
   Future<List<ProductModel>> searchProduct(String searchTerm) async {
-    String? token = await UserDataStorageService().getToken();
+    String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       print(searchTerm);
       Response<Map<String, dynamic>> response = await _dio.get(
           "$productBaseUrl/search-product",
           queryParameters: {"searchTerm": searchTerm});
-      List<ProductModel> products = productsFromJson(response.data!["result"]);
-      return products;
+      List<int> productKeys = [];
+        for (var item in response.data!['result']) {
+          if (item is int) {
+            productKeys.add(item);
+          } 
+        }
+      // 2. Filter product keys based on view history
+      List<int> unviewedProductKeys = productCacheStorage.filterUnviewedProductKeys(productKeys);
+      // print("unviewkey $unviewedProductKeys");
+      List<int> viewedProductKeys = productCacheStorage.viewedProductKeys;
+      // print("view $viewedProductKeys");
+      //3. Fetch viewed products
+      List<ProductModel>? viewedProducts = await productCacheStorage.getProducts(viewedProductKeys);
+      // print("view ${viewedProducts!.length}");
+      // 4. Fetch unviewed products
+      List<ProductModel> unviewedProducts = [];
+      if (unviewedProductKeys.isNotEmpty) {
+        response = await _dio.get(
+          "$productBaseUrl/get-product-from-keys",
+          queryParameters:{"key": unviewedProductKeys.join(',')},
+        );
+        unviewedProducts = productsFromJson(response.data!["result"]);
+      }
+      List<ProductModel> allProducts = viewedProducts! + unviewedProducts;
+      for(ProductModel i in unviewedProducts) {
+        productCacheStorage.addProduct(i);
+      }
+      return allProducts;
     } on DioException catch (e) {
       print("dio error occured: ${e.response}");
       if (e.error is SocketException) {
@@ -406,12 +491,11 @@ class ApiService {
     return [];
   }
 
-  Future<bool> addToCart(CartItem cartItems, userKey) async {
-    String? token = await UserDataStorageService().getToken();
+  Future<bool> addToCart(CartItem cartItems) async {
+    String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
-      Map<String, dynamic> data = {'cartItems': cartItems.toJson(),
-                                    'userKey': userKey};
+      Map<String, dynamic> data = {'cartItems': cartItems.toJson()};
       Response<Map<String, dynamic>> response = await _dio.post(userBaseUrl + "/add-to-cart", data: data);
       return true;
     } on DioException catch (e) {
@@ -426,7 +510,7 @@ class ApiService {
   }
 
   Future<CartCombinedModel?> getCartItems() async {
-    String? token = await UserDataStorageService().getToken();
+    String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response = await _dio.get(
@@ -449,7 +533,7 @@ class ApiService {
   }
 
   Future<bool> removeFromCart(List<CartItem> items) async {
-    String? token = await UserDataStorageService().getToken();
+    String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response = await _dio.delete(
@@ -473,7 +557,7 @@ class ApiService {
   }
 
   Future<bool> changeNoOfProdCart(Map<String, dynamic> item) async {
-    String? token = await UserDataStorageService().getToken();
+    String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response = await _dio.put(
@@ -497,7 +581,7 @@ class ApiService {
   }
 
   Future<bool> placeOrder(List<OrderModel> orders) async {
-    String? token = await UserDataStorageService().getToken();
+    String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
       Response<Map<String, dynamic>> response =
@@ -542,14 +626,43 @@ class ApiService {
   }
 
   Future<List<ProductModel>> getRelatedProducts(int productKey) async {
-    String? token = await UserDataStorageService().getToken();
+    String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
-      Response<Map<String, dynamic>> response = await _dio.get('$productBaseUrl/get-related-products',
-                                                                queryParameters: {'productKey': productKey});
-      // print("respones : ${response.data!['result']}");
-      List<ProductModel> relatedProducts = productsFromJson(response.data!['result']);
-      return relatedProducts;
+      Response<Map<String, dynamic>> response = await _dio.get(
+          "$productBaseUrl/get-related-products",
+          queryParameters: {"productKey": productKey});
+      List<int> productKeys = [];
+        for (var item in response.data!['result']) {
+          if (item is int) {
+            productKeys.add(item);
+          } 
+        }
+      // 2. Filter product keys based on view history
+      List<int> unviewedProductKeys = productCacheStorage.filterUnviewedProductKeys(productKeys);
+      // print("unviewkey $unviewedProductKeys");
+      List<int> viewedProductKeys = productCacheStorage.viewedProductKeys;
+      // print("view $viewedProductKeys");
+      //3. Fetch viewed products
+      List<ProductModel>? viewedProducts = await productCacheStorage.getProducts(viewedProductKeys);
+      print("view ${viewedProducts!.length}");
+      // 4. Fetch unviewed products
+      List<ProductModel> unviewedProducts = [];
+      if (unviewedProductKeys.isNotEmpty) {
+        response = await _dio.get(
+          "$productBaseUrl/get-product-from-keys",
+          queryParameters:{"key": unviewedProductKeys.join(',')},
+        );
+        unviewedProducts = productsFromJson(response.data!["result"]);
+      }
+      List<ProductModel> allProducts = viewedProducts + unviewedProducts;
+      print(allProducts.length);
+      for(ProductModel i in unviewedProducts) {
+        productCacheStorage.addProduct(i);
+      }
+      print("len view ${viewedProducts.length}");
+      print("len unview ${unviewedProducts.length}");
+      return allProducts;
     } on DioException catch (e) {
       print("dio error occured on get rcm: ${e.response}");
       if (e.error is SocketException) {

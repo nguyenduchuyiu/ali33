@@ -4,6 +4,7 @@ import 'package:ali33/bloc/cart_bloc.dart';
 import 'package:ali33/constants/route_animation.dart';
 import 'package:ali33/models/user_model.dart';
 import 'package:ali33/screens/cart.dart';
+import 'package:ali33/screens/comming_soon.dart';
 import 'package:ali33/screens/delivery_address.dart';
 import 'package:ali33/screens/login.dart';
 import 'package:ali33/screens/orders.dart';
@@ -62,9 +63,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color(0xff8a2387), // Start color
-                      Color(0xffe94057),
-                      Color(0xfff27121) // End color
+Color(0xff404258), // Start color
+Color(0xff474E68),
+Color(0xff50577A),
+Color(0xff6B728E) // End color
                     ]
                   ),
                 ),
@@ -86,12 +88,12 @@ class _ProfilePageState extends State<ProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(height: 18,),
-                      Text("More Quality",
+                      Text("Your Personal",
                           style: Theme.of(context)
                               .textTheme
                               .displayMedium!
                               .copyWith(fontWeight: FontWeight.w700,fontSize: 17)),
-                      Text("for Less Quantity",
+                      Text("Hollywood at Home",
                           style: Theme.of(context)
                               .textTheme
                               .headlineMedium!
@@ -125,9 +127,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color(0xff8a2387), // Start color
-                      Color(0xffe94057),
-                      Color(0xfff27121) // End color
+Color(0xff404258), // Start color
+Color(0xff474E68),
+Color(0xff50577A),
+Color(0xff6B728E) // End color
                     ]
                   ),
                 ),
@@ -196,7 +199,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 const Icon(Icons.phone, color: Colors.white),
                                 const SizedBox(width: 8),
                                 Text(
-                                  "9502493929",
+                                  snapshots.data!.phoneNo,
                                   style: Theme.of(context)
                                       .textTheme
                                       .displaySmall!
@@ -249,8 +252,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             switch(index) {
                               case 0: return buildItem("Cart Items", () => Navigator.push(context, SlideLeftRoute(widget: BlocProvider<CartBloc>(create: (context) => CartBloc(), child: const CartScreen(),),)));
                               case 1: return buildItem("Orders", () => Navigator.push(context, SlideLeftRoute(widget: const OrdersScreen())));
-                              case 2: return buildItem("My Address", () => Navigator.push(context, SlideLeftRoute(widget: const HomePage())));
-                              case 3: return buildItem("Theme Mode", () => {appThemeNotifier.darkTheme = !appThemeNotifier.darkTheme});
+                              case 2: return buildItem("My Address", () => Navigator.push(context, SlideLeftRoute(widget:const ComingSoonScreen())));
+                              case 3: return buildItem("Theme Mode", () => Navigator.push(context, SlideLeftRoute(widget:const ComingSoonScreen())));
                               default: return Container();
                             }
                           },
@@ -264,7 +267,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               Navigator.pushAndRemoveUntil(
                                   context,
                                   SlideRightRoute(
-                                      widget: const LoginScreen(isEditing: false)),
+                                      widget: const LoginScreen(isEditing: true)),
                                   (route) => false);
                             }
                           },

@@ -25,3 +25,5 @@ frontend/pubspec.lock
 docker-compose.yml
 test.ipynb
 .vscode
+backend/Dockerfile
+backend/assets/database/*.csv

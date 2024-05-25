@@ -428,12 +428,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
 
                       const SizedBox(height: 10),
-                      buildHeadLine("Business / Shop Name"),
+                      buildHeadLine("Nickname"),
                       buildFormField(
                         _shopNameController,
                         (String? val) {
                           if (val!.isEmpty) {
-                            return "shop name can't be empty";
+                            return "Nickname can't be empty";
                           } else {
                             return null;
                           }
@@ -442,14 +442,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
 
                       const SizedBox(height: 20),
-                      buildHeadLine("DOB"),
+                      buildHeadLine("Birth Day"),
                       TextFormField(
                         controller: _dobController,
                         onTap: () => _selectDate(context),
                         readOnly: true,
                         validator: (String? val) {
                           if (val!.isEmpty) {
-                            return "dob can't be empty";
+                            return "Birth day can't be empty";
                           } else if (DateTime.now().year -
                                   DateTime.parse(val).year <
                               18) {
@@ -489,19 +489,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      buildHeadLine("Propeiter Name"),
+                      buildHeadLine("User Name"),
                       buildFormField(_ownerNameController, (val) {
                         if (val!.isEmpty) {
-                          return "owner name can't be empty";
+                          return "User name can't be empty";
                         } else {
                           return null;
                         }
-                      }, "Proprietor / Owner Name"),
+                      }, "User Name"),
                       const SizedBox(height: 20),
                       buildHeadLine("GST Number"),
                       buildFormField(_gstController, (val) {
                         if (val!.isEmpty) {
-                          return "gst number can't be empty";
+                          return "GST number can't be empty";
                         } else {
                           return null;
                         }

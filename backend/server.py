@@ -1,16 +1,23 @@
+from ast import literal_eval
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import security as sc
 import database_module as dm 
-import rcm_model as rcm
+import rcm_model as rcm 
+import stripe
+import configparser
+
+
+# initiate
+config = configparser.ConfigParser()
+config.read('backend/config.ini')
+
+# Initialize Stripe 
+stripe.api_key = config.get('stripe_key', 'secret_key')
+
 
 app = Flask(__name__)
 CORS(app)
-
-
-@app.route('/users/address')
-def get_address():
-    return jsonify({'result': ['Ha Noi', 'Bac Giang']})
 
 
 @app.route('/users/check_user', methods=['POST'])
@@ -85,19 +92,31 @@ def getCurrentUser():
     return jsonify({'error':'User not found'}), 404
 
 
+@app.route('/products/get-product-from-keys')
+def get_product_by_keys():
+    productKeys:list = [int(key) for key in request.args.get('key').split(',')]
+    print(productKeys)
+    
+    if not productKeys:
+        return jsonify({"error": "productKeys are required"}), 400
+    
+    products:list = dm.get_product_from_key(productKeys)  # Adapt to fetch by category
+    
+    return jsonify({'result':products}), 200
 
-@app.route('/products/get-all-products')
+
+
+@app.route('/products/get-products-from-category')
 def get_products_by_category():
     category = request.args.get('category')
     
     if not category:
         return jsonify({"error": "Category parameter is required"}), 400
     
-    product_data_list = dm.get_product_from_key({'type':'category',
-                                                      'key':category})  # Adapt to fetch by category
+    productKeys = dm.get_product_of_category(category)  # Adapt to fetch by category
     
-    if product_data_list:
-        return jsonify({'result':product_data_list}), 200
+    if productKeys:
+        return jsonify({'result':productKeys}), 200
     else:
         return jsonify({"error": "Products not found for the given category"}), 404
     
@@ -118,7 +137,7 @@ def search_product():
     if not search_term:
         return jsonify({"error": "Search term parameter is required"}), 400
     
-    product_data_list = dm.search_products_by_name(search_term) 
+    product_data_list:list = dm.search_products_by_name(search_term) 
     
     if product_data_list:
         return jsonify({'result':product_data_list}), 200
@@ -189,8 +208,7 @@ def getCartItems():
     user = dm.get_user_by_key(userKey)
     cartModels = []
     for item in user['cartItems']:
-        product = dm.get_product_from_key({"key": item["productKey"], 
-                                           "type": "product"})
+        product = dm.get_product_from_key([item["productKey"]])
         cartModels.append({"cartItemDetails": item,
                           "productDetails": product[0]["productDetails"]})
     if user:
@@ -232,12 +250,7 @@ def getAllOrders():
     orderCombinedModel = []
     
     for order in orders:
-        product = dm.get_product_from_key(
-            {
-                "key": order["productKey"], 
-                "type": "product"
-            }
-        )
+        product = dm.get_product_from_key([order["productKey"]])
         
         orderCombinedModel.append(
             {
@@ -268,19 +281,34 @@ def getAllOrders():
 def getRelatedProducts():
     productKey:int = int(request.args.get('productKey'))
     relatedProductKeys:list = rcm.get_recommendations(productKey)
-    print(relatedProductKeys)
-    
-    relatedProducts = []
-    for key in relatedProductKeys:
-        relatedProduct = dm.get_product_from_key({"key": key, "type": "product"})
-        relatedProducts.extend(relatedProduct)
-    return jsonify({"result": relatedProducts}), 200
+    return jsonify({"result": relatedProductKeys}), 200
 
 
-# @app.route('/images/<string:product_name>')
-# def get_image(product_name):
-#     image_path = f'/static/images/{product_name}.png'
-#     return render_template('template.html', image_path=image_path)
+@app.route('/users/payment', methods=['POST'])
+def create_payment_intent():
+    try:
+        body = literal_eval(request.get_json()['body'])
+        amount = body['amount']
+        currency = body['currency']
+
+        payment_intent = stripe.PaymentIntent.create(
+            amount=amount,  
+            currency=currency,
+        )
+        
+        if payment_intent['status'] != 'succeeded':
+            print('==== in')
+            return jsonify({
+                'message': "Confirm payment please",
+                'client_secret': payment_intent['client_secret'],
+            }), 200
+
+        return jsonify({'message': "Payment Completed Successfully"}), 200
+
+    except Exception as e:
+        print(f'error: {str(e)}')
+        return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='127.0.0.1', debug=True)
