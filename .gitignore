@@ -15,7 +15,6 @@ frontend/web
 frontend/windows
 frontend/.flutter-plugins
 frontend/.flutter-plugins-dependencies
-backend/config.ini
 backend/assets/similarity_matrices.npz
 frontend/.metadata
 frontend/analysis_options.yaml

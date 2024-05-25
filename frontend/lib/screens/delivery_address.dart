@@ -68,7 +68,6 @@ class _DeliveryAddressScreenState extends State<DeliveryAddressScreen> {
                 GestureDetector(
                   onTap: () async {
                     bool res = await Navigator.push(context, SlideLeftRoute(widget: HomeScreen(selectedPage: 1,)));
-                        // context, SlideLeftRoute(widget: const AddAddressScreen()));//Huy test
                     if (res) getAddresses();
                   },
                   child: Card(

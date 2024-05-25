@@ -435,11 +435,7 @@ Color(0xff6B728E) // End color
                           children: [
                             GestureDetector(
                               onTap: () async {
-                                bool res = true; // Huy test
-                                // bool res = await Navigator.push(
-                                //     context,
-                                //     SlideLeftRoute(
-                                //         widget: const DeliveryAddressScreen()));
+                                bool res = true;
                                 if (res) {
                                   context
                                       .read<CartBloc>()
@@ -509,7 +505,7 @@ Color(0xff6B728E) // End color
           //     stageTwo: "",
           //     stageThree: "",
           //     stageFour: ""),
-          deliveryStages: ["Order Placed"], // Huy test
+          deliveryStages: ["Order Placed"], 
           deliveryAddress: user.deliveryAddress);
     }).toList());
   }
@@ -517,7 +513,7 @@ Color(0xff6B728E) // End color
   List<double> calculateTotal(List<CartModel> cartlist) {
     double totalAmount = 0;
     double savedAmount = 0;
-    double originalAmount = 0;
+    double originalAmount = 0; 
     for (var item in cartlist) {
       int variationIndex = item.productDetails.variations.indexOf(
           item.productDetails.variations.firstWhere((element) =>
