@@ -55,6 +55,7 @@ This README outlines the steps for setting up and running the ALI33 web applicat
 
 2.  **Start the Flutter Application:**
     ```bash
+    flutter build web
     flutter run -d chrome
     ```
     This will launch the application in Chrome browser.
