@@ -1,16 +1,23 @@
+from ast import literal_eval
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import security as sc
 import database_module as dm 
-import rcm_model as rcm
+import rcm_model as rcm 
+import stripe
+import configparser
+
+
+# initiate
+config = configparser.ConfigParser()
+config.read('backend/config.ini')
+
+# Initialize Stripe 
+stripe.api_key = config.get('stripe_key', 'secret_key')
+
 
 app = Flask(__name__)
 CORS(app)
-
-
-@app.route('/users/address')
-def get_address():
-    return jsonify({'result': ['Ha Noi', 'Bac Giang']})
 
 
 @app.route('/users/check_user', methods=['POST'])
@@ -95,10 +102,8 @@ def get_product_by_keys():
     
     products:list = dm.get_product_from_key(productKeys)  # Adapt to fetch by category
     
-    if products:
-        return jsonify({'result':products}), 200
-    else:
-        return jsonify({"error": "No product was found!"}), 404
+    return jsonify({'result':products}), 200
+
 
 
 @app.route('/products/get-products-from-category')
@@ -276,28 +281,33 @@ def getAllOrders():
 def getRelatedProducts():
     productKey:int = int(request.args.get('productKey'))
     relatedProductKeys:list = rcm.get_recommendations(productKey)
-    
-    relatedProducts = []
-    for key in relatedProductKeys:
-        relatedProduct = dm.get_product_from_key([key])
-        relatedProducts.extend(relatedProduct)
-    return jsonify({"result": relatedProducts}), 200
+    return jsonify({"result": relatedProductKeys}), 200
 
 
-# @app.route('/images/<string:product_name>')
-# def get_image(product_name):
-#     image_path = f'/static/images/{product_name}.png'
-#     return render_template('template.html', image_path=image_path)
+@app.route('/users/payment', methods=['POST'])
+def create_payment_intent():
+    try:
+        body = literal_eval(request.get_json()['body'])
+        amount = body['amount']
+        currency = body['currency']
 
+        payment_intent = stripe.PaymentIntent.create(
+            amount=amount,  
+            currency=currency,
+        )
+        
+        if payment_intent['status'] != 'succeeded':
+            print('==== in')
+            return jsonify({
+                'message': "Confirm payment please",
+                'client_secret': payment_intent['client_secret'],
+            }), 200
 
-# @app.route('/users/cancel/<request_id>', methods=['POST'])
-# def cancel_request(request_id):
-#     pen
-#     if request_id in pending_requests:
-#         del pending_requests[request_id]
-#         return jsonify({"status": "cancelled"})
-#     else:
-#         return jsonify({"status": "not found"})
+        return jsonify({'message': "Payment Completed Successfully"}), 200
+
+    except Exception as e:
+        print(f'error: {str(e)}')
+        return jsonify({'error': str(e)}), 500
 
 
 if __name__ == '__main__':

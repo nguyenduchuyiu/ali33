@@ -9,6 +9,7 @@ import 'package:ali33/models/user_model.dart';
 import 'package:ali33/screens/delivery_address.dart';
 import 'package:ali33/screens/login.dart';
 import 'package:ali33/screens/orders.dart';
+import 'package:ali33/screens/payment_screen.dart';
 import 'package:ali33/screens/place_order.dart';
 import 'package:ali33/screens/product_details.dart';
 import 'package:ali33/services/api_service.dart';
@@ -152,7 +153,7 @@ Color(0xff6B728E) // End color
                                   .textTheme
                                   .bodyLarge !
                                   .copyWith(fontSize: 22)),
-                          Text("Avail offer and discounts on your order",
+                          Text("Available offer and discounts on your order",
                               style: Theme.of(context).textTheme.headlineMedium),
                         ],
                       ),
@@ -368,25 +369,6 @@ Color(0xff6B728E) // End color
                                       ],
                                     ),
                                   ),
-                                  // SizedBox(height: size.height*0.02),
-                                  // Spacer(),
-                                  // ElevatedButton(
-                                  //     // style: ElevatedButton.styleFrom(),
-                                  //     onPressed: () {},
-                                  //     child: Row(
-                                  //       children: [
-                                  //         Text(
-                                  //           "Delete",
-                                  //           style:
-                                  //               Theme.of(context).textTheme.bodyLarge ,
-                                  //         ),
-                                  //         SizedBox(width: 5),
-                                  //         Icon(
-                                  //           Icons.delete,
-                                  //           color: Colors.white,
-                                  //         )
-                                  //       ],
-                                  //     ))
                                 ],
                               )
                             ],
@@ -397,16 +379,9 @@ Color(0xff6B728E) // End color
                   },
                 ),
                 SizedBox(height: size.height * 0.02),
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(horizontal: 16),
-                //   child: Text("Similar Products",
-                //       style: Theme.of(context).textTheme.displayMedium),
-                // ),
+
                 SizedBox(height: size.height * 0.01),
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(horizontal: 16),
-                //   child: popularSearches(),
-                // ),
+
                 SizedBox(height: size.height * 0.05),
               ],
             )),
@@ -483,15 +458,6 @@ Color(0xff6B728E) // End color
                                 ],
                               ),
                             ),
-                            // SizedBox(
-                            //   width: size.width * 0.8,
-                            //   child: Text(
-                            //     state.products.userDetails.deliveryAddress,
-                            //     softWrap: true,
-                            //     overflow: TextOverflow.ellipsis,
-                            //     maxLines: 1,
-                            //   ),
-                            // )
                           ],
                         )
                       ],
@@ -503,18 +469,10 @@ Color(0xff6B728E) // End color
                         state.products.cartModels, state.products.userDetails);
                     List<CartItem> cartItems = List<CartItem>.from(
                             state.products.cartModels.map((e) => e.cartItem)).toList();
-                    setState(() {
-                      isLoading = true;
-                    });
-
-                    await ApiService().placeOrder(orders);
-                    await ApiService().removeFromCart(cartItems);
-
-                    setState(() {
-                      isLoading = false;
-                      AliNotification("You're all set! Your film is ready to watch.");
-                      Navigator.push(context, SlideLeftRoute(widget: const OrdersScreen()));
-                    });
+                    Navigator.push(context, SlideLeftRoute(widget: PaymentScreen(
+                                                  cartItems: cartItems,
+                                                  orders: orders,
+                                                )));
                   }),
                   if (isLoading) loadingAnimation()
                 ],

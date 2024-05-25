@@ -13,6 +13,7 @@ import 'package:ali33/screens/search_results_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/error_builder.dart';
 import 'dart:async';
+import 'dart:math';
 import 'package:ali33/widgets/search_bar.dart';
 
 
@@ -47,7 +48,7 @@ class _HomePageState extends State<HomePage> {
   ];
 
   bool isExpanded = true;
-  int currentIndex = -1;
+  int currentIndex = 0;
 
   List<String> searches = <String>[];
   int selectedCartIndex = 0;
@@ -183,7 +184,7 @@ Color(0xff6B728E) // End color
                     }),
               ),
               SizedBox(height: size.height * 0.01),
-              Products(size: size, category: category, productKey: 11,)
+              Products(size: size, category: category, productKey: Random().nextInt(100),)
             ],
           ),
         ); 

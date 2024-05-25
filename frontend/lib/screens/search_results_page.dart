@@ -26,7 +26,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   @override
   void initState() {
     super.initState();
-    loadRecentSearches();
+    // loadRecentSearches();
   }
 
   List<String> searches = <String>[];

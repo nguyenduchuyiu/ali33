@@ -1,67 +1,124 @@
 import 'package:ali33/models/product_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class TokenCacheStorage {
   Future<void> setToken(String token) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("token", token);
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString("token", token);
+    } catch (e) {
+      print('Error setting token: $e');
+    }
   }
 
   Future<String?> getToken() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString("token")!;
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      return prefs.getString("token");
+    } catch (e) {
+      print('Error getting token: $e');
+      return null;
+    }
   }
 
   Future<void> deleteToken() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove("token");
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.remove("token");
+    } catch (e) {
+      print('Error deleting token: $e');
+    }
   }
 }
 
 class ProductCacheStorage {
   Map<int, ProductModel> cachedProducts = {}; // Store products by ID
   Map<int, List<ProductModel>> relatedProducts = {}; // Store related product IDs by category
-  List<int> productViewHistory = [];
   List<int> unviewedProductKeys = [];
   List<int> viewedProductKeys = [];
 
   List<int> filterUnviewedProductKeys(List<int> productKeys) {
-    List<int> unviewedProductKeys = [];
-    List<int> viewedProductKeys = [];
+    unviewedProductKeys.clear();
+    viewedProductKeys.clear();
+
     for (var key in productKeys) {
-        if (!isProductViewed(key)) {
+      isProductViewed(key).then((isViewed) {
+        if (isViewed == true) {
+          viewedProductKeys.add(key);
+        } else if (isViewed == false) {
           unviewedProductKeys.add(key);
         }
-        else {
-          viewedProductKeys.add(key);
-        }
-      }
+      });
+    }
     return unviewedProductKeys;
   }
 
-  List<int> filterViewedProductKeys(List<int> productKeys) {
-    return viewedProductKeys;
-  }
-
-  bool isProductViewed(int key) {
-    return productViewHistory.contains(key);
-  }
-
-  // Add/update a product
-  void addProduct(int key, ProductModel product) {
-    cachedProducts[key] = product;
-    productViewHistory.add(key);
-  }
-
-  // Get products by list of key
-  List<ProductModel>? getProducts(List<int> productKeys) {
-    List<ProductModel>? products = [];
-    for(int key in productKeys) {
-      ProductModel? product = cachedProducts[key];
-      products.add(product!);
+  Future<bool?> isProductViewed(int key) async {
+    try {
+      List<String> history = await getHistory() as List<String>;
+      return history.contains(key.toString()); 
+    } catch (e) {
+      print('Error checking if product viewed: $e');
+      return null;
     }
-    return products;
   }
+
+  Map<String, dynamic> stringToJson(String jsonString) {
+    try {
+      return jsonDecode(jsonString) as Map<String, dynamic>;
+    } catch (e) {
+      print('Error decoding JSON string: $e');
+      return {};
+    }
+  }
+
+  Future<List<String>?> getHistory() async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<String>? history = prefs.getStringList('productViewHistory');
+      if (history == null) {
+        return [];
+      }
+      return history;
+    } on Exception catch (e) {
+      print('Error getting history: $e');
+      return [];
+    }
+  }
+
+  void addProduct(ProductModel product) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString(product.productDetails.key.toString(), jsonEncode(product.toJson()));
+
+      List<String>? history = await getHistory() as List<String>;
+      prefs.setStringList('productViewHistory', [product.productDetails.key.toString()] + history);
+      // history = await getHistory() as List<String>;
+      history = prefs.getStringList('productViewHistory');
+    } catch (e) {
+      print('Error adding product: $e');
+    }
+  }
+
+  Future<List<ProductModel>?> getProducts(List<int> productKeys) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<ProductModel> products = [];
+      for (int key in productKeys) {
+        String? productJson = prefs.getString(key.toString());
+        if (productJson != null) {
+          ProductModel? product = ProductModel.fromJson(stringToJson(productJson));
+          products.add(product);
+        }
+      }
+      return products;
+    } catch (e) {
+      print('Error getting products: $e');
+      return null;
+    }
+  }
+}
 
 
   // Add related products for a category
@@ -83,4 +140,4 @@ class ProductCacheStorage {
   //   }
   //   return favoriteProducts.sublist(0, favoriteProducts.length.clamp(0, 20));
   // }
-}
+// }

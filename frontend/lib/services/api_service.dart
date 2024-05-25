@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, prefer_interpolation_to_compose_strings
 
+import 'dart:convert';
 import 'dart:io';
 import 'dart:js_util';
 import 'package:ali33/models/cart_item_model.dart';
@@ -30,6 +31,36 @@ class ApiService {
   // final String userBaseUrl = "http://192.168.0.101:8080/users";
   // final String productBaseUrl = "http://192.168.0.101:8080/products";
   // final String orderBaseUrl = "http://192.168.0.101:8080/orders";
+
+  Future<Map<String, dynamic>> createPaymentIntentOnServer(Map<String, dynamic> paymentDetails) async {
+    try {
+      Map<String, dynamic> data = {"body": jsonEncode(paymentDetails)};
+      Response<Map<String, dynamic>> response = await _dio.post('$userBaseUrl/payment', 
+                                                      data:data);
+
+      if (response.statusCode == 200) {
+        return response.data!;
+      } else {
+        // Handle errors from your backend
+        print("Error creating Payment Intent: ${response.statusCode}");
+        print(response.data!);
+        throw Exception('Failed to create Payment Intent');
+      }
+    } on SocketException {
+      print('No internet connection');
+      throw Exception('No internet connection');
+    } on HttpException {
+      print("Couldn't find the server");
+      throw Exception("Couldn't find the server");
+    } on FormatException {
+      print("Bad response format");
+      throw Exception("Bad response format");
+    } catch (e) {
+      print('Error creating Payment Intent: $e');
+      throw Exception('Failed to create Payment Intent');
+    }
+  }
+
 
   Future<bool?> checkUser(Map<String, String> data) async {
     try {
@@ -360,7 +391,6 @@ class ApiService {
                                             int limit, 
                                             int? category)
                                             async {
-    print("new call ${productCacheStorage.cachedProducts.length}");
     String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
@@ -377,12 +407,12 @@ class ApiService {
         }
       // 2. Filter product keys based on view history
       List<int> unviewedProductKeys = productCacheStorage.filterUnviewedProductKeys(productKeys);
-      print("unviewkey $unviewedProductKeys");
-      List<int> viewedProductKeys = productCacheStorage.filterViewedProductKeys(productKeys);
+      // print("unviewkey $unviewedProductKeys");
+      List<int> viewedProductKeys = productCacheStorage.viewedProductKeys;
       // print("view $viewedProductKeys");
       //3. Fetch viewed products
-      List<ProductModel>? viewedProducts = productCacheStorage.getProducts(viewedProductKeys);
-      print("view ${viewedProducts!.length}");
+      List<ProductModel>? viewedProducts = await productCacheStorage.getProducts(viewedProductKeys);
+      // print("view ${viewedProducts!.length}");
       // 4. Fetch unviewed products
       List<ProductModel> unviewedProducts = [];
       if (unviewedProductKeys.isNotEmpty) {
@@ -392,9 +422,9 @@ class ApiService {
         );
         unviewedProducts = productsFromJson(response.data!["result"]);
       }
-      List<ProductModel> allProducts = viewedProducts + unviewedProducts;
+      List<ProductModel> allProducts = viewedProducts! + unviewedProducts;
       for(ProductModel i in unviewedProducts) {
-        productCacheStorage.addProduct(i.productDetails.key, i);
+        productCacheStorage.addProduct(i);
       }
       return allProducts;
     } on DioException catch (e) {
@@ -427,9 +457,12 @@ class ApiService {
         }
       // 2. Filter product keys based on view history
       List<int> unviewedProductKeys = productCacheStorage.filterUnviewedProductKeys(productKeys);
-      List<int> viewedProductKeys = productCacheStorage.filterViewedProductKeys(productKeys);
+      // print("unviewkey $unviewedProductKeys");
+      List<int> viewedProductKeys = productCacheStorage.viewedProductKeys;
+      // print("view $viewedProductKeys");
       //3. Fetch viewed products
-      List<ProductModel>? viewedProducts = productCacheStorage.getProducts(viewedProductKeys);
+      List<ProductModel>? viewedProducts = await productCacheStorage.getProducts(viewedProductKeys);
+      // print("view ${viewedProducts!.length}");
       // 4. Fetch unviewed products
       List<ProductModel> unviewedProducts = [];
       if (unviewedProductKeys.isNotEmpty) {
@@ -440,9 +473,8 @@ class ApiService {
         unviewedProducts = productsFromJson(response.data!["result"]);
       }
       List<ProductModel> allProducts = viewedProducts! + unviewedProducts;
-      print('all ${allProducts.length}');
       for(ProductModel i in unviewedProducts) {
-        productCacheStorage.addProduct(i.productDetails.key, i);
+        productCacheStorage.addProduct(i);
       }
       return allProducts;
     } on DioException catch (e) {
@@ -594,20 +626,43 @@ class ApiService {
   }
 
   Future<List<ProductModel>> getRelatedProducts(int productKey) async {
-    bool isViewed = await ProductCacheStorage().isProductViewed(productKey);
-    if (isViewed) {
-      // List<ProductModel>? relatedProducts = await ProductCacheStorage().getRelatedProduct(productKey);
-      // return relatedProducts!;
-    }
     String? token = await TokenCacheStorage().getToken();
     _dio.options.headers["Authorization"] = token!;
     try {
-      Response<Map<String, dynamic>> response = await _dio.get('$productBaseUrl/get-related-products',
-                                                                queryParameters: {'productKey': productKey});
-      // print("respones : ${response.data!['result']}");
-      List<ProductModel> relatedProducts = productsFromJson(response.data!['result']);
-      // ProductCacheStorage().addRelatedProducts(productKey, relatedProducts);
-      return relatedProducts;
+      Response<Map<String, dynamic>> response = await _dio.get(
+          "$productBaseUrl/get-related-products",
+          queryParameters: {"productKey": productKey});
+      List<int> productKeys = [];
+        for (var item in response.data!['result']) {
+          if (item is int) {
+            productKeys.add(item);
+          } 
+        }
+      // 2. Filter product keys based on view history
+      List<int> unviewedProductKeys = productCacheStorage.filterUnviewedProductKeys(productKeys);
+      // print("unviewkey $unviewedProductKeys");
+      List<int> viewedProductKeys = productCacheStorage.viewedProductKeys;
+      // print("view $viewedProductKeys");
+      //3. Fetch viewed products
+      List<ProductModel>? viewedProducts = await productCacheStorage.getProducts(viewedProductKeys);
+      print("view ${viewedProducts!.length}");
+      // 4. Fetch unviewed products
+      List<ProductModel> unviewedProducts = [];
+      if (unviewedProductKeys.isNotEmpty) {
+        response = await _dio.get(
+          "$productBaseUrl/get-product-from-keys",
+          queryParameters:{"key": unviewedProductKeys.join(',')},
+        );
+        unviewedProducts = productsFromJson(response.data!["result"]);
+      }
+      List<ProductModel> allProducts = viewedProducts + unviewedProducts;
+      print(allProducts.length);
+      for(ProductModel i in unviewedProducts) {
+        productCacheStorage.addProduct(i);
+      }
+      print("len view ${viewedProducts.length}");
+      print("len unview ${unviewedProducts.length}");
+      return allProducts;
     } on DioException catch (e) {
       print("dio error occured on get rcm: ${e.response}");
       if (e.error is SocketException) {

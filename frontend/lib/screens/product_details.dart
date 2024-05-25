@@ -11,6 +11,7 @@ import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
 import 'package:ali33/widgets/build_photo.dart';
 import 'package:ali33/widgets/navigation_bar.dart';
+import 'package:ali33/widgets/notification.dart';
 import 'package:ali33/widgets/rating.dart';
 import 'package:flutter/material.dart';
 import 'package:ali33/services/authenticate_service.dart';
@@ -49,9 +50,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     super.initState(); 
     // Create a timer to hide the message after 2 seconds
     _timer = Timer(const Duration(seconds: 2), () {
-      setState(() {
-        showMessage = false; 
-      });
+      // setState(() {
+      //   showMessage = false; 
+      // });
     });
   }
 
@@ -98,7 +99,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             width: size.width,
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 78, 96, 102),
+                                color: const Color.fromARGB(255, 78, 96, 102),
                                 borderRadius: BorderRadius.circular(16)),
                             child: buildPhoto(
                                 widget.productModel.productDetails.productPicture,
@@ -245,6 +246,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   setState(() {
                                     isLoading = false;
                                   });
+                                  showAliNotification(context, "Added to cart!");
                                 },
                                 child: Container(
                                   width: size.width * 0.2,
@@ -291,8 +293,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     ],
                     ),
                   if (isLoading) loadingAnimation(),
-                  if (showMessage)
-                    AliNotification("Added to cart!")
                 ],
               ),
               )
@@ -301,45 +301,3 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         });
   }
 }
-
-  Widget AliNotification(String notiMessage) {
-  return Align(
-        alignment: Alignment.center,
-        child: 
-          Container(
-            padding: const EdgeInsets.all(32), // Add padding to create space
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.8), 
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: SizedBox( // Wrap the Stack in a SizedBox to control its size
-              height: 160, // Set a larger height
-              width: 160, // Set a larger width
-              child: Stack(
-                children: [
-                  const Positioned(
-                    left: 50,
-                    top: 20,
-                    child: Icon(
-                      Icons.check_circle,
-                      size: 60,
-                      color: Colors.green,
-                    ),
-                  ),
-                  Positioned(
-                    left: 10, 
-                    top: 100,
-                    child: Text(
-                      notiMessage,
-                      style: const TextStyle(
-                        color: Color.fromARGB(255, 255, 255, 255),
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
-      );
-  }
