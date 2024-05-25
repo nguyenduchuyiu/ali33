@@ -1,4 +1,5 @@
 from ast import literal_eval
+from ast import literal_eval
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import security as sc
@@ -108,6 +109,21 @@ def get_product_by_keys():
 
 
 @app.route('/products/get-products-from-category')
+@app.route('/products/get-product-from-keys')
+def get_product_by_keys():
+    productKeys:list = [int(key) for key in request.args.get('key').split(',')]
+    print(productKeys)
+    
+    if not productKeys:
+        return jsonify({"error": "productKeys are required"}), 400
+    
+    products:list = dm.get_product_from_key(productKeys)  # Adapt to fetch by category
+    
+    return jsonify({'result':products}), 200
+
+
+
+@app.route('/products/get-products-from-category')
 def get_products_by_category():
     category = request.args.get('category')
     
@@ -115,7 +131,10 @@ def get_products_by_category():
         return jsonify({"error": "Category parameter is required"}), 400
     
     productKeys = dm.get_product_of_category(category)  # Adapt to fetch by category
+    productKeys = dm.get_product_of_category(category)  # Adapt to fetch by category
     
+    if productKeys:
+        return jsonify({'result':productKeys}), 200
     if productKeys:
         return jsonify({'result':productKeys}), 200
     else:
@@ -138,6 +157,7 @@ def search_product():
     if not search_term:
         return jsonify({"error": "Search term parameter is required"}), 400
     
+    product_data_list:list = dm.search_products_by_name(search_term) 
     product_data_list:list = dm.search_products_by_name(search_term) 
     
     if product_data_list:
@@ -210,6 +230,7 @@ def getCartItems():
     cartModels = []
     for item in user['cartItems']:
         product = dm.get_product_from_key([item["productKey"]])
+        product = dm.get_product_from_key([item["productKey"]])
         cartModels.append({"cartItemDetails": item,
                           "productDetails": product[0]["productDetails"]})
     if user:
@@ -251,6 +272,7 @@ def getAllOrders():
     orderCombinedModel = []
     
     for order in orders:
+        product = dm.get_product_from_key([order["productKey"]])
         product = dm.get_product_from_key([order["productKey"]])
         
         orderCombinedModel.append(
@@ -310,6 +332,35 @@ def create_payment_intent():
         print(f'error: {str(e)}')
         return jsonify({'error': str(e)}), 500
 
+    return jsonify({"result": relatedProductKeys}), 200
+
+
+@app.route('/users/payment', methods=['POST'])
+def create_payment_intent():
+    try:
+        body = literal_eval(request.get_json()['body'])
+        amount = body['amount']
+        currency = body['currency']
+
+        payment_intent = stripe.PaymentIntent.create(
+            amount=amount,  
+            currency=currency,
+        )
+        
+        if payment_intent['status'] != 'succeeded':
+            print('==== in')
+            return jsonify({
+                'message': "Confirm payment please",
+                'client_secret': payment_intent['client_secret'],
+            }), 200
+
+        return jsonify({'message': "Payment Completed Successfully"}), 200
+
+    except Exception as e:
+        print(f'error: {str(e)}')
+        return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
+    app.run(host='127.0.0.1', debug=True)
     app.run(host='127.0.0.1', debug=True)
