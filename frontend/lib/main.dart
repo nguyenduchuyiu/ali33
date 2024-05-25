@@ -10,13 +10,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart'; // Use connectivity_plus
 import 'package:ali33/screens/home.dart';
 import 'package:ali33/screens/login.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'dart:js' as js;
 
 bool? isViewd;
 String? token;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
@@ -44,6 +46,8 @@ class _ConnectionCheckWrapperState extends State<ConnectionCheckWrapper> {
   @override
   void initState() {
     super.initState();
+    // String stripePublishableKey = 'pk_test_51PK0KuP4liLqgqFbwdFJwpwoB0tUisAl7D9bqyRzpaFrF0DmX1bCdxK5dyXCsmJyN1Y00uCfL4rlzLws4B1Ji52J0008I34doS';
+    // js.context.callMethod('Stripe', [stripePublishableKey]); 
     _checkConnectivity();
     Connectivity().onConnectivityChanged.listen((result) {
       setState(() => _isConnected = result != ConnectivityResult.none);
@@ -69,50 +73,11 @@ class _ConnectionCheckWrapperState extends State<ConnectionCheckWrapper> {
   }
 }
 
-// //Huy added
-// class MyWebView extends StatefulWidget {
-//   const MyWebView({Key? key}) : super(key: key);
 
-//   @override
-//   State<MyWebView> createState() => _MyWebViewState();
-// }
-
-// class _MyWebViewState extends State<MyWebView> {
-//   late final WebViewController controller;
-
-//   @override
-//   void initState() {
-//     super.initState(); // Call super.initState() first
-
-//     controller = WebViewController()
-//       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-//       ..clearCache()
-//       ..loadRequest(Uri.parse('https://courses.uet.vnu.edu.vn'));
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return WebViewWidget(controller: controller);
-//   }
-// }
-//
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return MaterialApp(
-  //     title: 'UET Course :)', // Name in app switcher
-  //     home: Directionality(
-  //       textDirection: TextDirection.ltr,
-  //       child: Scaffold(
-  //         appBar: AppBar(title: const Text('Home')),
-  //         body: const MyWebView(),
-  //       ),
-  //     ),
-  //   );
-  // }
-
+  
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<AppThemeNotifier>(

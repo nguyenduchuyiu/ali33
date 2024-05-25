@@ -1,1 +1,7 @@
-Flask,Flask-Cors, python-dotenv, PyJWT, bcrypt, db-sqlite3
+Flask
+Flask-Cors
+python-dotenv
+PyJWT
+bcrypt
+db-sqlite3
+stripe

@@ -11,12 +11,10 @@ frontend/ios
 frontend/linux
 frontend/macos
 frontend/test
-frontend/web
 frontend/windows
 frontend/.flutter-plugins
 frontend/.flutter-plugins-dependencies
-backend/config.ini
-backend/assets/similarity_matrices.npz
+# backend/assets/similarity_matrices.npz
 frontend/.metadata
 frontend/analysis_options.yaml
 frontend/Dockerfile
@@ -25,3 +23,6 @@ frontend/pubspec.lock
 docker-compose.yml
 test.ipynb
 .vscode
+backend/Dockerfile
+backend/assets/database/*.csv
+# backend/assets/similarity_matrices.npz

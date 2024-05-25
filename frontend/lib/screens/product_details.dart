@@ -2,24 +2,18 @@
 
 import 'dart:async';
 
-import 'package:ali33/bloc/cart_bloc.dart';
-import 'package:ali33/bloc/products_bloc.dart';
 import 'package:ali33/constants/constant_values.dart';
-import 'package:ali33/constants/route_animation.dart';
 import 'package:ali33/models/cart_item_model.dart';
-import 'package:ali33/models/order_model.dart';
 import 'package:ali33/models/product_model.dart';
 import 'package:ali33/models/user_model.dart';
-import 'package:ali33/screens/cart.dart';
 import 'package:ali33/screens/pages/home_page.dart';
-import 'package:ali33/screens/products.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/widgets/basic.dart';
 import 'package:ali33/widgets/build_photo.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:ali33/widgets/navigation_bar.dart';
+import 'package:ali33/widgets/notification.dart';
+import 'package:ali33/widgets/rating.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ali33/services/authenticate_service.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
@@ -34,7 +28,6 @@ class ProductDetailsScreen extends StatefulWidget {
 }
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
-  Future<List<ProductModel>>? _relatedProductsFuture; 
   bool isLoading = false;
   bool showMessage = false;
   int selectedIndex = 0;
@@ -54,14 +47,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   @override
   void initState() {
     productKey = widget.productModel.productDetails.key;
-    super.initState();
-    _relatedProductsFuture = ApiService().getRelatedProducts(
-      widget.productModel.productDetails.key); 
+    super.initState(); 
     // Create a timer to hide the message after 2 seconds
     _timer = Timer(const Duration(seconds: 2), () {
-      setState(() {
-        showMessage = false; 
-      });
+      // setState(() {
+      //   showMessage = false; 
+      // });
     });
   }
 
@@ -77,50 +68,38 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return FutureBuilder<List<ProductModel>>(
-        future: _relatedProductsFuture,
+        future: ApiService().getRelatedProducts(widget.productModel.productDetails.key),
         builder: (context, snapshots) {
           return Scaffold(
-            appBar: AppBar(
-              // elevation: 0,
-              // backgroundColor: Colors.transparent,
-              automaticallyImplyLeading: false,
-              leading: IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: const Icon(
-                    Icons.arrow_back,
-                    color: Colors.blueGrey,
-                  )),
-            ),
+            appBar: AliNavigationBar(context),
             body: SafeArea(
-              child: Stack(
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                width : MediaQuery.of(context).size.width,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xff404258), // Start color
+                      Color(0xff474E68),
+                      Color(0xff50577A),
+                      Color(0xff6B728E) // End color
+                    ]
+                  ),
+                ),
+               child :Stack(
                 children: [
                     ListView(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       primary: true,
                       children: [
-                        Hero(
-                          tag: widget.tag,
-                          placeholderBuilder: (context, size, child) {
-                            return Container(
-                              height: size.height,
-                              width: size.width,
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                  color: const Color.fromARGB(255, 166, 41, 126),
-                                  borderRadius: BorderRadius.circular(16)),
-                              child: buildPhoto(
-                                  widget.productModel.productDetails.productPicture,
-                                  size.height,
-                                  size.width,
-                                  BoxFit.contain),
-                            );
-                          },
-                          child: Container(
+                          Container(
                             height: size.height * 0.4,
                             width: size.width,
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 7, 175, 236),
+                                color: const Color.fromARGB(255, 78, 96, 102),
                                 borderRadius: BorderRadius.circular(16)),
                             child: buildPhoto(
                                 widget.productModel.productDetails.productPicture,
@@ -128,7 +107,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 size.width,
                                 BoxFit.contain),
                           ),
-                        ),
                         SizedBox(height: size.height * 0.02),
                         Text(
                           widget.productModel.productDetails.productName,
@@ -157,7 +135,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   .textTheme
                                   .bodyLarge!
                                   .copyWith(
-                                      color: const Color.fromARGB(255, 65, 66, 63),
+                                      color: Color.fromARGB(255, 245, 248, 240),
                                       decoration: TextDecoration.lineThrough),
                             ),
                             const SizedBox(width: 10),
@@ -171,84 +149,22 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           ],
                         ),
                         const SizedBox(height: 20),
-                        SizedBox(
-                          height: 80,
-                          child: ListView.builder(
-                            itemCount: widget
-                                .productModel.productDetails.variations.length,
-                            scrollDirection: Axis.horizontal,
-                            primary: false,
-                            itemBuilder: (context, index) => GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  selectedIndex = index;
-                                });
-                              },
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Container(
-                                    height: 80,
-                                    width: 80,
-                                    alignment: Alignment.center,
-                                    margin: const EdgeInsets.only(right: 8),
-                                    decoration: const BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        // borderRadius: BorderRadius.circular(16),
-                                        color: Color(0xffFAC06E)),
-                                  ),
-                                  Container(
-                                    height: 80,
-                                    width: 80,
-                                    alignment: Alignment.center,
-                                    margin: const EdgeInsets.only(right: 8),
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: selectedIndex == index
-                                            ? Colors.black54
-                                            : null),
-                                    child: selectedIndex == index
-                                        ? const Icon(
-                                            Icons.done,
-                                            size: 40,
-                                            color: Color.fromARGB(
-                                                255, 9, 48, 202),
-                                          )
-                                        : null,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Text(
+                      const SizedBox(height: 20),
+                      Text(
                           widget.productModel.productDetails.productDescription,
                           style: Theme.of(context).textTheme.headlineMedium!,
                         ),
-                        // Container(
-                        //   height: 80,
-                        //   // alignment: Alignment.center,
-                        //   // margin: EdgeInsets.symmetric(vertical: 16),
-                        //   padding: const EdgeInsets.symmetric(horizontal: 16),
-                        //   decoration: BoxDecoration(
-                        //       boxShadow: const [
-                        //         BoxShadow(color: Colors.black38, blurRadius: 25),
-                        //       ],
-                        //       color: Theme.of(context).scaffoldBackgroundColor,
-                        //       borderRadius: const BorderRadius.only(
-                        //           topLeft: Radius.circular(16),
-                        //           topRight: Radius.circular(30))),
-                        //   child: 
-                        Row(
+                      const SizedBox(height: 5),
+                      Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              const SizedBox(height: 5,),
                               Container(
-                                width: size.width * 0.4,
+                                width: size.width * 0.2,
                                 height: 46,
                                 padding: const EdgeInsets.symmetric(horizontal: 20),
                                 decoration: BoxDecoration(
-                                    color: Theme.of(context).primaryColor,
+                                    color: Colors.black,
                                     borderRadius: BorderRadius.circular(30)),
                                 child: Row(
                                   mainAxisAlignment:
@@ -270,11 +186,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ),
-                                    Text(
-                                        noOfProdAdded.toString(),
+                                    Text("Rent for ${noOfProdAdded.toString()} months",
                                         style: const TextStyle(
                                             color: Colors.white,
-                                            fontSize: 25,
+                                            fontSize: 20,
                                             fontWeight: FontWeight.bold)),
                                     GestureDetector(
                                       onTap: () {
@@ -302,9 +217,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     showMessage = false;
                                     _timer?.cancel();
                                   });
-                                  UserModel? user =
-                                      await UserService.authenticateUser(context);
-                                  if (user != null) {
+                                  // UserModel? user =
+                                  //     await UserService.authenticateUser(context);
+                                  if (true) {
                                     bool addedToCart = await ApiService()
                                         .addToCart(
                                       CartItem(
@@ -316,7 +231,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                             .variations[selectedIndex]
                                             .quantity,
                                       ),
-                                      user.key!,
+                                      
                                     );
                                     setState(() {
                                       isLoading = false;
@@ -331,13 +246,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   setState(() {
                                     isLoading = false;
                                   });
+                                  showAliNotification(context, "Added to cart!");
                                 },
                                 child: Container(
-                                  width: size.width * 0.4,
+                                  width: size.width * 0.2,
                                   height: 46,
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
-                                      color: Theme.of(context).primaryColor,
+                                      color: Colors.black,
                                       borderRadius: BorderRadius.circular(30)),
                                   child: Text(
                                     "Add to Cart",
@@ -347,88 +263,39 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                         .copyWith(color: Colors.white),
                                   ),
                                 ),
-                              )
+                                
+                              ),
+                             const SizedBox(height: 5,)
                             ],
                           ),
-                        const SizedBox(height: 30),
-                        Text(
-                          "Ratings",
+                      const SizedBox(height: 30),
+                      Rating(rating: widget.productModel.productDetails.productRating),
+                      Text(
+                          "Ratings Overall : ${widget.productModel.productDetails.productRating}",
                           style: Theme.of(context).textTheme.displayMedium,
                         ),
-                        const SizedBox(height: 10),
-                        ListView.builder(
-                          primary: false,
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: 5,
-                          itemBuilder: (context, index) {
-                            return const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // ...
-                                ],
-                              ),
-                            );
-                          },
-                        ),
+                      const SizedBox(height: 10),
                       Text(
                         "Products you might like :",
                         style: Theme.of(context).textTheme.displayMedium,
                       ),
-                      // SizedBox(height: size.height*0.5),
-                      const SizedBox(height: 30)
-                      ],
+                      const SizedBox(height: 30),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Products(
+                          size: size, 
+                          category: 3, 
+                          productKey: productKey
+                          ),
+                        ]
+                      )
+                    ],
                     ),
                   if (isLoading) loadingAnimation(),
-                  if (showMessage) 
-                    Align(
-                      alignment: Alignment.center,
-                      child: 
-                        Container(
-                          padding: const EdgeInsets.all(32), // Add padding to create space
-                          decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.8), 
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: const SizedBox( // Wrap the Stack in a SizedBox to control its size
-                            height: 160, // Set a larger height
-                            width: 160, // Set a larger width
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                  left: 50,
-                                  top: 20,
-                                  child: Icon(
-                                    Icons.check_circle,
-                                    size: 60,
-                                    color: Colors.green,
-                                  ),
-                                ),
-                                Positioned(
-                                  left: 10, 
-                                  top: 100,
-                                  child: Text(
-                                    'Added to cart!',
-                                    style: TextStyle(
-                                      color: Color.fromARGB(255, 255, 255, 255),
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                    ),
-                  Products(
-                    size: size, 
-                    category: 3, 
-                    productKey: productKey
-                    ),
                 ],
               ),
+              )
             ),
           );
         });

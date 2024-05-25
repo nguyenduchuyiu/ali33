@@ -28,7 +28,7 @@ class ProductModel {
       );
 
   Map<String, dynamic> toJson() => {
-        "categoryDetails": List<CategoryDetail>.from(categoryDetails.map((x) => x.toJson())),
+        "categoryDetails": categoryDetails.map((x) => x.toJson()).toList(),
         "productDetails": productDetails.toJson(),
       };
 }

@@ -14,7 +14,7 @@ Widget nextButton(String text, Function() onPressed) {
         onPressed: onPressed,
         child: Text(
           text,
-          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold,color: Colors.blueGrey),
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold,color: Color.fromARGB(255, 255, 255, 255)),
         ),
       ),
     )

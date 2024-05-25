@@ -8,7 +8,10 @@ import 'package:ali33/models/order_model.dart';
 import 'package:ali33/models/user_model.dart';
 import 'package:ali33/screens/delivery_address.dart';
 import 'package:ali33/screens/login.dart';
+import 'package:ali33/screens/orders.dart';
+import 'package:ali33/screens/payment_screen.dart';
 import 'package:ali33/screens/place_order.dart';
+import 'package:ali33/screens/product_details.dart';
 import 'package:ali33/services/api_service.dart';
 import 'package:ali33/services/authenticate_service.dart';
 import 'package:ali33/widgets/basic.dart';
@@ -57,9 +60,10 @@ class _CartScreenState extends State<CartScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color(0xff8a2387), // Start color
-                      Color(0xffe94057),
-                      Color(0xfff27121) // End color
+Color(0xff404258), // Start color
+Color(0xff474E68),
+Color(0xff50577A),
+Color(0xff6B728E) // End color
                     ]
                   ),
                 ),),
@@ -82,9 +86,10 @@ class _CartScreenState extends State<CartScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color(0xff8a2387), // Start color
-                      Color(0xffe94057),
-                      Color(0xfff27121) // End color
+Color(0xff404258), // Start color
+Color(0xff474E68),
+Color(0xff50577A),
+Color(0xff6B728E) // End color
                     ]
                   ),
                 ),),
@@ -94,9 +99,10 @@ class _CartScreenState extends State<CartScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color(0xff8a2387), // Start color
-                      Color(0xffe94057),
-                      Color(0xfff27121) // End color
+Color(0xff404258), // Start color
+Color(0xff474E68),
+Color(0xff50577A),
+Color(0xff6B728E) // End color
                     ]
                   ),
                 ),
@@ -116,9 +122,10 @@ class _CartScreenState extends State<CartScreen> {
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color(0xff8a2387), // Start color
-                      Color(0xffe94057),
-                      Color(0xfff27121) // End color
+Color(0xff404258), // Start color
+Color(0xff474E68),
+Color(0xff50577A),
+Color(0xff6B728E) // End color
                     ]
                   ),
                 ),
@@ -146,7 +153,7 @@ class _CartScreenState extends State<CartScreen> {
                                   .textTheme
                                   .bodyLarge !
                                   .copyWith(fontSize: 22)),
-                          Text("Avail offer and discounts on your order",
+                          Text("Available offer and discounts on your order",
                               style: Theme.of(context).textTheme.headlineMedium),
                         ],
                       ),
@@ -362,25 +369,6 @@ class _CartScreenState extends State<CartScreen> {
                                       ],
                                     ),
                                   ),
-                                  // SizedBox(height: size.height*0.02),
-                                  // Spacer(),
-                                  // ElevatedButton(
-                                  //     // style: ElevatedButton.styleFrom(),
-                                  //     onPressed: () {},
-                                  //     child: Row(
-                                  //       children: [
-                                  //         Text(
-                                  //           "Delete",
-                                  //           style:
-                                  //               Theme.of(context).textTheme.bodyLarge ,
-                                  //         ),
-                                  //         SizedBox(width: 5),
-                                  //         Icon(
-                                  //           Icons.delete,
-                                  //           color: Colors.white,
-                                  //         )
-                                  //       ],
-                                  //     ))
                                 ],
                               )
                             ],
@@ -391,16 +379,9 @@ class _CartScreenState extends State<CartScreen> {
                   },
                 ),
                 SizedBox(height: size.height * 0.02),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text("Similar Products",
-                      style: Theme.of(context).textTheme.displayMedium),
-                ),
+
                 SizedBox(height: size.height * 0.01),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: popularSearches(),
-                ),
+
                 SizedBox(height: size.height * 0.05),
               ],
             )),
@@ -427,13 +408,13 @@ class _CartScreenState extends State<CartScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                            "$dollarSymbol${calculatedValues[1]} saved on this order",
+                            "$dollarSymbol${calculatedValues[1].toStringAsFixed(2)} saved on this order",
                             style: Theme.of(context)
                                 .textTheme
                                 .displaySmall!
                                 .copyWith(color: Colors.white)),
                         const Text(
-                          "Checkout now to get FREE instant delivery",
+                          "Checkout now!",
                           style: TextStyle(color: Colors.white),
                         ),
                       ],
@@ -454,11 +435,7 @@ class _CartScreenState extends State<CartScreen> {
                           children: [
                             GestureDetector(
                               onTap: () async {
-                                bool res = true; // Huy test
-                                // bool res = await Navigator.push(
-                                //     context,
-                                //     SlideLeftRoute(
-                                //         widget: const DeliveryAddressScreen()));
+                                bool res = true;
                                 if (res) {
                                   context
                                       .read<CartBloc>()
@@ -477,41 +454,23 @@ class _CartScreenState extends State<CartScreen> {
                                 ],
                               ),
                             ),
-                            SizedBox(
-                              width: size.width * 0.8,
-                              child: Text(
-                                state.products.userDetails.deliveryAddress,
-                                softWrap: true,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                              ),
-                            )
                           ],
                         )
                       ],
                     ),
                   ),
-                  nextButton("Pay  $dollarSymbol${calculatedValues[0]}",
+                  nextButton("Pay  $dollarSymbol${calculatedValues[0].toStringAsFixed(2)}",
                       () async {
                     List<OrderModel> orders = generateOrderList(
                         state.products.cartModels, state.products.userDetails);
                     List<CartItem> cartItems = List<CartItem>.from(
-                            state.products.cartModels.map((e) => e.cartItem))
-                        .toList();
-                    bool res = await Navigator.push(
-                        context,
-                        SlideLeftRoute(
-                            widget: PlaceOrderScreen(
-                          ordersList: orders,
-                          cartItems: cartItems,
-                          subTotal: calculatedValues[0],
-                        )));
-                    if (res) {
-                      setState(() {
-                        context.read<CartBloc>().add(FetchCartItems());
-                      });
-                    }
-                  })
+                            state.products.cartModels.map((e) => e.cartItem)).toList();
+                    Navigator.push(context, SlideLeftRoute(widget: PaymentScreen(
+                                                  cartItems: cartItems,
+                                                  orders: orders,
+                                                )));
+                  }),
+                  if (isLoading) loadingAnimation()
                 ],
               ),
             ),
@@ -546,7 +505,7 @@ class _CartScreenState extends State<CartScreen> {
           //     stageTwo: "",
           //     stageThree: "",
           //     stageFour: ""),
-          deliveryStages: ["Order Placed"], // Huy test
+          deliveryStages: ["Order Placed"], 
           deliveryAddress: user.deliveryAddress);
     }).toList());
   }
@@ -554,7 +513,7 @@ class _CartScreenState extends State<CartScreen> {
   List<double> calculateTotal(List<CartModel> cartlist) {
     double totalAmount = 0;
     double savedAmount = 0;
-    double originalAmount = 0;
+    double originalAmount = 0; 
     for (var item in cartlist) {
       int variationIndex = item.productDetails.variations.indexOf(
           item.productDetails.variations.firstWhere((element) =>

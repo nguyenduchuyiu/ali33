@@ -2,11 +2,11 @@ import datetime
 import bcrypt
 import jwt
 import configparser
-
+import os
 
 # initiate
 config = configparser.ConfigParser()
-config.read('backend/config.ini')
+config.read(os.path.abspath('config.ini'))
 SECRET_KEY = config.get('key', 'key')
 
 

@@ -1,9 +1,10 @@
 
+import 'package:ali33/constants/constant_values.dart';
 import 'package:ali33/models/product_model.dart';
 import 'package:ali33/screens/home.dart';
-import 'package:ali33/screens/navigation_bar.dart';
+import 'package:ali33/widgets/navigation_bar.dart';
 import 'package:ali33/screens/product_details.dart';
-import 'package:ali33/screens/search_bar.dart';
+import 'package:ali33/widgets/search_bar.dart';
 import 'package:ali33/widgets/build_photo.dart';
 import 'package:flutter/material.dart';
 import 'package:ali33/screens/pages/profile_page.dart';
@@ -25,7 +26,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   @override
   void initState() {
     super.initState();
-    loadRecentSearches();
+    // loadRecentSearches();
   }
 
   List<String> searches = <String>[];
@@ -61,9 +62,10 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Color(0xff8a2387), // Start color
-                        Color(0xffe94057),
-                        Color(0xfff27121) // End color
+Color(0xff404258), // Start color
+Color(0xff474E68),
+Color(0xff50577A),
+Color(0xff6B728E) // End color
                       ]
                     ),
                   ),
@@ -124,15 +126,47 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                 model.productDetails.productName,
                                 style: Theme.of(context).textTheme.displayLarge,
                               ),
-                              Text(
-                                "${model.productDetails.variations[0].quantity} kg",
-                                style: Theme.of(context).textTheme.bodyMedium ,
-                              ),
                               const SizedBox(height: 5),
-                              Text(
-                                "\$${model.productDetails.variations[0].offerPrice}",
-                                style: Theme.of(context).textTheme.displaySmall,
-                              )
+                              Row(
+                                children: [
+                                  Text(
+                                    dollarSymbol +
+                                        model.productDetails
+                                            .variations[0].offerPrice
+                                            .toString(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displayMedium!
+                                        .copyWith(color: Colors.red),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    dollarSymbol +
+                                        model.productDetails
+                                            .variations[0].sellingPrice
+                                            .toString(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge!
+                                        .copyWith(
+                                            color: const Color.fromARGB(255, 65, 66, 63),
+                                            decoration: TextDecoration.lineThrough),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    "${calculateOffPercentage(
+                                            model.productDetails
+                                            .variations[0].offerPrice,
+                                            model.productDetails
+                                            .variations[0].sellingPrice
+                                            )}% Off",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium!
+                                        .copyWith(color: Colors.red),
+                                  )
+                                ],
+                              ),
                             ],
                           ),
                         )),
