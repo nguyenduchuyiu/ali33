@@ -15,7 +15,7 @@ frontend/web
 frontend/windows
 frontend/.flutter-plugins
 frontend/.flutter-plugins-dependencies
-backend/assets/similarity_matrices.npz
+# backend/assets/similarity_matrices.npz
 frontend/.metadata
 frontend/analysis_options.yaml
 frontend/Dockerfile

@@ -14,7 +14,6 @@ config.read('backend/config.ini')
 thread_local = threading.local()
 
 def get_db_connection():
-    """Connects to the specified AWS database using environment variables."""
     if not hasattr(thread_local, 'db_conn'):
         thread_local.db_conn = mysql.connector.connect( 
             host=config.get('database', 'host'),
