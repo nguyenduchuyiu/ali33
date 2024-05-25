@@ -46,8 +46,8 @@ class _ConnectionCheckWrapperState extends State<ConnectionCheckWrapper> {
   @override
   void initState() {
     super.initState();
-    String stripePublishableKey = 'pk_test_51PK0KuP4liLqgqFbwdFJwpwoB0tUisAl7D9bqyRzpaFrF0DmX1bCdxK5dyXCsmJyN1Y00uCfL4rlzLws4B1Ji52J0008I34doS';
-    js.context.callMethod('Stripe', [stripePublishableKey]); 
+    // String stripePublishableKey = 'pk_test_51PK0KuP4liLqgqFbwdFJwpwoB0tUisAl7D9bqyRzpaFrF0DmX1bCdxK5dyXCsmJyN1Y00uCfL4rlzLws4B1Ji52J0008I34doS';
+    // js.context.callMethod('Stripe', [stripePublishableKey]); 
     _checkConnectivity();
     Connectivity().onConnectivityChanged.listen((result) {
       setState(() => _isConnected = result != ConnectivityResult.none);

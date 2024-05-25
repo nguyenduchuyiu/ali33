@@ -4,3 +4,4 @@ python-dotenv
 PyJWT
 bcrypt
 db-sqlite3
+stripe

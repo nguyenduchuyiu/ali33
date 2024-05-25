@@ -25,3 +25,4 @@ test.ipynb
 .vscode
 backend/Dockerfile
 backend/assets/database/*.csv
+# backend/assets/similarity_matrices.npz

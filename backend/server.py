@@ -6,11 +6,12 @@ import database_module as dm
 import rcm_model as rcm 
 import stripe
 import configparser
+import os
 
 
 # initiate
 config = configparser.ConfigParser()
-config.read('backend/config.ini')
+config.read(os.path.abspath('config.ini'))
 
 # Initialize Stripe 
 stripe.api_key = config.get('stripe_key', 'secret_key')

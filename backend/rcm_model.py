@@ -1,7 +1,8 @@
 import numpy as np
+import os
 
 batch_size = 10000
-data = np.load('backend/assets/similarity_matrices.npz')
+data = np.load(os.path.abspath('assets/similarity_matrices.npz'))
 similarity_matrices = [data[f'arr_{i}'] for i in range(len(data.files))]
 
 def get_recommendations(movie_id: int):

@@ -5,11 +5,12 @@ import threading
 import mysql.connector
 import security as sc
 import configparser
+import os
 
 
 # initiate
 config = configparser.ConfigParser()
-config.read('backend/config.ini')
+config.read(os.path.abspath('config.ini'))
 
 thread_local = threading.local()
 

@@ -135,7 +135,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                   .textTheme
                                   .bodyLarge!
                                   .copyWith(
-                                      color: const Color.fromARGB(255, 65, 66, 63),
+                                      color: Color.fromARGB(255, 245, 248, 240),
                                       decoration: TextDecoration.lineThrough),
                             ),
                             const SizedBox(width: 10),
@@ -189,7 +189,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     Text("Rent for ${noOfProdAdded.toString()} months",
                                         style: const TextStyle(
                                             color: Colors.white,
-                                            fontSize: 25,
+                                            fontSize: 20,
                                             fontWeight: FontWeight.bold)),
                                     GestureDetector(
                                       onTap: () {
